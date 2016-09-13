@@ -1,4 +1,4 @@
-package graph;
+ package graph;
 
 
 import heap.MinHeap;
@@ -56,7 +56,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         
     }
     
-    private final Map<T, Set<Edge<T>>> rep = new HashMap<>();
+    protected final Map<T, Set<Edge<T>>> rep = new HashMap<>();
 
     @Override
     public void link(T u, T v, int d) {
@@ -65,7 +65,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         this.edgesOf(v); // Add v to the vertices if its not already 
     }
 
-    private Set<Edge<T>> edgesOf(T u) {
+    protected Set<Edge<T>> edgesOf(T u) {
         Set<Edge<T>> edges = this.rep.get(u);
         if (edges == null) {
             edges = new HashSet<>();

@@ -41,6 +41,14 @@ public class QuickSorter {
         this.chooseMedian = chooseMedian;
     }
 
+    public QuickSorter() {
+        this.randomize = true;
+        this.threeWay = false;
+        this.logging = false;
+        this.chooseMedian = true;
+        this.chooseFirst = false;
+        this.chooseLast = false;
+    }
     public void unsort(Comparable a[]) {
         for (int i = 0; i < a.length; i++) {
             int j = RandGen.uniform(i + 1);
