@@ -3,6 +3,7 @@ package graph;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,11 +24,10 @@ public class ShortestPaths {
                     String[] sp2 = split[j].split(",");
                     int v = Integer.parseInt(sp2[0]);
                     int d = Integer.parseInt(sp2[1]);
-                    graph.link(u, v, d);
+                    graph.link(u, v, d+0);
                 }
             }
-        } catch ( Exception e ) {
-            e.printStackTrace();
+        } catch ( IOException | NumberFormatException e ) {
         }
         System.out.println("Completed creating WGraph");
         Integer s = 1;
@@ -48,13 +48,8 @@ public class ShortestPaths {
         for (Integer t : graph.V()) {
             if (distances.keySet().contains(t)) {
                 int d = graph.sp(s, t);
-                System.out.println("Computed sp(" + s + ", " + t + ") = " + d);
                 distances.replace(t, d);
             }
-        }
-        for (Integer i = 0; i < vertices.length; i++) {
-            System.out.print(distances.get(vertices[i]));
-            System.out.print(',');
         }
     }
     

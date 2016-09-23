@@ -2,8 +2,10 @@
 
 
 import heap.MinHeap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -78,6 +80,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         T s = u;
         Set<T> X = new HashSet<>();
         Map<T, Integer> d = new HashMap<>();
+        List<T> path = new ArrayList<>();
         d.put(s, 0);
         MinHeap<Edge<T>> heap = new MinHeap<>(); 
         for (T t : this.V()) {
@@ -86,14 +89,17 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
             }
         }
         X.add(u);
+        path.add(u);
         computeKeys(heap, X, u, d);
         while (!s.equals(v)) {
             Edge<T> w = heap.Delete();
             d.put(w.v, w.d);
             s = w.v;
+            path.add(s);
             X.add(w.v);
             computeKeys(heap, X, w.v, d);
         }  
+        path.add(v);
         return d.get(s);
     }
 
