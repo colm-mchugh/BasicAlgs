@@ -145,7 +145,7 @@ public class knapsackSolver {
     
     public static void main(String[] args) {
         knapsackSolver ks = new knapsackSolver();
-        ks.readItems("resources/knapsack2.txt");
-        System.out.println(ks.doit());
+        ks.readItems("resources/knapsack1.txt");
+        System.out.println(ks.calcMemo());
     }
 }

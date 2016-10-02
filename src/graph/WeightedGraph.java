@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.List;
+
 
 public interface WeightedGraph<T> {
     void link(T u, T v, int d);
@@ -10,4 +12,9 @@ public interface WeightedGraph<T> {
     
     public int numVertices();
 
+    WGraphImpl.SingleSourceResult<T> singleSourceShortestPaths(T s);
+    
+    List<WGraphImpl.ShortestPathResult<T>> allPairsShortestPaths();
+    
+    void apsp();
 }

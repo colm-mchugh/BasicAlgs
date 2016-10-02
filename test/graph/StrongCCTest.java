@@ -13,22 +13,6 @@ import org.junit.Test;
 
 public class StrongCCTest {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
     @Test
     public void test1() {
         DGraphImpl<Integer> g = new DGraphImpl<>();
@@ -91,69 +75,5 @@ public class StrongCCTest {
         StrongCC scc = new StrongCC(g);
         scc.ccSizes(); 
     }
-    private void doit(DGraphImpl<Integer> g) {
-        StrongCC<Integer> CCs = new StrongCC<>(g);
-        System.out.println();
-        Map<Integer, Set<Integer>> pish = CCs.ccs();
-        for (Integer foo : pish.keySet()) {
-            Set<Integer> comps = pish.get(foo);
-            for (Integer c : comps) {
-                System.out.print(c);
-                System.out.print(' ');
-            }
-            System.out.println();
-        }
-    }
-
-    /**
-     * Test of ccs method, of class StrongCC.
-     */
-    @Test
-    public void testCcs() {
-        System.out.println("ccs");
-        StrongCC instance = null;
-        Map expResult = null;
-        Map result = instance.ccs();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of ccSizes method, of class StrongCC.
-     */
-    @Test
-    public void testCcSizes() {
-        System.out.println("ccSizes");
-        StrongCC instance = null;
-        instance.ccSizes();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of finishingTimes method, of class StrongCC.
-     */
-    @Test
-    public void testFinishingTimes() {
-        System.out.println("finishingTimes");
-        StrongCC instance = null;
-        Iterable expResult = null;
-        Iterable result = instance.finishingTimes();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of print method, of class StrongCC.
-     */
-    @Test
-    public void testPrint() {
-        System.out.println("print");
-        StrongCC instance = null;
-        instance.print();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    
 }
