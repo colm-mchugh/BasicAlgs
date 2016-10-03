@@ -1,7 +1,6 @@
  package graph;
 
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import heap.MinHeap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -190,6 +189,12 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
             this.v = v;
             this.d = d;
         }
+
+        @Override
+        public String toString() {
+            return "(" + u + ", " + v + "), d=" + d;
+        }
+        
         
     }
     
@@ -247,7 +252,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         return rv;
     }
 
-    private Edge<T> edgeTo(T u, T v) {
+    protected Edge<T> edgeTo(T u, T v) {
         Edge<T> rv = null;
         Set<Edge<T>> edges = this.rep.get(u);
         for (Edge<T> edge : edges) {
@@ -272,6 +277,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
             System.out.println("Negative cycle detected. Bailing...");
             return;
         }
+        System.out.println("No negative cycles");
         Map<T, Integer> sps = stuff.weights;
         for (T u : this.V()) {
             Set<Edge<T>> edges = this.rep.get(u);
@@ -281,7 +287,9 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
                 edge.d = (edge.d + Pu - Pv);
             }
         }
+        System.out.println("Finished weighting");
         this.rep.remove(s);
+        int minPath = Integer.MAX_VALUE;
         for (T u : this.V()) {           
             for (T v : this.V()) {
                 if (u.equals(v)) {
@@ -290,9 +298,12 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
                 int duv = this.sp(u, v);
                 int Pu = sps.get(u);
                 int Pv = sps.get(v);
-                System.out.println("sp(" + u + ", " + v + ") = " + (duv - Pu + Pv));
+                if (minPath > duv - Pu + Pv) {
+                    minPath = duv - Pu + Pv;
+                }
             }
         }
+        System.out.println("sp = " + minPath);
     }    
     
 
