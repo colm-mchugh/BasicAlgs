@@ -49,7 +49,7 @@ public class WGraphExps<T> extends WGraphImpl<T> {
     }
     
     @Override
-    public void apsp() {
+    public int apsp() {
         T s = null;
         Set<Edge<T>> sEdges = new HashSet<>();
         for (T v : this.V()) {
@@ -59,7 +59,7 @@ public class WGraphExps<T> extends WGraphImpl<T> {
         SingleSourceResult<T> stuff = this.singleSourceShortestPaths(s);
         if (stuff.hasNegativeCycles) {
             System.out.println("Negative cycle detected. Bailing...");
-            return;
+            return Integer.MAX_VALUE;
         }
         System.out.println("No negative cycles");
         Map<T, Integer> sps = stuff.weights;
@@ -90,6 +90,7 @@ public class WGraphExps<T> extends WGraphImpl<T> {
             }
         }
         System.out.println("sp = " + minPath);
+        return minPath;
     } 
     
     @Override

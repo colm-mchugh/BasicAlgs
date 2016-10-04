@@ -4,31 +4,31 @@ import java.util.List;
 import org.junit.Test;
 
 public class SPtest {
-    
+
     @Test
     public void test1() {
         WeightedGraph<String> g = new WGraphImpl();
-        
+
         g.link("a", "b", 1);
         g.link("a", "c", 4);
         g.link("b", "c", 2);
         g.link("c", "d", 2);
         g.link("b", "d", 5);
-        
+
         assert g.sp("a", "d") == 5;
-        
+
         String s = "a";
         for (String t : g.V()) {
             if (!t.equals(s)) {
-                System.out.println( "ShortestPath(" + s + ", " + t + ")=" + g.sp(s, t));
+                System.out.println("ShortestPath(" + s + ", " + t + ")=" + g.sp(s, t));
             }
         }
     }
-    
+
     @Test
     public void test2() {
         WeightedGraph<Integer> g = new WGraphImpl();
-        
+
         g.link(1, 2, 3);
         g.link(1, 3, 2);
         g.link(2, 4, 4);
@@ -36,12 +36,63 @@ public class SPtest {
         g.link(3, 4, 2);
         g.link(3, 5, 3);
         g.link(4, 5, 2);
-        g.link(4, 6, 1);        
+        g.link(4, 6, 1);
         g.link(5, 6, 2);
-        
+
         assert g.sp(1, 6) == 5;
     }
+
+    @Test
+    public void test3() {
+        WeightedGraph<Integer> g = new WGraphImpl();
+
+        g.link(1, 2, 1);
+        g.link(1, 3, 1);
+        g.link(2, 4, 2);
+        g.link(2, 3, 3);
+        g.link(3, 4, 2);
+        g.link(4, 5, 1);
+        g.link(4, 6, 2);
+        g.link(5, 7, 1);
+        g.link(6, 7, 1);
+        g.link(7, 6, 1);
+        
+        printAllSps(g);
+    }
+
+    @Test
+    public void Test4() {
+        WeightedGraph<Integer> g = new WGraphImpl();
+
+        g.link(1, 2, 2);
+        g.link(2, 3, 1);
+        g.link(3, 1, 4);
+        g.link(3, 4, 2);
+        g.link(3, 5, 3);
+        g.link(6, 4, 1);
+        g.link(6, 5, 4);
+        
+        printAllSps(g);
+        
+    }
     
+    private void printAllSps(WeightedGraph<Integer> g) {
+        for (Integer u : g.V()) {
+            for (Integer v : g.V()) {
+                if (u.equals(v)) {
+                    System.out.println("(" + u + " -> " + v + ") = 0");
+                } else {
+                    int duv = g.sp(u, v);
+                    if (duv == Integer.MAX_VALUE) {
+                        System.out.println("No path: " + u + " -> " + v);
+                    } else {
+                        System.out.println("(" + u + " -> " + v + ") = " + duv);
+                    }
+                }
+            }
+        }
+    }
+
     @Test
     public void bellmanFord1() {
         WeightedGraph<Character> g = new WGraphImpl();
@@ -55,13 +106,13 @@ public class SPtest {
         g.link('t', 'z', -4);
         g.link('y', 'x', -3);
         g.link('z', 'x', 7);
-        
-        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');  
-        assert !res.hasNegativeCycles;      
+
+        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
+        assert !res.hasNegativeCycles;
         assert res.weights.get('z') == -2;
-        assert res.weights.get('x') == 4;      
+        assert res.weights.get('x') == 4;
     }
-    
+
     @Test
     public void bellmanFord2() {
         WeightedGraph<Character> g = new WGraphImpl();
@@ -75,24 +126,24 @@ public class SPtest {
         g.link('x', 'z', 2);
         g.link('z', 's', 3);
         g.link('z', 'x', 7);
-        
-        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');  
-        assert !res.hasNegativeCycles;      
+
+        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
+        assert !res.hasNegativeCycles;
         assert res.weights.get('z') == 11;
-        assert res.weights.get('x') == 9;      
+        assert res.weights.get('x') == 9;
     }
-    
+
     @Test
     public void bellmanFordNegCycle1() {
         WeightedGraph<Character> g = new WGraphImpl();
         g.link('h', 'i', 2);
         g.link('i', 'j', 3);
         g.link('j', 'h', -8);
-        
+
         WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('h');
         assert res.hasNegativeCycles;
     }
-    
+
     @Test
     public void bellmanFordNegCycle2() {
         WeightedGraph<Character> g = new WGraphImpl();
@@ -107,11 +158,11 @@ public class SPtest {
         g.link('b', 'g', 4);
         g.link('d', 'g', 8);
         g.link('f', 'g', 7);
-        
+
         WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
         assert res.hasNegativeCycles;
     }
-    
+
     @Test
     public void floydWarshall() {
         WeightedGraph<Integer> g = new WGraphImpl<>();
@@ -124,10 +175,10 @@ public class SPtest {
         g.link(4, 1, 2);
         g.link(4, 3, -5);
         g.link(5, 4, 6);
-        
+
         List<WGraphImpl.ShortestPathResult<Integer>> resList = g.allPairsShortestPaths();
         assert resList.size() == 25;
-        for (WGraphImpl.ShortestPathResult<Integer> res: resList) {
+        for (WGraphImpl.ShortestPathResult<Integer> res : resList) {
             if (res.u == 1 && res.v == 5) {
                 assert res.d == -4;
             }
@@ -136,7 +187,7 @@ public class SPtest {
             }
         }
     }
-    
+
     @Test
     public void floydWarshallExt1() {
         WeightedGraph<Integer> g = new WGraphExps<>();
@@ -155,7 +206,7 @@ public class SPtest {
             System.out.println(res);
         }
     }
-    
+
     @Test
     public void floydWarshallNegCycle() {
         WeightedGraph<Character> g = new WGraphImpl();
@@ -175,7 +226,7 @@ public class SPtest {
             System.out.println(res);
         }
     }
-    
+
     @Test
     public void reweighting() {
         WeightedGraph<Integer> g = new WGraphExps<>();
@@ -190,7 +241,7 @@ public class SPtest {
         g.link(6, 2, 5);
         g.link(6, 3, 10);
         g.apsp();
-        
+
         g = new WGraphExps<>();
         g.link(1, 2, 10);
         g.link(1, 3, -1);
@@ -201,8 +252,9 @@ public class SPtest {
         g.link(4, 6, 1);
         g.apsp();
     }
+
     @Test
-    public void Johnson() {
+    public void Johnson1() {
         WeightedGraph<Character> g = new WGraphImpl<>();
         g.link('a', 'b', -2);
         g.link('b', 'c', -1);
@@ -211,7 +263,41 @@ public class SPtest {
         g.link('c', 'y', -3);
         g.link('z', 'x', 1);
         g.link('z', 'y', -4);
-        
+
         g.apsp();
     }
+    
+    @Test
+    public void Johnson2() {
+        WeightedGraph<Integer> g = new WGraphImpl();
+
+        g.link(1, 2, 1);
+        g.link(1, 3, 1);
+        g.link(2, 4, 2);
+        g.link(2, 3, 3);
+        g.link(3, 4, -2);
+        g.link(4, 5, -1);
+        g.link(4, 6, 2);
+        g.link(5, 7, -1);
+        g.link(6, 7, -1);
+        g.link(7, 6, 1);
+
+        g.apsp();
+    }
+    
+    @Test
+    public void Johnson3() {
+        WeightedGraph<Integer> g = new WGraphImpl();
+
+        g.link(1, 2, -2);
+        g.link(2, 3, -1);
+        g.link(3, 1, 4);
+        g.link(3, 4, 2);
+        g.link(3, 5, -3);
+        g.link(6, 4, 1);
+        g.link(6, 5, -4);
+
+        g.apsp();
+    }
+    
 }

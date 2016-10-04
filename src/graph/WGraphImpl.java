@@ -93,6 +93,9 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         computeKeys(heap, X, u, d);
         while (!s.equals(v)) {
             Edge<T> w = heap.Delete();
+            if (w.d == Integer.MAX_VALUE) { // No path from u to v ?
+                return Integer.MAX_VALUE;
+            }
             d.put(w.v, w.d);
             s = w.v;
             path.add(s);
@@ -265,7 +268,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
     }
 
     @Override
-    public void apsp() {
+    public int apsp() {
         T s = null;
         Set<Edge<T>> sEdges = new HashSet<>();
         for (T v : this.V()) {
@@ -275,7 +278,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         SingleSourceResult<T> stuff = this.singleSourceShortestPaths(s);
         if (stuff.hasNegativeCycles) {
             System.out.println("Negative cycle detected. Bailing...");
-            return;
+            return Integer.MAX_VALUE;
         }
         System.out.println("No negative cycles");
         Map<T, Integer> sps = stuff.weights;
@@ -290,20 +293,33 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         System.out.println("Finished weighting");
         this.rep.remove(s);
         int minPath = Integer.MAX_VALUE;
+        int count = 0;
         for (T u : this.V()) {           
             for (T v : this.V()) {
+                count++;
+                if (count % 500 == 0) {
+                    System.out.print('.');
+                }
                 if (u.equals(v)) {
                     continue;
                 }
                 int duv = this.sp(u, v);
+                if (duv == Integer.MAX_VALUE) {
+                    continue;
+                } 
                 int Pu = sps.get(u);
                 int Pv = sps.get(v);
                 if (minPath > duv - Pu + Pv) {
                     minPath = duv - Pu + Pv;
                 }
+                
+            }
+            if (count % 10000 == 0) {
+                System.out.println();
             }
         }
         System.out.println("sp = " + minPath);
+        return minPath;
     }    
     
 

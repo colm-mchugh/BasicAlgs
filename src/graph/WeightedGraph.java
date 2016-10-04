@@ -16,5 +16,5 @@ public interface WeightedGraph<T> {
     
     List<WGraphImpl.ShortestPathResult<T>> allPairsShortestPaths();
     
-    void apsp();
+    int apsp();
 }
