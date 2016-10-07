@@ -1,5 +1,4 @@
- package graph;
-
+package graph;
 
 import heap.MinHeap;
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import java.util.Set;
 public class WGraphImpl<T> implements WeightedGraph<T> {
 
     static class Edge<T> implements Comparable<Edge<T>> {
+
         T v;
         int d;
 
@@ -30,7 +30,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
                 return 1;
             }
             return 0;
-        }  
+        }
 
         @Override
         public boolean equals(Object obj) {
@@ -48,16 +48,15 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
                 return false;
             }
             return true;
-        }      
+        }
 
         @Override
         public String toString() {
             return v + ", " + d;
         }
-        
-        
+
     }
-    
+
     protected final Map<T, Set<Edge<T>>> rep = new HashMap<>();
 
     @Override
@@ -75,14 +74,14 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         }
         return edges;
     }
-    
+
     public int sp(T u, T v) {
         T s = u;
         Set<T> X = new HashSet<>();
         Map<T, Integer> d = new HashMap<>();
         List<T> path = new ArrayList<>();
         d.put(s, 0);
-        MinHeap<Edge<T>> heap = new MinHeap<>(); 
+        MinHeap<Edge<T>> heap = new MinHeap<>();
         for (T t : this.V()) {
             if (!t.equals(u)) {
                 heap.Insert(new Edge<>(t, Integer.MAX_VALUE));
@@ -101,7 +100,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
             path.add(s);
             X.add(w.v);
             computeKeys(heap, X, w.v, d);
-        }  
+        }
         path.add(v);
         return d.get(s);
     }
@@ -116,18 +115,18 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         }
     }
 
-    
     @Override
     public int numVertices() {
         return this.rep.keySet().size();
     }
-    
+
     @Override
     public Iterable<T> V() {
         return this.rep.keySet();
     }
-    
+
     public static class SingleSourceResult<T> {
+
         T source;
         boolean hasNegativeCycles;
         Map<T, Integer> weights;
@@ -138,9 +137,9 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
             this.hasNegativeCycles = false;
             this.weights = new HashMap<>(size);
             this.preds = new HashMap<>(size);
-        }       
+        }
     }
-    
+
     @Override
     public SingleSourceResult<T> singleSourceShortestPaths(T s) {
         if (rep.get(s) == null) {
@@ -159,13 +158,17 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
             for (T u : this.rep.keySet()) {
                 Set<Edge<T>> edges = this.rep.get(u);
                 for (Edge<T> edge : edges) {
-                    int newW = rv.weights.get(u) + edge.d;
+                    int newW = rv.weights.get(u);
+                    if (newW == Integer.MAX_VALUE) {
+                        continue;
+                    }
+                    newW += edge.d;
                     if (rv.weights.get(edge.v) > newW) {
                         rv.weights.put(edge.v, newW);
                         rv.preds.put(edge.v, u);
                         shortCircuit = false;
                     }
-                 }
+                }
             }
         }
         if (!shortCircuit) {
@@ -176,14 +179,15 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
                     if (rv.weights.get(edge.v) > newW) {
                         rv.hasNegativeCycles = true;
                     }
-                 }
+                }
             }
         }
         return rv;
     }
-    
+
     public static class ShortestPathResult<T> {
-        T u; 
+
+        T u;
         T v;
         int d;
 
@@ -195,17 +199,28 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
 
         @Override
         public String toString() {
-            return "(" + u + ", " + v + "), d=" + d;
+            StringBuffer sb = new StringBuffer();
+            sb.append('(');
+            sb.append(u);
+            sb.append(", ");
+            sb.append(v);
+            sb.append(')');
+            if (d == Integer.MAX_VALUE) {
+                sb.append( " NO PATH");
+            } else {
+                sb.append(" d=");
+                sb.append(d);
+            }
+            return sb.toString();
         }
-        
-        
+
     }
-    
+
     @Override
     public List<ShortestPathResult<T>> allPairsShortestPaths() {
         List<T> vertices = new ArrayList<>(this.rep.keySet());
         int n = this.numVertices();
-        
+
         Map<Integer, Map<Integer, Map<Integer, Integer>>> memo = new HashMap<>(this.numVertices());
         for (int i = 1; i <= n; i++) {
             if (memo.get(i) == null) {
@@ -220,8 +235,8 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
                 if (i == j) {
                     jDim.put(0, 0);
                 } else {
-                    T u = vertices.get(i-1);
-                    T v = vertices.get(j-1);
+                    T u = vertices.get(i - 1);
+                    T v = vertices.get(j - 1);
                     Edge<T> edge = this.edgeTo(u, v);
                     if (edge != null) {
                         jDim.put(0, edge.d);
@@ -232,11 +247,11 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
             }
         }
         for (int k = 1; k <= n; k++) {
-            for (int i = 1; i <=n; i++) {
+            for (int i = 1; i <= n; i++) {
                 for (int j = 1; j <= n; j++) {
-                    int dPrev = memo.get(i).get(j).get(k-1);
-                    int dik = memo.get(i).get(k).get(k-1);
-                    int dkj = memo.get(k).get(j).get(k-1);
+                    int dPrev = memo.get(i).get(j).get(k - 1);
+                    int dik = memo.get(i).get(k).get(k - 1);
+                    int dkj = memo.get(k).get(j).get(k - 1);
                     int dPlus = Integer.MAX_VALUE;
                     if (dik != Integer.MAX_VALUE && dkj != Integer.MAX_VALUE) {
                         dPlus = dik + dkj;
@@ -249,7 +264,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
                 int dMin = memo.get(i).get(j).get(n);
-                rv.add(new ShortestPathResult<>(vertices.get(i-1), vertices.get(j-1), dMin));
+                rv.add(new ShortestPathResult<>(vertices.get(i - 1), vertices.get(j - 1), dMin));
             }
         }
         return rv;
@@ -260,7 +275,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         Set<Edge<T>> edges = this.rep.get(u);
         for (Edge<T> edge : edges) {
             if (edge.v.equals(v)) {
-                rv = edge; 
+                rv = edge;
                 break;
             }
         }
@@ -284,7 +299,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         Map<T, Integer> sps = stuff.weights;
         for (T u : this.V()) {
             Set<Edge<T>> edges = this.rep.get(u);
-            for (Edge<T> edge: edges) {
+            for (Edge<T> edge : edges) {
                 int Pu = sps.get(u);
                 int Pv = sps.get(edge.v);
                 edge.d = (edge.d + Pu - Pv);
@@ -294,33 +309,35 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         this.rep.remove(s);
         int minPath = Integer.MAX_VALUE;
         int count = 0;
-        for (T u : this.V()) {           
+        for (T u : this.V()) {
             for (T v : this.V()) {
+            //SingleSourceResult<T> stuffU = this.singleSourceShortestPaths(u); // Bellman-Ford
+            //for (T v : stuffU.weights.keySet()) {
                 count++;
-                if (count % 500 == 0) {
-                    System.out.print('.');
-                }
                 if (u.equals(v)) {
                     continue;
                 }
+                //int duv = stuffU.weights.get(v);
                 int duv = this.sp(u, v);
                 if (duv == Integer.MAX_VALUE) {
                     continue;
-                } 
+                }
                 int Pu = sps.get(u);
                 int Pv = sps.get(v);
+                //System.out.println("sp(" + u + ", " + v + ")=" + (duv - Pu + Pv ));
                 if (minPath > duv - Pu + Pv) {
                     minPath = duv - Pu + Pv;
                 }
-                
             }
-            if (count % 10000 == 0) {
+            if (count % 5000 == 0) {
+                System.out.print('.');
+            }
+            if (count % 100000 == 0) {
                 System.out.println();
             }
         }
         System.out.println("sp = " + minPath);
         return minPath;
-    }    
-    
+    }
 
 }

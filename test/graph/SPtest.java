@@ -1,6 +1,11 @@
 package graph;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 
 public class SPtest {
@@ -264,7 +269,7 @@ public class SPtest {
         g.link('z', 'x', 1);
         g.link('z', 'y', -4);
 
-        g.apsp();
+        assert g.apsp() == -6 ;
     }
     
     @Test
@@ -282,7 +287,7 @@ public class SPtest {
         g.link(6, 7, -1);
         g.link(7, 6, 1);
 
-        g.apsp();
+        assert g.apsp() == -4;
     }
     
     @Test
@@ -297,7 +302,21 @@ public class SPtest {
         g.link(6, 4, 1);
         g.link(6, 5, -4);
 
-        g.apsp();
+        assert g.apsp() == -6;
     }
+    
+    @Test
+    public void Johnson4() {
+        WeightedGraph<Integer> g = new WGraphImpl();
+
+        g.link(1, 6, -10);
+        g.link(1, 2, -5);
+        g.link(2, 3, 1);
+        g.link(3, 4, 1);
+        g.link(4, 5, -10000);
+        
+        assert g.apsp() == -10003;
+    }
+    
     
 }
