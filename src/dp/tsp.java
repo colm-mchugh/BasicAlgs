@@ -71,6 +71,9 @@ public class tsp {
             for (Set<Short> s : A.keySet()) {
                 if (s.size() == m) {
                     for (Short j : s) {
+                        if (j.equals(origin)) {
+                            continue;
+                        }
                         float minVal = Float.MAX_VALUE;
                         Set<Short> sMinusj = new HashSet<>();
                         sMinusj.addAll(s);
