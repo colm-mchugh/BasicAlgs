@@ -6,20 +6,20 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class tsp {
-    
+
     private int N;
 
     private float calcDistance(Point from, Point to) {
         float d1 = from.xCoord - to.xCoord;
-        float d2 = from.yCoord - from.yCoord;
+        float d2 = from.yCoord - to.yCoord;
         return (float) Math.sqrt(d1 * d1 + d2 * d2);
     }
-    
+
     public static class Point {
+
         float xCoord;
         float yCoord;
 
@@ -27,16 +27,32 @@ public class tsp {
             this.xCoord = xCoord;
             this.yCoord = yCoord;
         }
-        
-                
+
+        @Override
+        public String toString() {
+            return "(" + xCoord + ", " + yCoord + ')';
+        }
+
     }
-    
+
     private Map<Short, Point> points;
-    
+
     private float[][] distances;
-    
+
+    public void printDistances() {
+        for (Short n : this.points.keySet()) {
+            System.out.println("" + n + ": " + this.points.get(n));
+        }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(distances[i][j]);
+                System.out.print(' ');
+            }
+            System.out.println();
+        }
+    }
     private final Short origin = 0;
-    
+
     public Map<Set<Short>, Map<Short, Float>> genSet(int cardinality) {
         Map<Set<Short>, Map<Short, Float>> rv = new HashMap<>();
         Set<Short> originSet = new HashSet<>();
@@ -58,12 +74,12 @@ public class tsp {
                 nextDistance.put(origin, 0f);
             } else {
                 nextDistance.put(origin, Float.MAX_VALUE);
-            }     
+            }
             rv.put(nextSet, nextDistance);
         }
         return rv;
     }
-    
+
     public float computeTsp() {
         Map<Set<Short>, Map<Short, Float>> A = this.genSet(N);
         Set<Short> finalSet = null;
@@ -79,12 +95,13 @@ public class tsp {
                         sMinusj.addAll(s);
                         sMinusj.remove(j);
                         for (Short k : s) {
-                            if (!Objects.equals(k, j)) {
-                                Float t2 = A.get(sMinusj).get(k);
-                                Float Dkj = this.distances[k][j];
-                                if (minVal > t2 + Dkj) {
-                                    minVal = t2 + Dkj;
-                                }
+                            if (j.equals(k)) {
+                                continue;
+                            }
+                            Float t2 = A.get(sMinusj).get(k);
+                            Float Dkj = this.distances[k][j];
+                            if (minVal > t2 + Dkj) {
+                                minVal = t2 + Dkj;
                             }
                         }
                         A.get(s).put(j, minVal);
@@ -106,8 +123,8 @@ public class tsp {
         }
         return minDistance;
     }
-    
-    private void init(String file) {
+
+    public void init(String file) {
         FileReader fr;
         try {
             fr = new FileReader(file);
@@ -119,7 +136,7 @@ public class tsp {
             while ((line = br.readLine()) != null) {
                 String[] split = line.trim().split("(\\s)+");
                 Point p = new Point(
-                        Float.parseFloat(split[0]), 
+                        Float.parseFloat(split[0]),
                         Float.parseFloat(split[1]));
                 this.points.put(c++, p);
             }
@@ -137,7 +154,7 @@ public class tsp {
             e.printStackTrace();
         }
     }
-    
+
     public static void main(String[] args) {
         String file = "resources/tsp.txt";
         tsp t = new tsp();
