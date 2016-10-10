@@ -125,10 +125,9 @@ public class tsp {
                             if (Objects.equals(j, k)) {
                                 continue;
                             }                            
-                            Float t2 = A.get(s).get(k.shortValue());
-                            Float Dkj = this.distances[k][j];
-                            if (minVal > t2 + Dkj) {
-                                minVal = t2 + Dkj;
+                            Float Dkj = A.get(s).get(k.shortValue()) + this.distances[k][j];
+                            if (minVal > Dkj) {
+                                minVal = Dkj;
                             }
                         }
                         s.set(j);
@@ -143,10 +142,9 @@ public class tsp {
         assert finalSet != null;
         float minDistance = Float.MAX_VALUE;
         for (Short j = 1; j < this.N; j++) {
-            float jDistance = A.get(finalSet).get(j);
-            float finalHop = this.distances[j][origin];
-            if (minDistance > jDistance + finalHop) {
-                minDistance = jDistance + finalHop;
+            float jDistance = A.get(finalSet).get(j) + this.distances[j][origin];
+            if (minDistance > jDistance) {
+                minDistance = jDistance;
             }
         }
         return minDistance;
