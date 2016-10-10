@@ -3,11 +3,9 @@ package dp;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -57,6 +55,61 @@ public class tsp {
     }
     private final Short origin = 0;
 
+    public int addEl(int bitset, int element) {
+        bitset |= (1L << (element));
+        return bitset;
+    }
+    
+    public int remEl(int bitset, int element) {
+        bitset &= ~(1L << (element));
+        return bitset;
+    }
+    
+    public int card(int bitset) {
+        int rv = 0;
+        for (int index = 0; index <= Integer.SIZE; index++) {
+            if ((bitset & (1L << index)) != 0) {
+                rv++;
+            }
+        }
+        return rv;
+    }
+    
+    public int nextEl(int bitset, int startingElement) {
+        if (startingElement > Integer.SIZE) {
+            return -1;
+        }
+        int index = 1 << startingElement;
+        while ((bitset & index) == 0 && startingElement <= Integer.SIZE) {
+            index = index << 1;
+            startingElement++;
+        }
+        return startingElement <= Integer.SIZE ? startingElement : -1;
+    }
+    
+    public Map<Integer, Map<Short, Float>> genOptBitSet(int cardinality) {
+        Map<Integer, Map<Short, Float>> rv = new HashMap<>();
+        int originSet = 1;
+        int sz = 1 << (cardinality - 1); // always include origin in each set
+        int index;
+        for (index = 0; index < sz; index++) {
+            int nextSet = this.addEl(0, 0);
+            for (int element = 1, flag = 1; element < cardinality; flag <<= 1, element++) {
+                if ((index & flag) != 0) {
+                    nextSet = this.addEl(nextSet, element);
+                }
+            }
+            Map<Short, Float> nextDistance = new HashMap<>();
+            if (nextSet == (originSet)) {
+                nextDistance.put(origin, 0f);
+            } else {
+                nextDistance.put(origin, Float.MAX_VALUE);
+            }
+            rv.put(nextSet, nextDistance);
+        }
+        return rv;
+    }
+    
     public Map<BitSet, Map<Short, Float>> genBitSet(int cardinality) {
         Map<BitSet, Map<Short, Float>> rv = new HashMap<>();
         BitSet originSet = new BitSet();
@@ -64,7 +117,7 @@ public class tsp {
         int sz = 1 << (cardinality - 1); // always include origin in each set
         int index;
         for (index = 0; index < sz; index++) {
-            BitSet nextSet = new BitSet(N);
+            BitSet nextSet = new BitSet();
             nextSet.set(origin);
             for (int element = 1, flag = 1; element < cardinality; flag <<= 1, element++) {
                 if ((index & flag) != 0) {
@@ -82,33 +135,6 @@ public class tsp {
         return rv;
     }
     
-    public Map<Set<Short>, Map<Short, Float>> genSet(int cardinality) {
-        Map<Set<Short>, Map<Short, Float>> rv = new HashMap<>();
-        Set<Short> originSet = new HashSet<>();
-        originSet.add(origin);
-        int sz = 1 << (cardinality - 1); // always include origin in each set
-        int index;
-        for (index = 0; index < sz; index++) {
-            Set<Short> nextSet = new HashSet<>();
-            nextSet.add(origin);
-            int flag = 1;
-            for (Short element = 1; element < cardinality; element++) {
-                if ((index & flag) != 0) {
-                    nextSet.add(element);
-                }
-                flag <<= 1;
-            }
-            Map<Short, Float> nextDistance = new HashMap<>();
-            if (nextSet.equals(originSet)) {
-                nextDistance.put(origin, 0f);
-            } else {
-                nextDistance.put(origin, Float.MAX_VALUE);
-            }
-            rv.put(nextSet, nextDistance);
-        }
-        return rv;
-    }
-
     public float computeTsp() {
         Map<BitSet, Map<Short, Float>> A = this.genBitSet(N);
         BitSet finalSet = null;
@@ -140,6 +166,47 @@ public class tsp {
             }
         }
         assert finalSet != null;
+        float minDistance = Float.MAX_VALUE;
+        for (Short j = 1; j < this.N; j++) {
+            float jDistance = A.get(finalSet).get(j) + this.distances[j][origin];
+            if (minDistance > jDistance) {
+                minDistance = jDistance;
+            }
+        }
+        return minDistance;
+    }
+
+    public float computeOptTsp() {
+        Map<Integer, Map<Short, Float>> A = this.genOptBitSet(N);
+        int finalSet = -1;
+        for (short m = 2; m <= N; m++) {
+            for (int s : A.keySet()) {
+                if (this.card(s) == m) {
+                    for (Integer j = this.nextEl(s, 0); j >= 0; j = this.nextEl(s, j+1)) {
+                        if (origin == j.shortValue()) {
+                            continue;
+                        }
+                        float minVal = Float.MAX_VALUE;
+                        s = this.remEl(s, j);
+                        for (Integer k = this.nextEl(s, 0); k >= 0; k = this.nextEl(s, k+1)) {
+                            if (Objects.equals(j, k)) {
+                                continue;
+                            }                            
+                            Float Dkj = A.get(s).get(k.shortValue()) + this.distances[k][j];
+                            if (minVal > Dkj) {
+                                minVal = Dkj;
+                            }
+                        }
+                        s = this.addEl(s, j);
+                        A.get(s).put(j.shortValue(), minVal);
+                    }
+                }
+                if (finalSet == -1 && this.card(s) == N) {
+                    finalSet = s;
+                }
+            }
+        }
+        assert finalSet != -1;
         float minDistance = Float.MAX_VALUE;
         for (Short j = 1; j < this.N; j++) {
             float jDistance = A.get(finalSet).get(j) + this.distances[j][origin];

@@ -14,20 +14,26 @@ public class tspTest {
         tsp t = new tsp();
         // Test that subsets are correctly generated
         int N = 5;
-        Map<Set<Short>, Map<Short, Float>> A = t.genSet(N);
-        Set<Set<Short>> sets = A.keySet();
-        for (Set<Short> set : sets) {
-            System.out.println("Next set: " + set);
-        }
-        assert sets.size() == 1 << (N - 1);
-
+        
         Map<BitSet, Map<Short, Float>> Abs = t.genBitSet(N);
         Set<BitSet> bitsets = Abs.keySet();
         for (BitSet b : bitsets) {
             System.out.println("Next set: " + b + " cardinality=" + b.cardinality());
         }
         assert bitsets.size() == 1 << (N - 1);
-  
+        
+        Map<Integer, Map<Short, Float>> Aopt = t.genOptBitSet(N);
+        Set<Integer> bss = Aopt.keySet();
+        for (Integer bs : bss) {
+            System.out.print("Next set: { ");
+            for (Integer k = t.nextEl(bs, 0); k >= 0; k = t.nextEl(bs, k+1)) {
+                System.out.print(k);
+                System.out.print(' ');
+            }
+            System.out.print(" } cardinality=" + t.card(bs));
+            System.out.println();
+        }
+        assert bss.size() == 1 << (N - 1);
     }
 
     @Test
@@ -36,7 +42,7 @@ public class tspTest {
         tsp t = new tsp();
         t.init(file);
         t.printDistances();
-        float ans = t.computeTsp();
+        float ans = t.computeOptTsp();
         System.out.println("tsp=" + ans);
         DecimalFormat df = new DecimalFormat("##.##");
         df.setRoundingMode(RoundingMode.CEILING);
