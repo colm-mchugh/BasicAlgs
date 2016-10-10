@@ -3,9 +3,13 @@ package dp;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class tsp {
@@ -53,6 +57,31 @@ public class tsp {
     }
     private final Short origin = 0;
 
+    public Map<BitSet, Map<Short, Float>> genBitSet(int cardinality) {
+        Map<BitSet, Map<Short, Float>> rv = new HashMap<>();
+        BitSet originSet = new BitSet();
+        originSet.set(origin);
+        int sz = 1 << (cardinality - 1); // always include origin in each set
+        int index;
+        for (index = 0; index < sz; index++) {
+            BitSet nextSet = new BitSet(N);
+            nextSet.set(origin);
+            for (int element = 1, flag = 1; element < cardinality; flag <<= 1, element++) {
+                if ((index & flag) != 0) {
+                    nextSet.set(element);
+                }
+            }
+            Map<Short, Float> nextDistance = new HashMap<>();
+            if (nextSet.equals(originSet)) {
+                nextDistance.put(origin, 0f);
+            } else {
+                nextDistance.put(origin, Float.MAX_VALUE);
+            }
+            rv.put(nextSet, nextDistance);
+        }
+        return rv;
+    }
+    
     public Map<Set<Short>, Map<Short, Float>> genSet(int cardinality) {
         Map<Set<Short>, Map<Short, Float>> rv = new HashMap<>();
         Set<Short> originSet = new HashSet<>();
@@ -81,33 +110,32 @@ public class tsp {
     }
 
     public float computeTsp() {
-        Map<Set<Short>, Map<Short, Float>> A = this.genSet(N);
-        Set<Short> finalSet = null;
+        Map<BitSet, Map<Short, Float>> A = this.genBitSet(N);
+        BitSet finalSet = null;
         for (short m = 2; m <= N; m++) {
-            for (Set<Short> s : A.keySet()) {
-                if (s.size() == m) {
-                    for (Short j : s) {
-                        if (j.equals(origin)) {
+            for (BitSet s : A.keySet()) {
+                if (s.cardinality() == m) {
+                    for (Integer j = s.nextSetBit(0); j >= 0; j = s.nextSetBit(j+1)) {
+                        if (origin == j.shortValue()) {
                             continue;
                         }
                         float minVal = Float.MAX_VALUE;
-                        Set<Short> sMinusj = new HashSet<>();
-                        sMinusj.addAll(s);
-                        sMinusj.remove(j);
-                        for (Short k : s) {
-                            if (j.equals(k)) {
+                        s.clear(j);
+                        for (Integer k = s.nextSetBit(0); k >= 0; k = s.nextSetBit(k+1)) {
+                            if (Objects.equals(j, k)) {
                                 continue;
-                            }
-                            Float t2 = A.get(sMinusj).get(k);
+                            }                            
+                            Float t2 = A.get(s).get(k.shortValue());
                             Float Dkj = this.distances[k][j];
                             if (minVal > t2 + Dkj) {
                                 minVal = t2 + Dkj;
                             }
                         }
-                        A.get(s).put(j, minVal);
+                        s.set(j);
+                        A.get(s).put(j.shortValue(), minVal);
                     }
                 }
-                if (finalSet == null && s.size() == N) {
+                if (finalSet == null && s.cardinality() == N) {
                     finalSet = s;
                 }
             }

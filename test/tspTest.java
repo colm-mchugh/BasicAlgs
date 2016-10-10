@@ -2,6 +2,7 @@
 import dp.tsp;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.BitSet;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
@@ -12,15 +13,23 @@ public class tspTest {
     public void test1() {
         tsp t = new tsp();
         // Test that subsets are correctly generated
-        int N = 4;
+        int N = 5;
         Map<Set<Short>, Map<Short, Float>> A = t.genSet(N);
         Set<Set<Short>> sets = A.keySet();
         for (Set<Short> set : sets) {
             System.out.println("Next set: " + set);
         }
         assert sets.size() == 1 << (N - 1);
+
+        Map<BitSet, Map<Short, Float>> Abs = t.genBitSet(N);
+        Set<BitSet> bitsets = Abs.keySet();
+        for (BitSet b : bitsets) {
+            System.out.println("Next set: " + b + " cardinality=" + b.cardinality());
+        }
+        assert bitsets.size() == 1 << (N - 1);
+  
     }
-    
+
     @Test
     public void testTsp1() {
         String file = "resources/tsp_small.txt";
