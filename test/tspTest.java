@@ -3,6 +3,7 @@ import dp.tsp;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
@@ -42,11 +43,31 @@ public class tspTest {
         tsp t = new tsp();
         t.init(file);
         t.printDistances();
-        float ans = t.computeOptTsp();
+        float ans = t.computeTsp();
         System.out.println("tsp=" + ans);
         DecimalFormat df = new DecimalFormat("##.##");
         df.setRoundingMode(RoundingMode.CEILING);
         String foo = df.format(ans);
         assert foo.equals("7.89");
+    }
+    
+    @Test
+    public void testSetSz() {
+        tsp t = new tsp();
+        assert (t.setSize(0) == 0);
+        assert (t.setSize(8) == 1);
+        assert (t.setSize(15) == 4);
+        assert (t.setSize(32) == 1);
+        assert (t.setSize(31) == 5);
+        int N = 8;
+        int k = 2;
+        Map<BitSet, Map<Short, Float>> rv = new HashMap<>();
+        t.addSets(rv, N, k);
+        
+        Set<BitSet> bitsets = rv.keySet();
+        for (BitSet b : bitsets) {
+            System.out.println("Next set: " + b + " cardinality=" + b.cardinality());
+        }
+        //assert bitsets.size() == Math.pow(N, k);
     }
 }

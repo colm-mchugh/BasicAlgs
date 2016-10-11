@@ -59,12 +59,12 @@ public class tsp {
         bitset |= (1L << (element));
         return bitset;
     }
-    
+
     public int remEl(int bitset, int element) {
         bitset &= ~(1L << (element));
         return bitset;
     }
-    
+
     public int card(int bitset) {
         int rv = 0;
         for (int index = 0; index <= Integer.SIZE; index++) {
@@ -74,7 +74,16 @@ public class tsp {
         }
         return rv;
     }
-    
+
+    public int setSize(int x) {
+        x = x - ((x >> 1) & 0x55555555);
+        x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+        x = (x + (x >> 4)) & 0x0F0F0F0F;
+        x = x + (x >> 8);
+        x = x + (x >> 16);
+        return x & 0x0000003F;
+    }
+
     public int nextEl(int bitset, int startingElement) {
         if (startingElement > Integer.SIZE) {
             return -1;
@@ -86,7 +95,7 @@ public class tsp {
         }
         return startingElement <= Integer.SIZE ? startingElement : -1;
     }
-    
+
     public Map<Integer, Map<Short, Float>> genOptBitSet(int cardinality) {
         Map<Integer, Map<Short, Float>> rv = new HashMap<>();
         int originSet = 1;
@@ -109,7 +118,7 @@ public class tsp {
         }
         return rv;
     }
-    
+
     public Map<BitSet, Map<Short, Float>> genBitSet(int cardinality) {
         Map<BitSet, Map<Short, Float>> rv = new HashMap<>();
         BitSet originSet = new BitSet();
@@ -135,22 +144,58 @@ public class tsp {
         return rv;
     }
     
+    public void addSets(Map<BitSet, Map<Short, Float>> rv, int cardinality, int setSize) {
+        BitSet originSet = new BitSet();
+        originSet.set(origin);
+        int sz = 1 << (cardinality - 1); // always include origin in each set
+        int index;
+        for (index = 0; index < sz; index++) {
+            BitSet nextSet = new BitSet();
+            nextSet.set(origin);
+            for (int element = 1, flag = 1; element < cardinality; flag <<= 1, element++) {
+                if ((setSize(index) == setSize) && (index & flag) != 0) {
+                    nextSet.set(element);
+                }
+            }
+            Map<Short, Float> nextDistance = new HashMap<>();
+            if (nextSet.equals(originSet)) {
+                nextDistance.put(origin, 0f);
+            } else {
+                nextDistance.put(origin, Float.MAX_VALUE);
+            }
+            rv.put(nextSet, nextDistance);
+        }
+    }
+
+    public void removeSets(Map<BitSet, Map<Short, Float>> rv,  int setSize) {
+        Set<BitSet> deletes = new HashSet<>();
+        for (BitSet s : rv.keySet()) {
+            if (s.cardinality() == setSize) {
+                deletes.add(s);
+            }
+        }
+        for (BitSet d : deletes) {
+            rv.remove(d);
+        }
+    }
+    
     public float computeTsp() {
-        Map<BitSet, Map<Short, Float>> A = this.genBitSet(N);
+        Map<BitSet, Map<Short, Float>> A = new HashMap<>();//this.genBitSet(N);
         BitSet finalSet = null;
         for (short m = 2; m <= N; m++) {
+            this.addSets(A, N, m - 1);
             for (BitSet s : A.keySet()) {
                 if (s.cardinality() == m) {
-                    for (Integer j = s.nextSetBit(0); j >= 0; j = s.nextSetBit(j+1)) {
+                    for (Integer j = s.nextSetBit(0); j >= 0; j = s.nextSetBit(j + 1)) {
                         if (origin == j.shortValue()) {
                             continue;
                         }
                         float minVal = Float.MAX_VALUE;
                         s.clear(j);
-                        for (Integer k = s.nextSetBit(0); k >= 0; k = s.nextSetBit(k+1)) {
+                        for (Integer k = s.nextSetBit(0); k >= 0; k = s.nextSetBit(k + 1)) {
                             if (Objects.equals(j, k)) {
                                 continue;
-                            }                            
+                            }
                             Float Dkj = A.get(s).get(k.shortValue()) + this.distances[k][j];
                             if (minVal > Dkj) {
                                 minVal = Dkj;
@@ -164,6 +209,7 @@ public class tsp {
                     finalSet = s;
                 }
             }
+            this.removeSets(A, m - 2);
         }
         assert finalSet != null;
         float minDistance = Float.MAX_VALUE;
@@ -182,16 +228,16 @@ public class tsp {
         for (short m = 2; m <= N; m++) {
             for (int s : A.keySet()) {
                 if (this.card(s) == m) {
-                    for (Integer j = this.nextEl(s, 0); j >= 0; j = this.nextEl(s, j+1)) {
+                    for (Integer j = this.nextEl(s, 0); j >= 0; j = this.nextEl(s, j + 1)) {
                         if (origin == j.shortValue()) {
                             continue;
                         }
                         float minVal = Float.MAX_VALUE;
                         s = this.remEl(s, j);
-                        for (Integer k = this.nextEl(s, 0); k >= 0; k = this.nextEl(s, k+1)) {
+                        for (Integer k = this.nextEl(s, 0); k >= 0; k = this.nextEl(s, k + 1)) {
                             if (Objects.equals(j, k)) {
                                 continue;
-                            }                            
+                            }
                             Float Dkj = A.get(s).get(k.shortValue()) + this.distances[k][j];
                             if (minVal > Dkj) {
                                 minVal = Dkj;
