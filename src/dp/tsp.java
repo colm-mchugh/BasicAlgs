@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class tsp {
 
@@ -118,6 +119,40 @@ public class tsp {
         }
         return rv;
     }
+    
+    private void addOptSets(Map<Integer, Map<Short, Float>> rv, int cardinality, int setSize) {
+        int originSet = 1;
+        int sz = 1 << (cardinality - 1); // always include origin in each set
+        int index;
+        for (index = 0; index < sz; index++) {
+            int nextSet = this.addEl(0, 0);
+            for (int element = 1, flag = 1; element < cardinality; flag <<= 1, element++) {
+                if ((setSize(index) == setSize) && (index & flag) != 0) {
+                    nextSet = this.addEl(nextSet, element);
+                }
+            }
+            Map<Short, Float> nextDistance = new HashMap<>();
+            if (nextSet == (originSet)) {
+                nextDistance.put(origin, 0f);
+            } else {
+                nextDistance.put(origin, Float.MAX_VALUE);
+            }
+            rv.put(nextSet, nextDistance);
+        }
+    }
+
+    private void removeOptSets(Map<Integer, Map<Short, Float>> rv, int setSize) {
+        Set<Integer> deletes = new HashSet<>();
+        for (Integer s : rv.keySet()) {
+            if (this.card(s) == setSize) {
+                deletes.add(s);
+            }
+        }
+        for (Integer d : deletes) {
+            rv.remove(d);
+        }
+    }
+
 
     public Map<BitSet, Map<Short, Float>> genBitSet(int cardinality) {
         Map<BitSet, Map<Short, Float>> rv = new HashMap<>();
@@ -183,6 +218,8 @@ public class tsp {
         Map<BitSet, Map<Short, Float>> A = new HashMap<>();//this.genBitSet(N);
         BitSet finalSet = null;
         for (short m = 2; m <= N; m++) {
+            System.out.println("Starting iteration " + m + " of " + N);
+            long startTime = System.nanoTime(); 
             this.addSets(A, N, m - 1);
             for (BitSet s : A.keySet()) {
                 if (s.cardinality() == m) {
@@ -210,6 +247,8 @@ public class tsp {
                 }
             }
             this.removeSets(A, m - 2);
+            long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+            System.out.println("Finished iteration " + m + " of " + N + "(" +  elapsedTime + " seconds)");
         }
         assert finalSet != null;
         float minDistance = Float.MAX_VALUE;
@@ -223,9 +262,12 @@ public class tsp {
     }
 
     public float computeOptTsp() {
-        Map<Integer, Map<Short, Float>> A = this.genOptBitSet(N);
+        Map<Integer, Map<Short, Float>> A = new HashMap<>();//= this.genOptBitSet(N);
         int finalSet = -1;
         for (short m = 2; m <= N; m++) {
+            System.out.println("Starting iteration " + m + " of " + N);
+            long startTime = System.nanoTime(); 
+            this.addOptSets(A, N, m - 1);
             for (int s : A.keySet()) {
                 if (this.card(s) == m) {
                     for (Integer j = this.nextEl(s, 0); j >= 0; j = this.nextEl(s, j + 1)) {
@@ -251,6 +293,9 @@ public class tsp {
                     finalSet = s;
                 }
             }
+            this.removeOptSets(A, m - 2);
+            long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+            System.out.println("Finished iteration " + m + " of " + N + "(" +  elapsedTime + " seconds)");
         }
         assert finalSet != -1;
         float minDistance = Float.MAX_VALUE;
@@ -298,7 +343,7 @@ public class tsp {
         String file = "resources/tsp.txt";
         tsp t = new tsp();
         t.init(file);
-        float ans = t.computeTsp();
+        float ans = t.computeOptTsp();
         System.out.println(ans);
     }
 }

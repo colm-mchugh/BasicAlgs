@@ -43,7 +43,7 @@ public class tspTest {
         tsp t = new tsp();
         t.init(file);
         t.printDistances();
-        float ans = t.computeTsp();
+        float ans = t.computeOptTsp();
         System.out.println("tsp=" + ans);
         DecimalFormat df = new DecimalFormat("##.##");
         df.setRoundingMode(RoundingMode.CEILING);
