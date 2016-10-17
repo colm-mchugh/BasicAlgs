@@ -221,6 +221,7 @@ public class tsp {
             System.out.println("Starting iteration " + m + " of " + N);
             long startTime = System.nanoTime(); 
             this.addSets(A, N, m - 1);
+            System.out.println("addSets done");
             for (BitSet s : A.keySet()) {
                 if (s.cardinality() == m) {
                     for (Integer j = s.nextSetBit(0); j >= 0; j = s.nextSetBit(j + 1)) {
@@ -248,7 +249,7 @@ public class tsp {
             }
             this.removeSets(A, m - 2);
             long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-            System.out.println("Finished iteration " + m + " of " + N + "(" +  elapsedTime + " seconds)");
+            System.out.println("Finished iteration " + m + " of " + N + "(" + elapsedTime + " seconds)");
         }
         assert finalSet != null;
         float minDistance = Float.MAX_VALUE;
@@ -268,6 +269,7 @@ public class tsp {
             System.out.println("Starting iteration " + m + " of " + N);
             long startTime = System.nanoTime(); 
             this.addOptSets(A, N, m - 1);
+            System.out.println("addSets done");
             for (int s : A.keySet()) {
                 if (this.card(s) == m) {
                     for (Integer j = this.nextEl(s, 0); j >= 0; j = this.nextEl(s, j + 1)) {
@@ -343,7 +345,7 @@ public class tsp {
         String file = "resources/tsp.txt";
         tsp t = new tsp();
         t.init(file);
-        float ans = t.computeOptTsp();
+        float ans = t.computeTsp();
         System.out.println(ans);
     }
 }

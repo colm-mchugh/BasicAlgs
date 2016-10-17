@@ -61,7 +61,26 @@ public class StrongCC<T> {
     public Map<T, Set<T>> ccs() {
         return this.components;
     }
+    
+    // return true if t1 and t2 are in the same scc, false otherwise
+    public boolean sameCC(T t1, T t2) {
+        for (Set<T> c : this.components.values()) {
+            if (c.contains(t1) && c.contains(t2)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public boolean areCC(T t1, T t2) {
+        return has(t1, t2) || has(t2, t1);
+    }
+    
+    private boolean has(T k, T v) {
+        Set<T> s = this.components.get(k);
+        return (s!= null) && s.contains(v);
+    }
+    
     public void ccSizes() {
         List<Integer> rv = new ArrayList<>(this.components.keySet().size());
         for (T v : this.components.keySet()) {

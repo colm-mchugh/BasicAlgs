@@ -58,6 +58,17 @@ public class RandGen {
         return random.nextInt(n);
     }
     
+    /**
+     * Returns a random boolean uniformly in [true, false]
+     * 
+     * @return a random boolean uniformly either true or false
+     */
+    public static boolean uniformBool() {
+        int v = random.nextInt(2);
+        // v is either 0 or 1
+        return v != 0;
+    }
+    
     // don't instantiate
     private RandGen() { }
 }
