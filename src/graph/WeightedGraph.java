@@ -4,6 +4,7 @@ import java.util.List;
 
 
 public interface WeightedGraph<T> {
+    
     void link(T u, T v, int d);
     
     int sp(T u, T v);
