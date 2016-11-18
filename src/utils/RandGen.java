@@ -59,6 +59,20 @@ public class RandGen {
     }
     
     /**
+     * Returns a random integer uniformly in [lo, hi].
+     * 
+     * @param lo the lower bound of the range
+     * @param hi the upper bound of the range
+     * @return a random integer uniformly between lo (inclusive) and hi (inclusive)
+     * @throws IllegalArgumentException if <tt>lo <= 0  or hi <= 0 or hi <= lo </tt>
+     */
+    public static int uniform(int lo, int hi) {
+        if ((lo <= 0) || (hi <= 0)) throw new IllegalArgumentException("Parameter must be positive");
+        if (hi <= lo) throw new IllegalArgumentException("Range must be >= 1");
+        return random.nextInt((hi - lo) + 1) + lo;
+    }
+    
+    /**
      * Returns a random boolean uniformly in [true, false]
      * 
      * @return a random boolean uniformly either true or false
