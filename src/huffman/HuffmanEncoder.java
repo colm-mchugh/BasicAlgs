@@ -75,7 +75,7 @@ public class HuffmanEncoder {
         
     }
     
-    // A Branch is a node that has two nodes, left and right.
+    // A Branch is a node in a Huffman tree that has two nodes, left and right.
     // All inner nodes in a Huffman tree are Branches.
     static class Branch extends Node {
         Node left;
@@ -96,20 +96,15 @@ public class HuffmanEncoder {
         @Override
         public String toString() {
             return "node:" + this.frequency;
-        }
-        
+        }     
         
     }
     
     // base class for visiting Huffman Tree
-    static class NodeVisitor {
-        public Node visitBranch(Branch node) {
-            return node;
-        }
+    static abstract class NodeVisitor {
+        public abstract Node visitBranch(Branch node);
         
-        public Node visitLeaf(Leaf leaf) {
-            return leaf;
-        }
+        public abstract Node visitLeaf(Leaf leaf);
     }
     
     public static List<Node> readAlphabet(String file) throws FileNotFoundException, IOException {
