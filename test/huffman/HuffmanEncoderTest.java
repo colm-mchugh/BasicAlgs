@@ -39,13 +39,6 @@ public class HuffmanEncoderTest {
      */
     @Test
     public void testMakeEncoding() {
-        Stack<Boolean> t = new Stack<>();
-        
-        t.push(true);
-        t.push(false);
-        for (int i = t.size() - 1; i >= 0; i--) {
-            System.out.println(t.elementAt(i) ? "1" : "0");
-        }
         System.out.println("makeEncoding");
         List<HuffmanEncoder.Node> alphabet = new ArrayList<>(5);
         alphabet.add(new HuffmanEncoder.Leaf('A', 15));

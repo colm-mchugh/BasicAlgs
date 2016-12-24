@@ -141,16 +141,6 @@ public class HuffmanEncoder {
         assert encodingQueue.size() == 1;
         
         Node root = encodingQueue.Delete();
-        root.accept(new NodeVisitor() {
-            @Override
-            public Node visitBranch(Branch node) {
-                node.left.code = ZERO;
-                node.right.code = ONE;
-                node.left.accept(this);
-                node.right.accept(this);
-                return node;
-            }
-        });
         Map<Character, BitSet> rv = new HashMap<>();
         Map<Character, String> rvDbg = new HashMap<>(); // for debugging
         Stack<Boolean> codeSuffix = new Stack<>();
@@ -160,6 +150,8 @@ public class HuffmanEncoder {
                 if (!Objects.equals(node.code, UNSET)) {
                     codeSuffix.push(node.code);
                 }
+                node.left.code = ZERO;
+                node.right.code = ONE;
                 node.left.accept(this);
                 node.right.accept(this);
                 if (!Objects.equals(node.code, UNSET)) {
