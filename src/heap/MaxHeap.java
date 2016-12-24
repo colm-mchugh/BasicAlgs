@@ -9,7 +9,7 @@ public class MaxHeap<Key extends Comparable<Key>> extends Heap<Key> {
      
     @Override
     protected boolean heapOrder(int i) {
-        if (i <= 1) {
+        if ((i <= 1) || (i > N)) {
             return true;
         }
         return parent(i).compareTo(this.items[i - 1]) > 0;
