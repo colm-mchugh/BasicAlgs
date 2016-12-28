@@ -160,12 +160,12 @@ public class HuffmanEncoder {
                 BitSet encoding = new BitSet(1 + codeSuffix.size());
                 StringBuilder sb = new StringBuilder(1 + codeSuffix.size());
                 int bitIndex = 0; // for indexing into encoding; 0-based indexing
+                for (Boolean code : codeSuffix) {
+                    encoding.set(bitIndex++, code);
+                    sb.append(code? '1' : '0');
+                }
                 encoding.set(bitIndex++, leaf.code);
                 sb.append(leaf.code? '1' : '0');
-                for (int i = codeSuffix.size() - 1; i >= 0; i--) {
-                    encoding.set(bitIndex++, codeSuffix.elementAt(i));
-                    sb.append(codeSuffix.elementAt(i)? '1' : '0');
-                }
                 rv.put(leaf.letter, encoding);
                 rvDbg.put(leaf.letter, sb.toString());
                 return leaf;

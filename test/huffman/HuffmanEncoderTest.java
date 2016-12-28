@@ -19,21 +19,6 @@ import static org.junit.Assert.*;
  */
 public class HuffmanEncoderTest {
     
-
-    /**
-     * Test of readAlphabet method, of class HuffmanEncoder.
-     */
-    @Test
-    public void testReadAlphabet() throws Exception {
-        System.out.println("readAlphabet");
-        String file = "";
-        List<HuffmanEncoder.Node> expResult = null;
-        List<HuffmanEncoder.Node> result = HuffmanEncoder.readAlphabet(file);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
     /**
      * Test of makeEncoding method, of class HuffmanEncoder.
      */
@@ -50,4 +35,14 @@ public class HuffmanEncoderTest {
         Map<Character, BitSet> result = HuffmanEncoder.makeEncoding(alphabet);
     }
     
+    @Test
+    public void testEncoding() {
+        char[] letters = { ' ', 'a', 'e', 'f', 'h', 'i', 'm', 'n', 's', 't', 'l', 'o', 'p', 'r', 'u', 'x'};
+        int[] frequencies = {7, 4, 4, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1};
+        List<HuffmanEncoder.Node> alphabet = new ArrayList<>(letters.length);
+        for (int i = 0; i < letters.length; i++) {
+            alphabet.add(new HuffmanEncoder.Leaf(letters[i], frequencies[i]));
+        }
+        Map<Character, BitSet> result = HuffmanEncoder.makeEncoding(alphabet);
+    }
 }
