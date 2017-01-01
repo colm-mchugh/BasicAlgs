@@ -1,12 +1,24 @@
 package heap;
 
-
+/**
+ * Heap implementation that maintains the smallest item in the first position;
+ * Delete() always returns the smallest item in the heap.
+ * 
+ * @author colm_mchugh
+ * @param <Key> 
+ */
 public class MinHeap<Key extends Comparable<Key>> extends Heap<Key> {
 
     public MinHeap() {
         super();
     }
      
+    /**
+     * True if the parent of item i is smaller than i, false otherwise.
+     * Also true if i has no parent.
+     * @param i
+     * @return 
+     */
     @Override
     protected boolean heapOrder(int i) {
         if ((i <= 1) || (i > N)) {
@@ -15,6 +27,12 @@ public class MinHeap<Key extends Comparable<Key>> extends Heap<Key> {
         return parent(i).compareTo(this.items[i - 1]) <= 0;
     }
     
+    /**
+     * Return the smallest of the two items i, j
+     * @param i
+     * @param j
+     * @return 
+     */
     @Override
     protected int compare(int i, int j) {
         if (j > N) {

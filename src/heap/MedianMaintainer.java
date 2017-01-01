@@ -3,8 +3,13 @@ package heap;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 
-
+/**
+ * Maintain the median of a stream of values using a MinHeap for the upper half
+ * of the values and a MaxHeap for the lower half of the follows. 
+ * @author colm_mchugh
+ */
 public class MedianMaintainer {
 
     private final MaxHeap<Integer> lowerHalf;
@@ -77,7 +82,7 @@ public class MedianMaintainer {
                 medianSum += medianMaintainer.Median();
             }
             System.out.println(medianSum % 10000);
-        } catch ( Exception e ) {
+        } catch ( IOException | NumberFormatException | IllegalStateException e ) {
             e.printStackTrace();
         }
     }
