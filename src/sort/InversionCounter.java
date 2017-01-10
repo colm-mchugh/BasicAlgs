@@ -1,60 +1,64 @@
 package sort;
 
 public class InversionCounter {
-    
-    private static long numInversions;
-    
+
+    /**
+     * Count the number of inversions in the given array a.
+     * 
+     * An inversion in an array a of length N exists if 
+     * i > j and a[i] < a[j] for any 0 <= i < N and 0 <= j < N
+     * This function counts all such inversions in the given array.
+     * Additionally, the given array is sorted.
+     * @param a
+     * @return 
+     */
     public static long countInversions(Comparable[] a) {
         Comparable[] newa = new Comparable[a.length];
-        numInversions = 0;
-        mergeSort(a, 0, a.length - 1, newa);
-        //The array a is sorted
-        return numInversions;
+        return mergeSort(a, 0, a.length - 1, newa);
     }
-    
+
     /**
-     * Use MergeSort to implement inversion counting; while sorting, if an element 
-     * is copied from the upper array while there are still unprocessed elements in the lower array,
-     * then there are N inversions where N = the number of unprocessed elements in the lower array.
-     * 
+     * Use MergeSort to implement inversion counting; while sorting, if an
+     * element is copied from the upper array while there are still unprocessed
+     * elements in the lower array, then there are n inversions where n is the
+     * number of unprocessed elements in the lower array.
+     *
      * @param a The array to be sorted
      * @param i The index of the first element
      * @param j The index of the last element
-     * @param tmp Copy of input array; mergesort requires a copy of the input, it does not sort in place.
+     * @param tmp Copy of input array; mergesort requires a copy of the input,
+     * it does not sort in place.
      */
-    private static void mergeSort(Comparable[] a, int i, int j, Comparable[] tmp) {
+    private static long mergeSort(Comparable[] a, int i, int j, Comparable[] tmp) {
         if (i >= j) {
-            return;
+            return 0;
         }
-        int m = i + (j - i)/2;  // determine the midpoint
-        mergeSort(a, i, m, tmp); // sort the lower half
-        mergeSort(a, m + 1, j, tmp);  // sort the upper half
-        
+        long numInversions = 0;
+        int m = i + (j - i) / 2;  // determine the midpoint
+        numInversions += mergeSort(a, i, m, tmp); // sort the lower half
+        numInversions += mergeSort(a, m + 1, j, tmp);  // sort the upper half
+
         for (int k = i; k <= j; k++) {
             tmp[k] = a[k];
         }
         int li = i;           // for indexing into the sorted lower half
         int ui = m + 1;       // for indexing into the sorted upper half
-        for (int ia = i; ia <= j; ) {  // for indexing into the array portion being sorted
-            if (li == m+1) {  // the lower half has been copied  
-                while (ui < j + 1) {  // => copy over the remaining upper half
-                    a[ia++] = tmp[ui++];
-                }
+        int ia = i;
+        while ((li <= m) && (ui <= j)) {
+            if (tmp[li].compareTo(tmp[ui]) <= 0) {
+                a[ia++] = tmp[li++];    // take the next lower half element - its smaller (or equal)
             } else {
-                if (ui == j + 1) { // the upper half has been copied
-                    while (li < m + 1) {    // => copy over the remaining lower half
-                        a[ia++] = tmp[li++];
-                    }
-                } else {
-                    if (tmp[li].compareTo(tmp[ui]) <= 0) {
-                        a[ia++] = tmp[li++];    // take the next lower half element - its smaller (or equal)
-                    } else {
-                        a[ia++] = tmp[ui++];    // take the next upper half element - its smaller
-                        numInversions += (m+1) - li; // increment inversion count by remaining # items
-                                                     // in the lower array
-                    }
-                }
+                a[ia++] = tmp[ui++];    // take the next upper half element - its smaller
+                numInversions += (m + 1) - li; // increment inversion count by remaining # items
+                // in the lower array
             }
         }
+        while (ui < j + 1) {  // upper half not completely processed ?
+            a[ia++] = tmp[ui++]; // => copy over the remaining upper half
+        }
+        while (li < m + 1) {    // upper half not completely processed ?
+            a[ia++] = tmp[li++]; // => copy over the remaining lower half
+        }
+        return numInversions;
     }
 }

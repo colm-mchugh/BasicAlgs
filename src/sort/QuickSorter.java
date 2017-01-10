@@ -21,7 +21,6 @@ public class QuickSorter {
     // Statistics
     private int lastSortSize;
     private int lastSortCompares;
-    private int lastSortComparesCheck;
     private int lastSortSwaps;
 
     public enum PartitionStrategy {
@@ -76,7 +75,6 @@ public class QuickSorter {
 
         this.lastSortSize = a.length;
         this.lastSortCompares = 0;
-        this.lastSortComparesCheck = 0;
         this.lastSortSwaps = 0;
 
         if (this.randomize) {
@@ -94,7 +92,6 @@ public class QuickSorter {
             throw new java.lang.IndexOutOfBoundsException();
         }
         this.lastSortCompares = 0;
-        this.lastSortComparesCheck = 0;
         return doRSelect(a, k, 0, a.length - 1);
     }
 
@@ -185,7 +182,6 @@ public class QuickSorter {
             cmpCheck++;
         }
         this.lastSortCompares += numCompares;
-        this.lastSortComparesCheck += cmpCheck;
         assert cmpCheck == numCompares;
         this.exch(a, lo, i - 1);
         return i - 1;
