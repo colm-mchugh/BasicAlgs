@@ -13,11 +13,9 @@ public class QuickSorter {
 
     // Configuration
     private final boolean randomize;
-    private final boolean threeWay;
     private final boolean logging;
 
     public final static boolean RANDOM = true;
-    public final static boolean THREEWAY = true;
     public final static boolean LOGGING = true;
 
     // Statistics
@@ -26,29 +24,39 @@ public class QuickSorter {
     private int lastSortComparesCheck;
     private int lastSortSwaps;
 
-    // Partition Strategy
-    private final boolean chooseFirst;
-    private final boolean chooseLast;
-    private final boolean chooseMedian;
-
-    public QuickSorter(boolean randomize, boolean threeWay, boolean logging,
-            boolean chooseFirst, boolean chooseLast, boolean chooseMedian) {
-        this.randomize = randomize;
-        this.threeWay = threeWay;
-        this.logging = logging;
-        this.chooseFirst = chooseFirst;
-        this.chooseLast = chooseLast;
-        this.chooseMedian = chooseMedian;
+    public enum PartitionStrategy {
+        THREE_WAY,
+        FIRST,
+        LAST,
+        MEDIAN
     }
-
+    
+    private final PartitionStrategy partitionStrategy;
+    
+    /**
+     * Configure the quick sort:
+     * @param strategy The strategy for choosing the pivot element 
+     * @param randomize The array to be sorted will be randomized before sorting 
+     * @param logging Log intermediate actions
+     */
+    public QuickSorter(PartitionStrategy strategy, boolean randomize, boolean logging) {
+        this.partitionStrategy = strategy;
+        this.randomize = randomize;
+        this.logging = logging;
+    }
+    /**
+     * Default quick sort: randomize the input, choose median as the pivot
+     */ 
     public QuickSorter() {
         this.randomize = true;
-        this.threeWay = false;
         this.logging = false;
-        this.chooseMedian = true;
-        this.chooseFirst = false;
-        this.chooseLast = false;
+        this.partitionStrategy = PartitionStrategy.MEDIAN;
     }
+    
+    /**
+     * Randomize the order of elements in the given array.
+     * @param a the array to be unsorted
+     */
     public void unsort(Comparable a[]) {
         for (int i = 0; i < a.length; i++) {
             int j = RandGen.uniform(i + 1);
@@ -56,6 +64,11 @@ public class QuickSorter {
         }
     }
 
+    /**
+     * Sort the given array
+     * 
+     * @param a the array to be sorted
+     */ 
     public void sort(Comparable a[]) {
         if (a.length <= 1) {
             return;
@@ -69,7 +82,7 @@ public class QuickSorter {
         if (this.randomize) {
             this.unsort(a);
         }
-        if (this.threeWay) {
+        if (this.partitionStrategy == PartitionStrategy.THREE_WAY) {
             this.threeWaySort(a, 0, a.length - 1);
         } else {
             this.sort(a, 0, a.length - 1);
@@ -128,7 +141,6 @@ public class QuickSorter {
     }
 
     public int getLastSortCompares() {
-        assert lastSortCompares == lastSortComparesCheck;
         return lastSortCompares;
     }
 
@@ -149,20 +161,19 @@ public class QuickSorter {
     }
 
     private int simplePartition(Comparable[] a, int lo, int hi) {
-        Comparable pivot = a[lo];
         int numCompares = hi - lo;
         int cmpCheck = 0;
         int pivotIndex = lo;
-        if (this.chooseFirst) {
-            pivotIndex = lo;
+        switch (this.partitionStrategy) {
+            case FIRST: pivotIndex = lo; 
+                break;
+            case LAST: pivotIndex = hi;
+                break;
+            case MEDIAN: pivotIndex = QuickSorter.medianOf3(a, lo, hi);
+                break;
         }
-        if (this.chooseLast) {
-            pivotIndex = hi;
-        }
-        if (this.chooseMedian) {
-            pivotIndex = QuickSorter.medianOf3(a, lo, hi);
-        }
-        pivot = a[pivotIndex];
+ 
+        Comparable pivot = a[pivotIndex];
         this.exch(a, lo, pivotIndex);
 
         int i = lo + 1;
@@ -214,23 +225,10 @@ public class QuickSorter {
         a[j] = t;
     }
 
-    private static void qsFirst(Comparable[] input) {
-        qs(input, true, false, false);
-    }
-
-    private static void qsLast(Comparable[] input) {
-        qs(input, false, true, false);
-    }
-
-    private static void qsMedian(Comparable[] input) {
-        qs(input, false, false, true);
-    }
-
     private static Comparable kthOrderStatistic(Comparable[] input, int k) {
-        QuickSorter qs = new QuickSorter(!QuickSorter.RANDOM, !QuickSorter.THREEWAY, !QuickSorter.LOGGING,
-                false, false, true);
+        QuickSorter qs = new QuickSorter(PartitionStrategy.MEDIAN, !RANDOM, !LOGGING);
+        
         System.out.println("kthOrderStatistic() size=" + input.length);
-        //qs.unsort(input);
         Comparable theAnswer = qs.RSelect(input, k);
         System.out.println("kthOrderStatistic() RSelect #compares=" + qs.getLastSortCompares());
         Comparable check = qs.select(input, k);
@@ -248,12 +246,9 @@ public class QuickSorter {
         return theAnswer;
     }
 
-    private static void qs(Comparable[] input, boolean doFirst, boolean doLast, boolean medianOf3) {
-        QuickSorter qs = new QuickSorter(!QuickSorter.RANDOM, !QuickSorter.THREEWAY, !QuickSorter.LOGGING,
-                doFirst, doLast, medianOf3);
-        //qs.printIntermediateArray(input);
+    private static void qs(Comparable[] input, PartitionStrategy strategy) {
+        QuickSorter qs = new QuickSorter(strategy, !RANDOM, !LOGGING);
         qs.sort(input);
-        //qs.printIntermediateArray(input);
         System.out.println("Number of Compares=" + qs.getLastSortCompares());
         qs.validateSortOrder(input);
     }
@@ -292,7 +287,7 @@ public class QuickSorter {
         System.out.println();
     }
 
-    private void validateSortOrder(Comparable[] a) {
+    public void validateSortOrder(Comparable[] a) {
         for (int i = 0; i < a.length - 2; i++) {
             assert a[i].compareTo(a[i + 1]) <= 0;
         }
