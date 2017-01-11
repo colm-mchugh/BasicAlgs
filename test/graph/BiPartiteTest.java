@@ -26,8 +26,8 @@ public class BiPartiteTest {
         NotbiPartite.add(4, 6);
         NotbiPartite.add(5, 6);
         
-        assert new BiPartiteChecker<Integer>(biPartite).isBiPartite();
-        assert !(new BiPartiteChecker<Integer>(NotbiPartite).isBiPartite());
+        assert new BiPartiteChecker<>(biPartite).isBiPartite();
+        assert !(new BiPartiteChecker<>(NotbiPartite).isBiPartite());
 
     }
 }

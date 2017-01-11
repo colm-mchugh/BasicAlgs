@@ -2,6 +2,15 @@ package graph;
 
 import java.util.HashSet;
 
+/**
+ * A Directed Graph is one where there is a well defined direction between the
+ * vertices of the graph. The edges have a direction. For example if there is an
+ * edge X -> Y, then it is possible to go from X to Y along this edge, but it is
+ * not possible to go from Y to X on the same edge.
+ * 
+ * @author colm_mchugh
+ * @param <T> 
+ */
 public class DGraphImpl<T> extends UGraphMapImpl<T> implements DGraph<T> {
 
     @Override

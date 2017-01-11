@@ -3,6 +3,7 @@ package graph;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 
 
 public class KargerMinCut {
@@ -20,7 +21,7 @@ public class KargerMinCut {
         }
     }
     
-    private int minCut() {
+    public int minCut() {
         int rv = Integer.MAX_VALUE;
         int trialNo = 0;
         int trials = graph.numVertices() * graph.numVertices();
@@ -52,20 +53,10 @@ public class KargerMinCut {
                     this.graph.add(nextVertex, Integer.parseInt(split[i]));
                 }      
             }
-        } catch ( Exception e ) {
+        } catch ( IOException | NumberFormatException e ) {
             e.printStackTrace();
         }
     }
-    
-    public static void main(String[] args) {
-        String file = "resources/graph.txt";
-        KargerMinCut kmc = new KargerMinCut(file);
-        kmc.print();
-        
-        int minCut = kmc.minCut();
-        System.out.println("The minCut is " +  minCut);
-    }
 
-    
     
 }

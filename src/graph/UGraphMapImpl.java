@@ -6,6 +6,15 @@ import java.util.Map;
 import java.util.Set;
 import utils.RandGen;
 
+/**
+ * Undirected graph implementation of Graph API.
+ * 
+ * An undirected graph is one where all edges are bidirectional; for every edge
+ * X -> Y it is possible to go from X to Y, and equally possible to go from Y to X.
+ * 
+ * @author colm_mchugh
+ * @param <T> 
+ */
 public class UGraphMapImpl<T> implements Graph<T> {
 
     final protected Map<T, Set<T>> rep;

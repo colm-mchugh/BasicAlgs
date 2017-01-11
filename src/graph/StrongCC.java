@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class StrongCC<T> {
 
-    private final DGraphImpl<T> g;
+    private final Graph<T> g;
     private final Map<T, Set<T>> components;
     private final Set<T> visited;
     private final List<T> ordering;
@@ -21,10 +21,10 @@ public class StrongCC<T> {
     private static final boolean FIRST_PASS = true;
     private static final boolean SECOND_PASS = false;
 
-    public StrongCC(DGraphImpl<T> rep) {
+    public StrongCC(Graph<T> rep) {
         this.g = rep;
         this.components = new HashMap<>();
-        visited = new HashSet<T>();
+        visited = new HashSet<>();
         ordering = new ArrayList<>(g.numVertices());
         Graph<T> rev = g.reverse();
         for (T v : rev.V()) {
@@ -81,7 +81,7 @@ public class StrongCC<T> {
         return (s!= null) && s.contains(v);
     }
     
-    public void ccSizes() {
+    public List<Integer> ccSizes() {
         List<Integer> rv = new ArrayList<>(this.components.keySet().size());
         for (T v : this.components.keySet()) {
             rv.add(this.components.get(v).size());
@@ -93,15 +93,7 @@ public class StrongCC<T> {
             }
         });
         System.out.println("#components=" + this.components.keySet().size());
-        int brake = 5;
-        for (Integer i : rv) {
-            System.out.print(i);
-            if (--brake == 0) {
-                break;
-            }
-            System.out.print(',');
-        }
-        System.out.println();
+        return rv;
     }
 
     public Iterable<T> finishingTimes() {
