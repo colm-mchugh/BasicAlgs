@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.List;
 import org.junit.Test;
 
 
@@ -21,8 +22,14 @@ public class StrongCCTest {
         g.add(1, 5);
         //g.add(7, 3); // Counter example for "ccs never change", "ccs never decrease by more than 1"
         g.add(3, 6);
-        StrongCC scc = new StrongCC(g);
-        scc.ccSizes();       
+        StrongCC<Integer> scc = new StrongCC(g);
+        List<Integer> szs = scc.ccSizes();
+        assert szs.size() == 3; 
+        for (int sz : szs) {
+            assert sz == 3;
+        };
+        assert scc.areCC(7, 8) && scc.areCC(8, 9) && scc.areCC(9, 7) && !scc.areCC(6, 9);
+        assert scc.areCC(1, 6) && scc.areCC(1, 5) && scc.areCC(5, 6);
     }
 
     @Test

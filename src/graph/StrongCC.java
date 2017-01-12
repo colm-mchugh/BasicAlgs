@@ -1,6 +1,5 @@
 package graph;
 
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 
 public class StrongCC<T> {
 
@@ -21,30 +19,62 @@ public class StrongCC<T> {
     private static final boolean FIRST_PASS = true;
     private static final boolean SECOND_PASS = false;
 
-    public StrongCC(Graph<T> rep) {
-        this.g = rep;
-        this.components = new HashMap<>();
+    /**
+     * StrongCC creates the strongly connected components of a directed graph.
+     *
+     * The strongly connected components C1,..CN of a graph g are disjoint sets
+     * of the vertices of g such that, for every pair of vertices (v1, v2) in
+     * each Ci, v1 <=> v2, i.e. there is a path from v1 to v2 and there is a
+     * path from v2 to v1. A single vertex v can be a strongly connected
+     * component; v <=> v is true.
+     *
+     * @param g the graph g
+     */
+    public StrongCC(Graph<T> g) {
+        this.g = g; // the directed graph 
+        this.components = new HashMap<>();  // Will hold the SCCs of g
         visited = new HashSet<>();
         ordering = new ArrayList<>(g.numVertices());
+
+        // Computes the strongly connected components of g using Kosaraju's algorithm,
+        // which performs two Depth First (DFS) passes over the graph, described in 
+        // comments part 1 and part 2 below.
+        // part 1 - reverse the graph and construct a topological ordering of all
+        // the vertices of the reversed graph; this is saved in ordering
         Graph<T> rev = g.reverse();
         for (T v : rev.V()) {
             if (!visited.contains(v)) {
+                // doDFS will be called once for each SCC in g.rev
                 this.doDFS(rev, v, FIRST_PASS);
             }
         }
         visited.clear();
+        // part 2 - visit the vertices of the topological ordering created by part 1
+        // from most recent first, and for each vertex v that has not been processed,
+        // it becomes the leader of a new component, and then doDFS is used to capture
+        // all the vertices in v's component, i.e. vertices are reachable from v via DFS
         for (int i = ordering.size() - 1; i >= 0; i--) {
             T v = ordering.get(i);
             if (!visited.contains(v)) {
                 leader = v;
                 this.components.put(leader, new HashSet<T>());
-                this.doDFS(g, v, SECOND_PASS);
+                this.doDFS(g, leader, SECOND_PASS);
             }
         }
     }
 
+    /**
+     * Apply depth first search to the graph, beginning at vertex source.
+     * Depending on which particular pass of the algorithm we are making, do:
+     * FIRST_PASS: add source to the topological ordering SECOND_PASS: put
+     * source in the current leader's component
+     *
+     * @param graph
+     * @param source
+     * @param whichPass
+     */
     private void doDFS(Graph<T> graph, T source, boolean whichPass) {
-        visited.add(source);
+        visited.add(source); // used to ensure a vertex is visited exactly once
         if (whichPass == SECOND_PASS) {
             this.components.get(this.leader).add(source);
         }
@@ -58,29 +88,43 @@ public class StrongCC<T> {
         }
     }
 
+    /**
+     * Return the strongly connected components of g as computed in the
+     * constructor.
+     *
+     * @return a map of leader -> vertex set, where leader is the leader vertex
+     * of the set and vertex set is a set of vertices such that v1 <=> v2 for
+     * all pairs v1 and v2 in the set (including leader).
+     */
     public Map<T, Set<T>> ccs() {
         return this.components;
     }
-    
-    // return true if t1 and t2 are in the same scc, false otherwise
-    public boolean sameCC(T t1, T t2) {
-        for (Set<T> c : this.components.values()) {
-            if (c.contains(t1) && c.contains(t2)) {
+
+    /**
+     * Return true if vertices t1 and t2 are in the same connected component,
+     * false otherwise.
+     *
+     * @param t1
+     * @param t2
+     * @return
+     */
+    public boolean areCC(T t1, T t2) {
+        for (Set<T> s : this.components.values()) {
+            if (s.contains(t1) && s.contains(t2)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean areCC(T t1, T t2) {
-        return has(t1, t2) || has(t2, t1);
-    }
-    
-    private boolean has(T k, T v) {
-        Set<T> s = this.components.get(k);
-        return (s!= null) && s.contains(v);
-    }
-    
+    /**
+     * Return a list of the size of the connected components. The list is in
+     * descending order, i.e. the first number is the size of the largest
+     * component, second number is the size of the second largest component,
+     * etc.
+     *
+     * @return
+     */
     public List<Integer> ccSizes() {
         List<Integer> rv = new ArrayList<>(this.components.keySet().size());
         for (T v : this.components.keySet()) {
@@ -94,10 +138,6 @@ public class StrongCC<T> {
         });
         System.out.println("#components=" + this.components.keySet().size());
         return rv;
-    }
-
-    public Iterable<T> finishingTimes() {
-        return this.ordering;
     }
 
     public void print() {

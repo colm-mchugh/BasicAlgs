@@ -5,7 +5,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-
+/**
+ * Calculate the minimum cut of a given graph.
+ */ 
 public class KargerMinCut {
 
     private Graph<Integer> graph;
@@ -21,22 +23,29 @@ public class KargerMinCut {
         }
     }
     
-    public int minCut() {
-        int rv = Integer.MAX_VALUE;
+    /**
+     * The probability of an invocation of Graph.makeCut() returning a
+     * minimum cut is low: 1/N*N, where N is the number of vertices.
+     * 
+     * Therefore this algorithm performs N*N invocations of Graph.makeCut() 
+     * to  bring the probability of finding a minimum cut to 1.
+     */ 
+    public Graph.GraphCut<Integer> minCut() {
+        Graph.GraphCut<Integer> smallestCut = new Graph.GraphCut<>(null, null, Integer.MAX_VALUE);
         int trialNo = 0;
         int trials = graph.numVertices() * graph.numVertices();
         for (int i = 0; i < trials; i++) {
-            int trial = graph.minCut();
-            if (trial < rv) {
-                rv = trial;
+            Graph.GraphCut<Integer> trial = graph.makeCut(); 
+            if (trial.compareTo(smallestCut) < 0) {
+                smallestCut = trial;
                 trialNo = i;
             }
             if (i > 0 && i % 100 == 0) {
                 System.out.println("Finished trial " + i + " of " + trials);
             }
         }
-        System.out.println("Min value " + rv + " found in trial " + trialNo);
-        return rv;
+        System.out.println("Min value " + smallestCut.crossings + " was found in trial " + trialNo);
+        return smallestCut;
     }
     
     public KargerMinCut(String relPath) {

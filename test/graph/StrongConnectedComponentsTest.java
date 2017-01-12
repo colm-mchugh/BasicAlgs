@@ -9,10 +9,10 @@ import org.junit.Test;
 public class StrongConnectedComponentsTest {
 
     /**
-     * Test of main method, of class StrongConnectedComponents.
+     * Test of StrongConnectedComponents.
      */
     @Test
-    public void testMain() {
+    public void testSCC() {
         String file = "resources/SCC.txt";
         Graph directedGraph = readGraph(file);
         System.out.println("Completed creating DiGraph");

@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.Set;
+
 
 /**
  * A graph API.
@@ -52,14 +54,14 @@ public interface Graph<T> {
     
     /**
      * 
-     * @return the size of the minimum cut of the graph
+     * @return a cut of the graph
      * 
      * A cut of a graph is a partition of a graph into two subsets S1 and S2
      * s.t. S1 intersection S2 == {}, S1 U S2 == V() (i.e. all the vertices of the graph)
      * and N is the number of edges between S1 and S2.
      * The Minimum Cut is the partition with smallest possible N.
      */
-    public int minCut();
+    public GraphCut makeCut();
     
     /**
      * Return a graph that is the reverse of this graph. 
@@ -73,4 +75,30 @@ public interface Graph<T> {
      * Print a representation of the graph
      */
     void print();
+
+    /**
+     * A graph cut is a partition of a graph g into two subsets A and B such that:
+     * A U B == g.V(), A intersection B == {}
+     * crossings is the number of edges between A and B
+     * @param <T> 
+     */
+    public static class GraphCut<T> implements Comparable<GraphCut<T>> {
+        public Set<T> A;
+        public Set<T> B;
+        public int crossings;
+
+        public GraphCut(Set<T> A, Set<T> B, int crossings) {
+            this.A = A;
+            this.B = B;
+            this.crossings = crossings;
+        }
+
+        @Override
+        public int compareTo(GraphCut<T> o) {
+            return this.crossings - o.crossings;
+        }
+
+       
+        
+    }
 }
