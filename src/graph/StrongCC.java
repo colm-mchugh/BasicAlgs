@@ -22,12 +22,16 @@ public class StrongCC<T> {
     /**
      * StrongCC creates the strongly connected components of a directed graph.
      *
-     * The strongly connected components C1,..CN of a graph g are disjoint sets
-     * of the vertices of g such that, for every pair of vertices (v1, v2) in
-     * each Ci, v1 <=> v2, i.e. there is a path from v1 to v2 and there is a
+     * The strongly connected components C1,..CN of a directed graph g are disjoint 
+     * sets of the vertices of g such that, for every pair of vertices (v1, v2)
+     * in each Ci, v1 <=> v2, i.e. there is a path from v1 to v2 and there is a
      * path from v2 to v1. A single vertex v can be a strongly connected
      * component; v <=> v is true.
      *
+     * StrongCC computes the strongly connected components of g using Kosaraju's 
+     * algorithm; this performs two Depth First (DFS) passes over the graph, as 
+     * described in part 1 and part 2 below.
+     * 
      * @param g the graph g
      */
     public StrongCC(Graph<T> g) {
@@ -36,11 +40,8 @@ public class StrongCC<T> {
         visited = new HashSet<>();
         ordering = new ArrayList<>(g.numVertices());
 
-        // Computes the strongly connected components of g using Kosaraju's algorithm,
-        // which performs two Depth First (DFS) passes over the graph, described in 
-        // comments part 1 and part 2 below.
         // part 1 - reverse the graph and construct a topological ordering of all
-        // the vertices of the reversed graph; this is saved in ordering
+        // the vertices of the reversed graph
         Graph<T> rev = g.reverse();
         for (T v : rev.V()) {
             if (!visited.contains(v)) {
@@ -48,11 +49,14 @@ public class StrongCC<T> {
                 this.doDFS(rev, v, FIRST_PASS);
             }
         }
+        // postcondition: this.ordering contains a topological ordering of all 
+        // vertices of g.reverse()
+        
         visited.clear();
-        // part 2 - visit the vertices of the topological ordering created by part 1
-        // from most recent first, and for each vertex v that has not been processed,
-        // it becomes the leader of a new component, and then doDFS is used to capture
-        // all the vertices in v's component, i.e. vertices are reachable from v via DFS
+        // part 2 - visit the vertices of the topological ordering from most  
+        // recent first, and for each vertex v that has not been visited, it
+        // becomes the leader of a new component; doDFS is then used to capture
+        // all the vertices in v's component, i.e. vertices reachable from v via DFS
         for (int i = ordering.size() - 1; i >= 0; i--) {
             T v = ordering.get(i);
             if (!visited.contains(v)) {

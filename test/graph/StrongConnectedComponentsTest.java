@@ -25,6 +25,21 @@ public class StrongConnectedComponentsTest {
         }
     }
 
+    /**
+     * Initialize a directed graph of integers from data based in the given file.
+     * The format of the data in the file is one or more lines of:
+     * 
+     * number number
+     * 
+     * Each line represents an edge in a directed graph. For example, the line:
+     * 
+     * 6 7
+     * 
+     * means there will be two vertices, 6 and 7, and an edge connecting 6 to 7. .
+     * 
+     * @param path path to the file containing the data
+     * @return 
+     */
     private Graph readGraph(String path) {
         DGraphImpl graph = new DGraphImpl<>();
         FileReader fr;

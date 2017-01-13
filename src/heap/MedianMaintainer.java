@@ -1,10 +1,5 @@
 package heap;
 
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
 /**
  * Maintain the median of a stream of values using a MinHeap for the upper half
  * of the values and a MaxHeap for the lower half of the follows. 
@@ -60,31 +55,6 @@ public class MedianMaintainer {
     private void swapOut(Heap<Integer> from, Heap<Integer> to) {
         Integer n = from.Delete();
         to.Insert(n);
-    }
-    
-    public static void main(String[] args) {
-        String relPath = "resources/Median.txt";
-        FileReader fr;
-        try {
-            fr = new FileReader( relPath );
-            BufferedReader br = new BufferedReader( fr );
-            String line;
-            MedianMaintainer medianMaintainer = new MedianMaintainer();
-            int medianSum = 0;
-            while( ( line = br.readLine() ) != null ) {
-                String[] split = line.trim().split( "(\\s)+" );
-                Integer n = Integer.parseInt(split[0]);
-                medianMaintainer.Add(n);
-                assert medianMaintainer.Invariant();
-                if (!medianMaintainer.Invariant()) {
-                    throw new IllegalStateException("Invariant Violation");
-                }
-                medianSum += medianMaintainer.Median();
-            }
-            System.out.println(medianSum % 10000);
-        } catch ( IOException | NumberFormatException | IllegalStateException e ) {
-            e.printStackTrace();
-        }
     }
     
 }
