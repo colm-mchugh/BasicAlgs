@@ -12,13 +12,7 @@ public class StrongCC<T> {
 
     private final Graph<T> g;
     private final Map<T, Set<T>> components;
-    private final Set<T> visited;
-    private final List<T> ordering;
-    private T leader;
-
-    private static final boolean FIRST_PASS = true;
-    private static final boolean SECOND_PASS = false;
-
+    
     /**
      * StrongCC creates the strongly connected components of a directed graph.
      *
@@ -37,61 +31,78 @@ public class StrongCC<T> {
     public StrongCC(Graph<T> g) {
         this.g = g; // the directed graph 
         this.components = new HashMap<>();  // Will hold the SCCs of g
-        visited = new HashSet<>();
-        ordering = new ArrayList<>(g.numVertices());
-
+        Set<T> visited = new HashSet<>();  // for keeping track of visited vertices during a graph search
+        
         // part 1 - reverse the graph and construct a topological ordering of all
         // the vertices of the reversed graph
         Graph<T> rev = g.reverse();
+        List<T> ordering = new ArrayList<>(rev.numVertices());
         for (T v : rev.V()) {
             if (!visited.contains(v)) {
-                // doDFS will be called once for each SCC in g.rev
-                this.doDFS(rev, v, FIRST_PASS);
+                // following will be called for each SCC in g.rev
+                this.makeTopologicalOrdering(rev, v, ordering, visited);
             }
         }
-        // postcondition: this.ordering contains a topological ordering of all 
+        // postcondition: ordering contains a topological ordering of the 
         // vertices of g.reverse()
         
         visited.clear();
         // part 2 - visit the vertices of the topological ordering from most  
         // recent first, and for each vertex v that has not been visited, it
-        // becomes the leader of a new component; doDFS is then used to capture
-        // all the vertices in v's component, i.e. vertices reachable from v via DFS
+        // becomes the leader of a new component; populateConnectedComponents 
+        // captures all the vertices in v's component, i.e. vertices reachable 
+        // from v via DFS
         for (int i = ordering.size() - 1; i >= 0; i--) {
             T v = ordering.get(i);
-            if (!visited.contains(v)) {
-                leader = v;
-                this.components.put(leader, new HashSet<T>());
-                this.doDFS(g, leader, SECOND_PASS);
+            if (!visited.contains(v)) {  
+                this.components.put(v, new HashSet<>());
+                // v will be leader of a new component, which will also include v
+                this.populateConnectedComponents(g, v, v, ordering, visited);
             }
         }
     }
-
+    
     /**
-     * Apply depth first search to the graph, beginning at vertex source.
-     * Depending on which particular pass of the algorithm we are making, do:
-     * FIRST_PASS: add source to the topological ordering SECOND_PASS: put
-     * source in the current leader's component
-     *
+     * Create a topological ordering of the vertices in graph, starting from vertex
+     * source.
+     * 
+     * The graph is traversed Depth-First, and source added to the ordering after 
+     * all the unvisited vertices in its connected component have been processed.
+     * 
      * @param graph
      * @param source
-     * @param whichPass
+     * @param ordering
+     * @param visited 
      */
-    private void doDFS(Graph<T> graph, T source, boolean whichPass) {
-        visited.add(source); // used to ensure a vertex is visited exactly once
-        if (whichPass == SECOND_PASS) {
-            this.components.get(this.leader).add(source);
-        }
+    private void makeTopologicalOrdering(Graph<T> graph, T source, List<T> ordering, Set<T> visited) {
+        visited.add(source);
         for (T v : graph.connections(source)) {
             if (!visited.contains(v)) {
-                doDFS(graph, v, whichPass);
+                makeTopologicalOrdering(graph, v, ordering, visited);
             }
         }
-        if (whichPass == FIRST_PASS) {
-            ordering.add(source);
+        ordering.add(source);
+    }
+    
+    /**
+     * For the current leader, add all the vertices that are reachable from that
+     * leader via DFS (Depth-First search). 
+     * 
+     * @param graph
+     * @param source
+     * @param ordering
+     * @param visited 
+     */
+    private void populateConnectedComponents(Graph<T> graph, T leader, T source, List<T> ordering, Set<T> visited) {
+        this.components.get(leader).add(source);
+        visited.add(source);
+        for (T v : graph.connections(source)) {
+            if (!visited.contains(v)) {
+                populateConnectedComponents(graph, leader, v, ordering, visited);
+            }
         }
     }
-
+    
     /**
      * Return the strongly connected components of g as computed in the
      * constructor.
