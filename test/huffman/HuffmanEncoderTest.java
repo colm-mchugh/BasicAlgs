@@ -1,22 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package huffman;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author colm_mchugh
- */
 public class HuffmanEncoderTest {
     
     /**
@@ -44,5 +33,23 @@ public class HuffmanEncoderTest {
             alphabet.add(new HuffmanEncoder.Leaf(letters[i], frequencies[i]));
         }
         Map<Character, BitSet> result = HuffmanEncoder.makeEncoding(alphabet);
+        
+        for (BitSet b : result.values()) {
+            for (BitSet a : result.values()) {
+                assert !isPrefix(b, a);
+            }
+        }
+    }
+    
+    private boolean isPrefix(BitSet b1, BitSet b2) {
+        if (b2.size() > b1.size()) {
+            for (int i = 0; i < b1.size(); i++) {
+                if (b1.get(i) != b2.get(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

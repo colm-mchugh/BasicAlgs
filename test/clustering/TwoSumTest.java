@@ -7,10 +7,8 @@ package clustering;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 
 public class TwoSumTest {
@@ -18,8 +16,16 @@ public class TwoSumTest {
     @Test
     public void testTwoSum() {
         Long[] numbers = this.readNumbers("resources/2sum.txt");
-        long x = TwoSum.twoSum(numbers, -10000l, 10000l);
-        assert x == 427;
+        TwoSum twoSummer = new TwoSum(numbers);
+        int t = 0;
+        int lb = -10000, ub = 10000;
+        int numTwoSums = 0;
+        for (int target = lb; target <= ub; target++) {
+            if (twoSummer.hasTwoSumFor(target)) {
+                numTwoSums++;
+            }
+        }
+        assert numTwoSums == 427;
     }
     
     private Long[] readNumbers(String path) {
@@ -30,7 +36,7 @@ public class TwoSumTest {
             for (int i = 0; ( line = br.readLine() ) != null; i++ ) {
                 numbers[i] = (Long.parseLong(line.trim()));
             }
-        } catch ( Exception e ) {
+        } catch ( IOException | NumberFormatException e ) {
             e.printStackTrace();
         }
         return numbers;

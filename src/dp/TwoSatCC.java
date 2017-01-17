@@ -1,7 +1,7 @@
 package dp;
 
 import graph.DGraphImpl;
-import graph.StrongCC;
+import graph.CCCer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,9 +28,9 @@ public class TwoSatCC implements TwoSat {
     
     @Override
     public boolean isSat() {
-        StrongCC scc = new StrongCC(g);
+        CCCer scc = new CCCer(g);
         for (Integer v : this.variables.keySet()) {
-            if (scc.areCC(v, -v)) {
+            if (scc.sameCC(v, -v)) {
                 return false;
             }
         }

@@ -1,25 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graph;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author colm_mchugh
- */
-public class WeightedGraphTest {
+public class DijkstraShortestPath {
 
     /**
      * Test of computing Dijkstra's shortest path for positive weighted directed graphs.
