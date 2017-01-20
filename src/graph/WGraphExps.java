@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class WGraphExps<T> extends WGraphImpl<T> {
+public class WGraphExps<T> extends WeightedGraphDirected<T> {
     
     @Override
     public List<ShortestPathResult<T>> allPairsShortestPaths() {

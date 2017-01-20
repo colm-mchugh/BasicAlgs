@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sequence;
 
+import greedy.JobScorer;
+import greedy.Job;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,12 +12,12 @@ import org.junit.Test;
 import sort.QuickSorter;
 
 public class JobTest {
-    
+
     @Test
     public void testJobSequencing() {
         Job[] jobs = readJobs("resources/jobs.txt");
         QuickSorter qs = new QuickSorter();
-        
+
         for (Job job : jobs) {
             job.setScorer(new JobScorer.WeightLengthDiff(job));
         }
@@ -28,14 +25,14 @@ public class JobTest {
         assert Job.isOrderedByScore(jobs);
         long sequenceByWeigthLengthDiff = Job.jobSequenceTime(jobs);
         assert sequenceByWeigthLengthDiff == 69119377652l;
-        
+
         for (Job job : jobs) {
             job.setScorer(new JobScorer.WeightLengthRatio(job));
         }
         qs.sort(jobs);
         assert Job.isOrderedByScore(jobs);
         long sequenceByWeigthLengthRatio = Job.jobSequenceTime(jobs);
-        assert sequenceByWeigthLengthRatio == 67311454237l; 
+        assert sequenceByWeigthLengthRatio == 67311454237l;
     }
 
     private Job[] readJobs(String path) {
@@ -66,5 +63,5 @@ public class JobTest {
         }
         return jobs;
     }
-    
-}
+
+    }

@@ -9,22 +9,18 @@ import org.junit.Test;
 
 public class CCCerBigTest {
 
-    @Test
-    public void test1() {
+    Graph<Integer> makeDiGraph(int[] vertices) {
         DGraphImpl<Integer> g = new DGraphImpl<>();
-        g.add(9, 7);
-        g.add(8, 9);
-        g.add(7, 8);
-        g.add(6, 9);
-        g.add(6, 1);
-        g.add(5, 6);
-        g.add(4, 5);
-        g.add(4, 2);
-        g.add(3, 4);
-        g.add(2, 3);
-        g.add(1, 5);
-        //g.add(7, 3); // Counter example for "ccs never change", "ccs never decrease by more than 1"
-        g.add(3, 6);
+        for (int i = 0; i < vertices.length; i += 2) {
+            g.add(vertices[i], vertices[i+1]);
+        }
+        return g;
+    }
+    
+    @Test
+    public void test1() {       
+        int[] graphData = { 9,7, 8,9, 7,8, 6,9, 6,1, 5,6, 4,5, 4,2, 3,4, 2,3, 1,5, 3,6, };
+        Graph<Integer> g = this.makeDiGraph(graphData);
         CCCer<Integer> scc = new CCCer(g);
         List<Integer> szs = scc.ccSizes();
         assert szs.size() == 3; 
@@ -44,43 +40,17 @@ public class CCCerBigTest {
 
     @Test
     public void test2() {
-        DGraphImpl<Integer> g = new DGraphImpl<>();
-        g.add(1, 2);
-        g.add(2, 3);
-        g.add(3, 1);
-        g.add(2, 4);
-        g.add(3, 5);
-        g.add(3, 6);
-        g.add(5, 6);
-        g.add(6, 7);
-        g.add(6, 8);
-        g.add(8, 5);
-        g.add(7, 8);
-        g.add(4, 9);
-        g.add(4, 10);
-        g.add(10, 11);
-        g.add(11, 9);
-        g.add(9, 10);
-        g.add(6, 9);
-        g.add(7, 11);
+        int[] graphData = { 1,2, 2,3, 3,1, 2,4, 3,5, 3,6, 5,6, 6,7, 6,8, 8,5, 7,8, 
+            4,9, 4,10, 10,11, 11,9, 9,10, 6,9, 7,11
+        };
+        Graph<Integer> g = this.makeDiGraph(graphData);
         g.print();
     }
 
     @Test
     public void test3() {
-        DGraphImpl<Integer> g = new DGraphImpl<>();
-        g.add(2, 3);
-        g.add(3, 4);
-        g.add(4, 5);
-        g.add(5, 6);
-        g.add(6, 1);
-        g.add(1, 5);
-        g.add(4, 2);
-        g.add(7, 8);
-        g.add(8, 9);
-        g.add(9, 7);
-        g.add(6, 9);
-        g.add(6, 8);
+        int[] graphData = { 2,3, 3,4, 4,5, 5,6, 6,1, 1,5, 4,2, 7,8, 8,9, 9,7, 6,9, 6,8 };
+        Graph<Integer> g = this.makeDiGraph(graphData);
         CCCer scc = new CCCer(g);
         scc.ccSizes(); 
     }

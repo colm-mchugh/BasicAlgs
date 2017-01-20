@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Apsp {
     
     public static void computeApsps(String file) {
-        WeightedGraph<Integer> graph = new WGraphImpl<>();
+        WeightedGraph<Integer> graph = new WeightedGraphDirected<>();
         FileReader fr;
         try {
             fr = new FileReader(file);

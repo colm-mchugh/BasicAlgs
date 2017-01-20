@@ -52,7 +52,7 @@ public class DijkstraShortestPath {
      * @return 
      */
     WeightedGraph<Integer> readGraph(String path) {
-        WeightedGraph<Integer> graph = new WGraphImpl<>();
+        WeightedGraph<Integer> graph = new WeightedGraphDirected<>();
         FileReader fr;
         try {
             fr = new FileReader(path);

@@ -2,60 +2,14 @@ package graph;
 
 import heap.MinHeap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
-public class WGraphImpl<T> implements WeightedGraph<T> {
-
-    static class Edge<T> implements Comparable<Edge<T>> {
-
-        T v;
-        int d;
-
-        public Edge(T v, int d) {
-            this.v = v;
-            this.d = d;
-        }
-
-        @Override
-        public int compareTo(Edge<T> o) {
-            if (this.d < o.d) {
-                return -1;
-            }
-            if (this.d > o.d) {
-                return 1;
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Edge<?> other = (Edge<?>) obj;
-            if (!Objects.equals(this.v, other.v)) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return v + ", " + d;
-        }
-
-    }
+public class WeightedGraphDirected<T> implements WeightedGraph<T> {
 
     protected final Map<T, Set<Edge<T>>> rep = new HashMap<>();
 
@@ -66,7 +20,8 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         this.edgesOf(v); // Add v to the vertices if its not already 
     }
 
-    protected Set<Edge<T>> edgesOf(T u) {
+    @Override
+    public  Set<Edge<T>> edgesOf(T u) {
         Set<Edge<T>> edges = this.rep.get(u);
         if (edges == null) {
             edges = new HashSet<>();
@@ -75,6 +30,7 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
         return edges;
     }
 
+    @Override
     public int sp(T u, T v) {
         T s = u;
         Set<T> X = new HashSet<>();
@@ -123,6 +79,11 @@ public class WGraphImpl<T> implements WeightedGraph<T> {
     @Override
     public Iterable<T> V() {
         return this.rep.keySet();
+    }
+
+    @Override
+    public boolean hasAll(Collection<T> vertexSet) {
+        return vertexSet.containsAll(this.rep.keySet());
     }
 
     public static class SingleSourceResult<T> {

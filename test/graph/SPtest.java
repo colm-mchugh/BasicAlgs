@@ -7,7 +7,7 @@ public class SPtest {
 
     @Test
     public void test1() {
-        WeightedGraph<String> g = new WGraphImpl();
+        WeightedGraph<String> g = new WeightedGraphDirected();
 
         g.link("a", "b", 1);
         g.link("a", "c", 4);
@@ -27,7 +27,7 @@ public class SPtest {
 
     @Test
     public void test2() {
-        WeightedGraph<Integer> g = new WGraphImpl();
+        WeightedGraph<Integer> g = new WeightedGraphDirected();
 
         g.link(1, 2, 3);
         g.link(1, 3, 2);
@@ -44,7 +44,7 @@ public class SPtest {
 
     @Test
     public void test3() {
-        WeightedGraph<Integer> g = new WGraphImpl();
+        WeightedGraph<Integer> g = new WeightedGraphDirected();
 
         g.link(1, 2, 1);
         g.link(1, 3, 1);
@@ -62,7 +62,7 @@ public class SPtest {
 
     @Test
     public void Test4() {
-        WeightedGraph<Integer> g = new WGraphImpl();
+        WeightedGraph<Integer> g = new WeightedGraphDirected();
 
         g.link(1, 2, 2);
         g.link(2, 3, 1);
@@ -95,7 +95,7 @@ public class SPtest {
 
     @Test
     public void bellmanFord1() {
-        WeightedGraph<Character> g = new WGraphImpl();
+        WeightedGraph<Character> g = new WeightedGraphDirected();
         g.link('s', 't', 6);
         g.link('s', 'y', 7);
         g.link('t', 'y', 8);
@@ -107,7 +107,7 @@ public class SPtest {
         g.link('y', 'x', -3);
         g.link('z', 'x', 7);
 
-        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
+        WeightedGraphDirected.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
         assert !res.hasNegativeCycles;
         assert res.weights.get('z') == -2;
         assert res.weights.get('x') == 4;
@@ -115,7 +115,7 @@ public class SPtest {
 
     @Test
     public void bellmanFord2() {
-        WeightedGraph<Character> g = new WGraphImpl();
+        WeightedGraph<Character> g = new WeightedGraphDirected();
         g.link('s', 't', 3);
         g.link('s', 'y', 5);
         g.link('t', 'y', 2);
@@ -127,7 +127,7 @@ public class SPtest {
         g.link('z', 's', 3);
         g.link('z', 'x', 7);
 
-        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
+        WeightedGraphDirected.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
         assert !res.hasNegativeCycles;
         assert res.weights.get('z') == 11;
         assert res.weights.get('x') == 9;
@@ -135,18 +135,18 @@ public class SPtest {
 
     @Test
     public void bellmanFordNegCycle1() {
-        WeightedGraph<Character> g = new WGraphImpl();
+        WeightedGraph<Character> g = new WeightedGraphDirected();
         g.link('h', 'i', 2);
         g.link('i', 'j', 3);
         g.link('j', 'h', -8);
 
-        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('h');
+        WeightedGraphDirected.SingleSourceResult<Character> res = g.singleSourceShortestPaths('h');
         assert res.hasNegativeCycles;
     }
 
     @Test
     public void bellmanFordNegCycle2() {
-        WeightedGraph<Character> g = new WGraphImpl();
+        WeightedGraph<Character> g = new WeightedGraphDirected();
         g.link('s', 'a', 3);
         g.link('s', 'c', 5);
         g.link('s', 'e', 2);
@@ -159,13 +159,13 @@ public class SPtest {
         g.link('d', 'g', 8);
         g.link('f', 'g', 7);
 
-        WGraphImpl.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
+        WeightedGraphDirected.SingleSourceResult<Character> res = g.singleSourceShortestPaths('s');
         assert res.hasNegativeCycles;
     }
 
     @Test
     public void floydWarshall() {
-        WeightedGraph<Integer> g = new WGraphImpl<>();
+        WeightedGraph<Integer> g = new WeightedGraphDirected<>();
         g.link(1, 2, 3);
         g.link(1, 3, 8);
         g.link(1, 5, -4);
@@ -176,9 +176,9 @@ public class SPtest {
         g.link(4, 3, -5);
         g.link(5, 4, 6);
 
-        List<WGraphImpl.ShortestPathResult<Integer>> resList = g.allPairsShortestPaths();
+        List<WeightedGraphDirected.ShortestPathResult<Integer>> resList = g.allPairsShortestPaths();
         assert resList.size() == 25;
-        for (WGraphImpl.ShortestPathResult<Integer> res : resList) {
+        for (WeightedGraphDirected.ShortestPathResult<Integer> res : resList) {
             if (res.u == 1 && res.v == 5) {
                 assert res.d == -4;
             }
@@ -200,16 +200,16 @@ public class SPtest {
         g.link(4, 1, 1);
         g.link(4, 3, 1);
         g.link(5, 4, 1);
-        List<WGraphImpl.ShortestPathResult<Integer>> resList = g.allPairsShortestPaths();
+        List<WeightedGraphDirected.ShortestPathResult<Integer>> resList = g.allPairsShortestPaths();
         assert resList.size() == 25;
-        for (WGraphImpl.ShortestPathResult<Integer> res : resList) {
+        for (WeightedGraphDirected.ShortestPathResult<Integer> res : resList) {
             System.out.println(res);
         }
     }
 
     @Test
     public void floydWarshallNegCycle() {
-        WeightedGraph<Character> g = new WGraphImpl();
+        WeightedGraph<Character> g = new WeightedGraphDirected();
         g.link('s', 'a', 1);
         g.link('s', 'c', 1);
         g.link('s', 'e', 1);
@@ -221,8 +221,8 @@ public class SPtest {
         g.link('b', 'g', 1);
         g.link('d', 'g', 1);
         g.link('f', 'g', 1);
-        List<WGraphImpl.ShortestPathResult<Character>> resList = g.allPairsShortestPaths();
-        for (WGraphImpl.ShortestPathResult<Character> res : resList) {
+        List<WeightedGraphDirected.ShortestPathResult<Character>> resList = g.allPairsShortestPaths();
+        for (WeightedGraphDirected.ShortestPathResult<Character> res : resList) {
             System.out.println(res);
         }
     }
@@ -255,7 +255,7 @@ public class SPtest {
 
     @Test
     public void Johnson1() {
-        WeightedGraph<Character> g = new WGraphImpl<>();
+        WeightedGraph<Character> g = new WeightedGraphDirected<>();
         g.link('a', 'b', -2);
         g.link('b', 'c', -1);
         g.link('c', 'a', 4);
@@ -269,7 +269,7 @@ public class SPtest {
     
     @Test
     public void Johnson2() {
-        WeightedGraph<Integer> g = new WGraphImpl();
+        WeightedGraph<Integer> g = new WeightedGraphDirected();
 
         g.link(1, 2, 1);
         g.link(1, 3, 1);
@@ -287,7 +287,7 @@ public class SPtest {
     
     @Test
     public void Johnson3() {
-        WeightedGraph<Integer> g = new WGraphImpl();
+        WeightedGraph<Integer> g = new WeightedGraphDirected();
 
         g.link(1, 2, -2);
         g.link(2, 3, -1);
@@ -302,7 +302,7 @@ public class SPtest {
     
     @Test
     public void Johnson4() {
-        WeightedGraph<Integer> g = new WGraphImpl();
+        WeightedGraph<Integer> g = new WeightedGraphDirected();
 
         g.link(1, 6, -10);
         g.link(1, 2, -5);

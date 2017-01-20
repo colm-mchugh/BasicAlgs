@@ -1,4 +1,4 @@
-package sequence;
+package greedy;
 
 public class Job implements Comparable<Job> {
     
