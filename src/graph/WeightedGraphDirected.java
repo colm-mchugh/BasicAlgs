@@ -14,10 +14,13 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
     protected final Map<T, Set<Edge<T>>> rep = new HashMap<>();
 
     @Override
-    public void link(T u, T v, int d) {
+    public void link(T u, T v, int w) {
         Set<Edge<T>> e = this.edgesOf(u);
-        e.add(new Edge<>(v, d));
-        this.edgesOf(v); // Add v to the vertices if its not already 
+        e.add(new Edge<>(v, w));
+        // Add v to the vertices if its not already
+        if (this.rep.get(v) == null) {
+            this.rep.put(v, new HashSet<>());
+        } 
     }
 
     @Override
@@ -82,10 +85,21 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
     }
 
     @Override
-    public boolean hasAll(Collection<T> vertexSet) {
+    public boolean isCoveredBy(Collection<T> vertexSet) {
         return vertexSet.containsAll(this.rep.keySet());
     }
 
+    @Override
+    public long cost() {
+        long theCost = 0;
+        for (Set<Edge<T>> edgeSet : this.rep.values()) {
+            for (Edge<T> edge : edgeSet) {
+                theCost += edge.d;
+            }
+        }
+        return theCost;
+    }
+ 
     public static class SingleSourceResult<T> {
 
         T source;

@@ -3,13 +3,13 @@ package greedy;
 public class Job implements Comparable<Job> {
     
     protected final int ID;
-    protected final int weight;
+    protected final int importance;
     protected final int length;
     protected JobScorer scorer;
     
     public Job(int ID, int w, int l) {
         this.ID = ID;
-        this.weight = w;
+        this.importance = w;
         this.length = l;
     }
 
@@ -28,11 +28,11 @@ public class Job implements Comparable<Job> {
                 return 1;
             }
         }
-        return o.weight - this.weight;
+        return o.importance - this.importance;
     }
 
-    public int getWeight() {
-        return weight;
+    public int getImportance() {
+        return importance;
     }
 
     public int getLength() {
@@ -48,7 +48,7 @@ public class Job implements Comparable<Job> {
         long l = 0; // weighted completion time
         for (Job job :jobs) {
             t += job.length;
-            l += job.weight * t;
+            l += job.importance * t;
         }
         return l;
     }

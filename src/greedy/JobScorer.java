@@ -10,13 +10,13 @@ public abstract class JobScorer {
 
     public static class WeightLengthDiff extends JobScorer {
         public WeightLengthDiff(Job j) {
-            this.score = j.weight - j.length;
+            this.score = j.importance - j.length;
         }
     }
 
     public static class WeightLengthRatio extends JobScorer {
         public WeightLengthRatio(Job j) {
-            this.score = j.weight / (double) j.length;
+            this.score = j.importance / (double) j.length;
         }
     }
 }

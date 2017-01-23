@@ -1,13 +1,18 @@
 package clustering;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * The two sum problem determines whether or not there are two numbers in a
  * given array that sum to a given target.
+ * 
+ * Conceptually simple, it has a simple, but algorithmically naive solution, 
+ * which is to take each element of the array and check if the sum of that 
+ * element with any other element gives the target. This is O(N^2).
+ * 
+ * A faster solution is to create a hashmap of the elements and, for each element
+ * of the array check if (element - target) is in the hashmap. This is O(N).
  *
  */
 public class TwoSum {

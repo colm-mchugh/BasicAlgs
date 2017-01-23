@@ -14,5 +14,11 @@ public class WeightedGraphUndirected<T> extends WeightedGraphDirected<T> {
         super.link(u, v, d); 
         super.link(v, u, d);
     }
+
+    @Override
+    public long cost() {
+        return super.cost() / 2; //Because links are bidirectional in an undirected graph
+    }
+    
     
 }

@@ -13,12 +13,12 @@ import java.util.Set;
 public interface WeightedGraph<T> {
     
     /**
-     * Create an edge between u and v with weight d
+     * Create an edge between u and v with weight w
      * @param u
      * @param v
-     * @param d
+     * @param w
      */ 
-    void link(T u, T v, int d);
+    void link(T u, T v, int w);
     
     /**
      * The length of the shortest path between u and v
@@ -47,7 +47,24 @@ public interface WeightedGraph<T> {
      */
     Set<Edge<T>> edgesOf(T u);
     
-    boolean hasAll(Collection<T> vertexSet);
+    /**
+     * Return true if the graph is covered by the given vertices, 
+     * else return false.
+     * 
+     * A graph is covered by a vertex set X if X includes all the
+     * vertices of the graph.
+     * 
+     * @param vertexSet
+     * @return 
+     */
+    boolean isCoveredBy(Collection<T> vertexSet);
+    
+    /**
+     * The cost of a graph is the sum of all its weights
+     * @return 
+     */
+    long cost();
+    
     /**
      * An edge consists of a weight d and target vertex v
      * An edge is comparable on its weight and identity is its vertex
