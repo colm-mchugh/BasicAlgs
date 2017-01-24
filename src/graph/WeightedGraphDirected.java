@@ -78,7 +78,7 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
     public int numVertices() {
         return this.rep.keySet().size();
     }
-
+    
     @Override
     public Iterable<T> V() {
         return this.rep.keySet();
