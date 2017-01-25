@@ -3,6 +3,7 @@ package dp;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 public abstract class knapsack {
     
@@ -34,7 +35,8 @@ public abstract class knapsack {
     }
     
     protected int knapSackWeight;
-    
+    protected List<Item> items;
+
     protected int[] readData(String file) {
         int[] data = null;
         try {
@@ -62,4 +64,11 @@ public abstract class knapsack {
         this.knapSackWeight = knapSackWeight;
     }
     
+    public int size() {
+        return this.items.size();
+    }
+    
+    public int weight() {
+        return this.knapSackWeight;
+    }
 }

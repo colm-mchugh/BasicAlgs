@@ -2,12 +2,10 @@ package dp;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class knapsackDP extends knapsack {
     
-    protected List<Item> items;
     private int[][] memo;
     
     public void initItems(int[] data) {

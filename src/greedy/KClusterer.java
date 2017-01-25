@@ -55,11 +55,6 @@ public class KClusterer<T> {
     // Set the invariant that the current spacing is the minimum 
     // distance between points in separate clusters
     private void adjustCurrentSpacing() {
-        min = minHeap.Peek();
-        while (uf.find(min.p1, min.p2)) {
-            minHeap.Delete();
-            min = minHeap.Peek();
-        }
         for (min = minHeap.Peek(); uf.find(min.p1, min.p2); min = minHeap.Peek()) {
             minHeap.Delete();
         }

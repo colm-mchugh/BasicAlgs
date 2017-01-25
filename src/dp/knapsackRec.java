@@ -2,14 +2,12 @@ package dp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class knapsackRec extends knapsack {
 
     private Map<Integer, Map<Integer, Integer>> recMemo;
-    protected List<Item> items;
-
+    
     public void initItems(int[] data) {
         items = new ArrayList<>(data.length / 2);
         for (int i = 0; i < data.length; i += 2) {

@@ -56,8 +56,9 @@ public class KruskalMST<T> {
      * Create the Minimum Spanning Tree of the graph using Kruskal's algorithm:
      * 
      * MST = {}
+     * Put each vertex in its own connected component
      * Sort the edges of the graph in ascending order
-     * For each edge (u, v) in the sorted edges:
+     * For each edge (u, v) of the sorted edges:
      *     If u and v are not in the same connected component:
      *          MST += (u, v) 
      *          Put u and v in the same connected component
@@ -78,7 +79,7 @@ public class KruskalMST<T> {
         }
         WeightedGraph<T> MST = new WeightedGraphUndirected<>();
         for (Comparable el : arr) {
-            Edge<T> e = (Edge<T>) el;
+            Edge<T> e = (Edge<T>) el; // yucky java cast to get around array + generics retardedness 
             if (!uf.find(e.p1, e.p2)) {
                 MST.link(e.p1, e.p2, e.distance);
                 uf.union(e.p1, e.p2);

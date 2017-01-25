@@ -1,7 +1,7 @@
+package dp;
 
 
-import dp.knapsackGreedy;
-import dp.knapsackDP;
+
 import org.junit.Test;
 
 
@@ -67,4 +67,29 @@ public class knapsackTests {
         assert greedyV < kV;
     }
     
+    @Test 
+    public void mediumKnapsackTest() {
+        this.testDPKnapsack("resources/knapsack1.txt", 2493893);
+        this.testRecKnapsack("resources/knapsack1.txt", 2493893);
+    }
+    
+    @Test 
+    public void bigKnapsackTest() {
+        this.testRecKnapsack("resources/knapsack2.txt", 4243395);
+        // knapsackDP chokes on resources/knapsack2.txt
+    }
+    
+    private void testDPKnapsack(String knapsackData, int expected) {
+        knapsackDP kDP = new knapsackDP();
+        kDP.initItems(kDP.readData(knapsackData));
+        int resDP = kDP.knapsack();
+        assert resDP == expected;
+    }
+    
+    private void testRecKnapsack(String knapsackData, int expected) {
+        knapsackRec ks = new knapsackRec();
+        ks.initItems(ks.readData(knapsackData));
+        int resRec = ks.knapsack();
+        assert resRec == expected;
+    }
 }
