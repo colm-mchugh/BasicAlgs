@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class knapsackRec extends knapsack {
+public class KnapsackRcrsv extends Knapsack {
 
     private Map<Integer, Map<Integer, Integer>> recMemo;
     
@@ -51,7 +51,7 @@ public class knapsackRec extends knapsack {
     }
     
     public static void main(String[] args) {
-        knapsackRec ks = new knapsackRec();
+        KnapsackRcrsv ks = new KnapsackRcrsv();
         ks.initItems(ks.readData("resources/knapsack2.txt"));
         System.out.println(ks.knapsack());
     }

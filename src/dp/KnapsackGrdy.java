@@ -2,15 +2,15 @@ package dp;
 
 import sort.QuickSorter;
 
-public class knapsackGreedy extends knapsack  {
+public class KnapsackGrdy extends Knapsack  {
 
-    public static class Item extends knapsack.Item  {
+    public static class Item extends Knapsack.Item  {
 
         public Item(int value, int weight) {
             super(value, weight);
         }
 
-        public int compareTo(knapsack.Item o) {
+        public int compareTo(Knapsack.Item o) {
             float myRatio = value / (float) weight;
             float itsRatio = o.value / (float) o.weight;
             if (myRatio > itsRatio) {

@@ -1,6 +1,6 @@
 package dp;
 
-public class ost {
+public class OptmlSrchTree {
 
     private static float optCost(float freq[], int i, int j) {
         // Base cases

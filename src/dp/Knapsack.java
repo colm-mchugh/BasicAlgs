@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class knapsack {
+public abstract class Knapsack {
     
     public static class Item implements Comparable<Item> {
 
@@ -23,7 +23,7 @@ public abstract class knapsack {
         }
 
         @Override
-        public int compareTo(knapsack.Item o) {
+        public int compareTo(Knapsack.Item o) {
             if (weight > o.weight) {
                 return 1;
             } else if (weight < o.weight) {

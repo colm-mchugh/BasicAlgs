@@ -1,7 +1,7 @@
 package dp;
 
 
-import dp.tsp;
+import dp.TSPer;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.BitSet;
@@ -14,7 +14,7 @@ public class tspTest {
 
     @Test
     public void test1() {
-        tsp t = new tsp();
+        TSPer t = new TSPer();
         // Test that subsets are correctly generated
         int N = 5;
         
@@ -42,7 +42,7 @@ public class tspTest {
     @Test
     public void testTsp1() {
         String file = "resources/tsp_small.txt";
-        tsp t = new tsp();
+        TSPer t = new TSPer();
         t.init(file);
         t.printDistances();
         float ans = t.computeOptTsp();
@@ -55,7 +55,7 @@ public class tspTest {
     
     @Test
     public void testSetSz() {
-        tsp t = new tsp();
+        TSPer t = new TSPer();
         assert (t.setSize(0) == 0);
         assert (t.setSize(8) == 1);
         assert (t.setSize(15) == 4);

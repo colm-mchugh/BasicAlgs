@@ -3,27 +3,25 @@ package dp;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+public class KnapsackMemozd extends Knapsack {
 
-public class knapsackDP extends knapsack {
-    
     private int[][] memo;
-    
+
     public void initItems(int[] data) {
         items = new ArrayList<>(data.length / 2);
         for (int i = 0; i < data.length; i += 2) {
             items.add(new Item(data[i], data[i + 1]));
         }
     }
-    
+
     protected void printItems(PrintStream pw) {
-        for (knapsack.Item item : items) {
+        for (Knapsack.Item item : items) {
             pw.println(item);
         }
     }
-    
+
     @Override
     public int knapsack() {
-        int rv;
         memo = new int[knapSackWeight + 1][items.size() + 1];
         for (int w = 0; w <= knapSackWeight; w++) {
             memo[w][0] = 0;
@@ -43,7 +41,7 @@ public class knapsackDP extends knapsack {
                 }
             }
         }
-        rv = memo[knapSackWeight][0];
+        int rv = memo[knapSackWeight][0];
         for (int i = 1; i <= items.size(); i++) {
             if (rv < memo[knapSackWeight][i]) {
                 rv = memo[knapSackWeight][i];
@@ -53,7 +51,7 @@ public class knapsackDP extends knapsack {
     }
 
     public static void main(String[] args) {
-        knapsackDP ks = new knapsackDP();
+        KnapsackMemozd ks = new KnapsackMemozd();
         ks.initItems(ks.readData("resources/knapsack1.txt"));
         System.out.println(ks.knapsack());
     }

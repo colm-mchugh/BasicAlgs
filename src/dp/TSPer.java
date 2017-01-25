@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class tsp {
+public class TSPer {
 
     private int N;
 
@@ -343,7 +343,7 @@ public class tsp {
 
     public static void main(String[] args) {
         String file = "resources/tsp.txt";
-        tsp t = new tsp();
+        TSPer t = new TSPer();
         t.init(file);
         float ans = t.computeTsp();
         System.out.println(ans);
