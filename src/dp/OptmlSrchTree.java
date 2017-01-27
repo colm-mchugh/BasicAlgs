@@ -1,5 +1,17 @@
 package dp;
 
+/**
+ * Compute the optimal cost of a binary search tree.
+ * 
+ * "Why ?" If a set of search keys have frequencies, then organizing them as a
+ * perfectly balanced search tree may be sub-optimal in terms of the size of 
+ * tree traversals. It may be more efficient to have most frequently searched
+ * keys near the root of a tree, with the consequence of an unbalanced tree.
+ * 
+ * "How ?"
+ * 
+ * @author colm_mchugh
+ */
 public class OptmlSrchTree {
 
     private static float optCost(float freq[], int i, int j) {
@@ -30,7 +42,7 @@ public class OptmlSrchTree {
 
 // The main function that calculates minimum cost of a Binary Search Tree.
 // It mainly uses optCost() to find the optimal cost.
-    public static float optimalSearchTree(int keys[], float freq[], int n) {
+    public static float optimalSearchTree(float freq[], int n) {
         // Here array keys[] is assumed to be sorted in increasing order.
         // If keys[] is not sorted, then add code to sort keys, and rearrange
         // freq[] accordingly.
@@ -48,7 +60,7 @@ public class OptmlSrchTree {
     public static void main(String[] args) {
         float[] freq = {0.05f, 0.4f, 0.08f, 0.04f, 0.1f, 0.1f, 0.23f};
         int[] keys = {1, 2, 3, 4, 5, 6, 7};
-        System.out.println(optimalSearchTree(keys, freq, keys.length));
+        System.out.println(optimalSearchTree(freq, keys.length));
     }
 
 }

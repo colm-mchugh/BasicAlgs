@@ -15,12 +15,14 @@ public class SPtest {
         g.link("c", "d", 2);
         g.link("b", "d", 5);
 
-        assert g.sp("a", "d") == 5;
+        ShortestPathDijkstra<String> sper = new ShortestPathDijkstra<>(g);
+        
+        assert sper.sp("a", "d") == 5;
 
         String s = "a";
         for (String t : g.V()) {
             if (!t.equals(s)) {
-                System.out.println("ShortestPath(" + s + ", " + t + ")=" + g.sp(s, t));
+                System.out.println("ShortestPath(" + s + ", " + t + ")=" + sper.sp(s, t));
             }
         }
     }
@@ -39,7 +41,9 @@ public class SPtest {
         g.link(4, 6, 1);
         g.link(5, 6, 2);
 
-        assert g.sp(1, 6) == 5;
+        ShortestPathDijkstra<Integer> sper = new ShortestPathDijkstra<>(g);
+        
+        assert sper.sp(1, 6) == 5;
     }
 
     @Test
@@ -77,12 +81,13 @@ public class SPtest {
     }
     
     private void printAllSps(WeightedGraph<Integer> g) {
+        ShortestPathDijkstra<Integer> sper = new ShortestPathDijkstra<>(g);
         for (Integer u : g.V()) {
             for (Integer v : g.V()) {
                 if (u.equals(v)) {
                     System.out.println("(" + u + " -> " + v + ") = 0");
                 } else {
-                    int duv = g.sp(u, v);
+                    int duv = sper.sp(u, v);
                     if (duv == Integer.MAX_VALUE) {
                         System.out.println("No path: " + u + " -> " + v);
                     } else {
@@ -264,7 +269,8 @@ public class SPtest {
         g.link('z', 'x', 1);
         g.link('z', 'y', -4);
 
-        assert g.apsp() == -6 ;
+        ShortestPathJohnson<Character> sper = new ShortestPathJohnson<>(g);
+        assert sper.sp() == -6 ;
     }
     
     @Test
@@ -282,7 +288,8 @@ public class SPtest {
         g.link(6, 7, -1);
         g.link(7, 6, 1);
 
-        assert g.apsp() == -4;
+        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>(g);
+        assert sper.sp() == -4;
     }
     
     @Test
@@ -297,7 +304,8 @@ public class SPtest {
         g.link(6, 4, 1);
         g.link(6, 5, -4);
 
-        assert g.apsp() == -6;
+        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>(g);
+        assert sper.sp() == -6;
     }
     
     @Test
@@ -310,7 +318,8 @@ public class SPtest {
         g.link(3, 4, 1);
         g.link(4, 5, -10000);
         
-        assert g.apsp() == -10003;
+        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>(g);
+        assert sper.sp() == -10003;
     }
     
     

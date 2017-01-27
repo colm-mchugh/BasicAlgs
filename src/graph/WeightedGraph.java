@@ -21,14 +21,6 @@ public interface WeightedGraph<T> {
     void link(T u, T v, int w);
     
     /**
-     * The length of the shortest path between u and v
-     * @param u
-     * @param v
-     * @return 
-     */
-    int sp(T u, T v);
-    
-    /**
      * An iterable of all vertices in the graph
      * @return 
      */
@@ -64,6 +56,15 @@ public interface WeightedGraph<T> {
      * @return 
      */
     long cost();
+    
+    /**
+     * Remove the vertex u from the graph and its edges.
+     * 
+     * Nop if the graph does not contain a vertex u.
+     * 
+     * @param u 
+     */
+    void remove(T u);
     
     /**
      * An edge consists of a weight d and target vertex v

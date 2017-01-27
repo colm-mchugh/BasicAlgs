@@ -1,6 +1,5 @@
 package graph;
 
-import heap.MinHeap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,47 +33,6 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
     }
 
     @Override
-    public int sp(T u, T v) {
-        T s = u;
-        Set<T> X = new HashSet<>();
-        Map<T, Integer> d = new HashMap<>();
-        List<T> path = new ArrayList<>();
-        d.put(s, 0);
-        MinHeap<Edge<T>> heap = new MinHeap<>();
-        for (T t : this.V()) {
-            if (!t.equals(u)) {
-                heap.Insert(new Edge<>(t, Integer.MAX_VALUE));
-            }
-        }
-        X.add(u);
-        path.add(u);
-        computeKeys(heap, X, u, d);
-        while (!s.equals(v)) {
-            Edge<T> w = heap.Delete();
-            if (w.d == Integer.MAX_VALUE) { // No path from u to v ?
-                return Integer.MAX_VALUE;
-            }
-            d.put(w.v, w.d);
-            s = w.v;
-            path.add(s);
-            X.add(w.v);
-            computeKeys(heap, X, w.v, d);
-        }
-        path.add(v);
-        return d.get(s);
-    }
-
-    private void computeKeys(MinHeap<Edge<T>> heap, Set<T> X, T w, Map<T, Integer> d) {
-        for (Edge<T> e : this.edgesOf(w)) {
-            if (!X.contains(e.v)) {
-                Edge<T> heapV = heap.DeleteSpecificKey(e);
-                heapV.d = Integer.min(heapV.d, d.get(w) + e.d);
-                heap.Insert(heapV);
-            }
-        }
-    }
-
-    @Override
     public int numVertices() {
         return this.rep.keySet().size();
     }
@@ -98,6 +56,11 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
             }
         }
         return theCost;
+    }
+
+    @Override
+    public void remove(T u) {
+        this.rep.remove(u);
     }
  
     public static class SingleSourceResult<T> {
@@ -284,22 +247,19 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
         this.rep.remove(s);
         int minPath = Integer.MAX_VALUE;
         int count = 0;
+        ShortestPathDijkstra<T> sper = new ShortestPathDijkstra<>(this);
         for (T u : this.V()) {
             for (T v : this.V()) {
-            //SingleSourceResult<T> stuffU = this.singleSourceShortestPaths(u); // Bellman-Ford
-            //for (T v : stuffU.weights.keySet()) {
                 count++;
                 if (u.equals(v)) {
                     continue;
                 }
-                //int duv = stuffU.weights.get(v);
-                int duv = this.sp(u, v);
+                int duv = sper.sp(u, v);
                 if (duv == Integer.MAX_VALUE) {
                     continue;
                 }
                 int Pu = sps.get(u);
                 int Pv = sps.get(v);
-                //System.out.println("sp(" + u + ", " + v + ")=" + (duv - Pu + Pv ));
                 if (minPath > duv - Pu + Pv) {
                     minPath = duv - Pu + Pv;
                 }

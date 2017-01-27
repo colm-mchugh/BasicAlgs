@@ -3,11 +3,23 @@ package graph;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import org.junit.Test;
 
-//TODO: Delete
-public class Apsp {
+public class AllPairsShortestPathTest {
     
-    public static void computeApsps(String file) {
+
+    @Test
+    public void testAllPairsShortestPath() {
+        String[] files = {"resources/g1.txt", "resources/g2.txt", "resources/g3.txt"};
+        Object[] expected = {Integer.MAX_VALUE, Integer.MAX_VALUE, -19};
+        
+        for (int i = 0; i < files.length; i++) {
+            WeightedGraph<Integer> g = this.readGraph(files[i]);
+            assert g.apsp() == (int)expected[i];
+        }
+    }
+
+    private WeightedGraph<Integer> readGraph(String file) {
         WeightedGraph<Integer> graph = new WeightedGraphDirected<>();
         FileReader fr;
         try {
@@ -24,12 +36,7 @@ public class Apsp {
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
-        graph.apsp();
-        
+        return graph;
     }
     
-    public static void main(String[] args) {
-        String file = "resources/g3.txt";
-        computeApsps(file);
-    }
 }

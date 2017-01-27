@@ -57,7 +57,7 @@ public interface Graph<T> {
      * @return a cut of the graph
      * 
      * A cut of a graph is a partition of a graph into two subsets S1 and S2
-     * s.t. S1 intersection S2 == {}, S1 U S2 == V() (i.e. all the vertices of the graph)
+     * s.t. S1 intersection S2 == {} AND S1 U S2 == V() 
      * and N is the number of edges between S1 and S2.
      * The Minimum Cut is the partition with smallest possible N.
      */

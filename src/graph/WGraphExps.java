@@ -76,12 +76,13 @@ public class WGraphExps<T> extends WeightedGraphDirected<T> {
         System.out.println("Finished weighting");
         this.rep.remove(s);
         int minPath = Integer.MAX_VALUE;
+        ShortestPathDijkstra<T> sper = new ShortestPathDijkstra<>(this);
         for (T u : this.V()) {           
             for (T v : this.V()) {
                 if (u.equals(v)) {
                     continue;
                 }
-                int duv = this.sp(u, v);
+                int duv = sper.sp(u, v);
                 int Pu = sps.get(u);
                 int Pv = sps.get(v);
                 if (minPath > duv - Pu + Pv) {

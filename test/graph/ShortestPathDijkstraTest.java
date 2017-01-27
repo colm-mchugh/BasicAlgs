@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.junit.Test;
 
-public class DijkstraShortestPath {
+public class ShortestPathDijkstraTest {
 
     /**
      * Test of computing Dijkstra's shortest path for positive weighted directed graphs.
@@ -24,7 +24,8 @@ public class DijkstraShortestPath {
         }
         for (Integer t : g.V()) {
             if (distances.keySet().contains(t)) {
-                int d = g.sp(1, t);
+                ShortestPathDijkstra<Integer> shortestPathCalcer = new ShortestPathDijkstra<>(g);
+                int d = shortestPathCalcer.sp(1, t); //g.sp(1, t);
                 distances.replace(t, d);
             }
         }
