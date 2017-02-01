@@ -118,9 +118,6 @@ public interface WeightedGraph<T> {
 
     }
  
-    WeightedGraphDirected.SingleSourceResult<T> singleSourceShortestPaths(T s);
-    
     List<WeightedGraphDirected.ShortestPathResult<T>> allPairsShortestPaths();
     
-    int apsp();
 }

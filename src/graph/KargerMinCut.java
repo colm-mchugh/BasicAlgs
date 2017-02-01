@@ -29,6 +29,7 @@ public class KargerMinCut {
      * 
      * Therefore this algorithm performs N*N invocations of Graph.makeCut() 
      * to  bring the probability of finding a minimum cut to 1.
+     * @return 
      */ 
     public Graph.GraphCut<Integer> minCut() {
         Graph.GraphCut<Integer> smallestCut = new Graph.GraphCut<>(null, null, Integer.MAX_VALUE);

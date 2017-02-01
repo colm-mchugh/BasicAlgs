@@ -164,7 +164,7 @@ public class SPtest {
 
     @Test
     public void reweighting() {
-        WeightedGraph<Integer> g = new WGraphExps<>();
+        WGraphExps<Integer> g = new WGraphExps<>();
         g.link(1, 5, -1);
         g.link(2, 1, 1);
         g.link(2, 4, 2);

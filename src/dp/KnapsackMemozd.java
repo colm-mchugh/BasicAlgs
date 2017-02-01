@@ -7,7 +7,8 @@ public class KnapsackMemozd extends Knapsack {
 
     private int[][] memo;
 
-    public void initItems(int[] data) {
+    public KnapsackMemozd(int knapSackWeight, int[] data) {
+        super(knapSackWeight);
         items = new ArrayList<>(data.length / 2);
         for (int i = 0; i < data.length; i += 2) {
             items.add(new Item(data[i], data[i + 1]));
@@ -50,9 +51,4 @@ public class KnapsackMemozd extends Knapsack {
         return rv;
     }
 
-    public static void main(String[] args) {
-        KnapsackMemozd ks = new KnapsackMemozd();
-        ks.initItems(ks.readData("resources/knapsack1.txt"));
-        System.out.println(ks.knapsack());
-    }
 }

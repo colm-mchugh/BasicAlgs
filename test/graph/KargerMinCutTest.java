@@ -12,7 +12,6 @@ public class KargerMinCutTest {
         String file = "resources/kargerMinCut.txt";
         KargerMinCut kmc = new KargerMinCut(file);
         kmc.print();
-        
         int minCut = kmc.minCut().crossings;
         System.out.println("The minCut is " +  minCut);
         assert minCut == 17;

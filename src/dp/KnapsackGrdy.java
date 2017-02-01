@@ -4,6 +4,16 @@ import sort.QuickSorter;
 
 public class KnapsackGrdy extends Knapsack  {
 
+    public KnapsackGrdy(int knapSackWeight, int[] data) {
+        super(knapSackWeight);
+        items = new Item[data.length / 2];
+        for (int i = 0; i < items.length; i++) {
+            items[i] = (new Item(data[2 * i], data[2 * i + 1]));
+        }
+        QuickSorter qs = new QuickSorter();
+        qs.sort(items);
+    }
+
     public static class Item extends Knapsack.Item  {
 
         public Item(int value, int weight) {
@@ -25,20 +35,6 @@ public class KnapsackGrdy extends Knapsack  {
 
     private Item[] items;
 
-    public Item[] initItems(int[] data) {
-        items = new Item[data.length / 2];
-        for (int i = 0; i < items.length; i++) {
-            items[i] = (new Item(data[2 * i], data[2 * i + 1]));
-        }
-        QuickSorter qs = new QuickSorter();
-        qs.sort(items);
-        return items;
-    }
-
-    public void setKnapSackWeight(int knapSackWeight) {
-        this.knapSackWeight = knapSackWeight;
-    }
-    
     public int knapsack() {
         int v = 0;
         int w = 0;

@@ -48,7 +48,7 @@ public class WGraphExps<T> extends WeightedGraphDirected<T> {
         return rv;
     }
     
-    @Override
+    // all pairs shortest path (Johnsons algorithm)
     public int apsp() {
         T s = null;
         Set<Edge<T>> sEdges = new HashSet<>();
@@ -94,7 +94,7 @@ public class WGraphExps<T> extends WeightedGraphDirected<T> {
         return minPath;
     } 
     
-    @Override
+    // shortest path to the given source. Bellman Ford algorithm.
     public SingleSourceResult<T> singleSourceShortestPaths(T s) {
         if (rep.get(s) == null) {
             throw new IllegalArgumentException("No such vertex: " + s);

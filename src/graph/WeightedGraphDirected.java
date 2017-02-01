@@ -78,51 +78,6 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
         }
     }
 
-    @Override
-    public SingleSourceResult<T> singleSourceShortestPaths(T s) {
-        if (rep.get(s) == null) {
-            throw new IllegalArgumentException("No such vertex: " + s);
-        }
-        SingleSourceResult<T> rv = new SingleSourceResult<>(s, rep.size());
-        for (T v : this.V()) {
-            rv.weights.put(v, Integer.MAX_VALUE);
-            rv.preds.put(v, null);
-        }
-        rv.weights.put(s, 0);
-        int numVertices = this.numVertices();
-        boolean shortCircuit = true;
-        for (int i = 0; i < numVertices; i++) {
-            shortCircuit = true;
-            for (T u : this.rep.keySet()) {
-                Set<Edge<T>> edges = this.rep.get(u);
-                for (Edge<T> edge : edges) {
-                    int newW = rv.weights.get(u);
-                    if (newW == Integer.MAX_VALUE) {
-                        continue;
-                    }
-                    newW += edge.d;
-                    if (rv.weights.get(edge.v) > newW) {
-                        rv.weights.put(edge.v, newW);
-                        rv.preds.put(edge.v, u);
-                        shortCircuit = false;
-                    }
-                }
-            }
-        }
-        if (!shortCircuit) {
-            for (T u : this.rep.keySet()) {
-                Set<Edge<T>> edges = this.rep.get(u);
-                for (Edge<T> edge : edges) {
-                    int newW = rv.weights.get(u) + edge.d;
-                    if (rv.weights.get(edge.v) > newW) {
-                        rv.hasNegativeCycles = true;
-                    }
-                }
-            }
-        }
-        return rv;
-    }
-
     public static class ShortestPathResult<T> {
 
         T u;
@@ -218,61 +173,6 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
             }
         }
         return rv;
-    }
-
-    @Override
-    public int apsp() {
-        T s = null;
-        Set<Edge<T>> sEdges = new HashSet<>();
-        for (T v : this.V()) {
-            sEdges.add(new Edge<>(v, 0));
-        }
-        this.rep.put(s, sEdges);
-        SingleSourceResult<T> stuff = this.singleSourceShortestPaths(s);
-        if (stuff.hasNegativeCycles) {
-            System.out.println("Negative cycle detected. Bailing...");
-            return Integer.MAX_VALUE;
-        }
-        System.out.println("No negative cycles");
-        Map<T, Integer> sps = stuff.weights;
-        for (T u : this.V()) {
-            Set<Edge<T>> edges = this.rep.get(u);
-            for (Edge<T> edge : edges) {
-                int Pu = sps.get(u);
-                int Pv = sps.get(edge.v);
-                edge.d = (edge.d + Pu - Pv);
-            }
-        }
-        System.out.println("Finished weighting");
-        this.rep.remove(s);
-        int minPath = Integer.MAX_VALUE;
-        int count = 0;
-        ShortestPathDijkstra<T> sper = new ShortestPathDijkstra<>(this);
-        for (T u : this.V()) {
-            for (T v : this.V()) {
-                count++;
-                if (u.equals(v)) {
-                    continue;
-                }
-                int duv = sper.sp(u, v);
-                if (duv == Integer.MAX_VALUE) {
-                    continue;
-                }
-                int Pu = sps.get(u);
-                int Pv = sps.get(v);
-                if (minPath > duv - Pu + Pv) {
-                    minPath = duv - Pu + Pv;
-                }
-            }
-            if (count % 5000 == 0) {
-                System.out.print('.');
-            }
-            if (count % 100000 == 0) {
-                System.out.println();
-            }
-        }
-        System.out.println("sp = " + minPath);
-        return minPath;
     }
 
 }

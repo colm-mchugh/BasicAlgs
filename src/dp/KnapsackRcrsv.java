@@ -7,8 +7,9 @@ import java.util.Map;
 public class KnapsackRcrsv extends Knapsack {
 
     private Map<Integer, Map<Integer, Integer>> recMemo;
-    
-    public void initItems(int[] data) {
+
+    public KnapsackRcrsv(int knapSackWeight, int[] data) {
+        super(knapSackWeight);
         items = new ArrayList<>(data.length / 2);
         for (int i = 0; i < data.length; i += 2) {
             items.add(new Item(data[i], data[i + 1]));
@@ -18,7 +19,7 @@ public class KnapsackRcrsv extends Knapsack {
             recMemo.put(i, new HashMap<>());
         }
     }
-
+    
     private int calcKnapsack(int i, int W) {
         if (i < 0) {
             return 0;
@@ -46,13 +47,9 @@ public class KnapsackRcrsv extends Knapsack {
         return thisVal;
     }
 
+    @Override
     public int knapsack() {
         return calcKnapsack(items.size() - 1, knapSackWeight);
     }
     
-    public static void main(String[] args) {
-        KnapsackRcrsv ks = new KnapsackRcrsv();
-        ks.initItems(ks.readData("resources/knapsack2.txt"));
-        System.out.println(ks.knapsack());
-    }
 }
