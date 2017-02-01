@@ -1,43 +1,38 @@
 package graph;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class ShortestPathJohnson<T> {
     
-    private WeightedGraph<T> graph;
-
-    public ShortestPathJohnson(WeightedGraph<T> graph) {
-        this.graph = graph;
-    }
-
-    public WeightedGraph<T> getGraph() {
-        return graph;
-    }
-
-    public void setGraph(WeightedGraph<T> graph) {
-        this.graph = graph;
-    }
+    // For recording shortest path results. 
+    private final Map<WeightedGraph<T>, SPResult<T>> memo = new HashMap<>();
     
-    public static class ShrtstPath<T> {
+    /**
+     * The result of a shortest path computation 
+     * @param <T> 
+     */
+    public static class SPResult<T> {
         public T u;
         public T v;
         public int d;
 
-        public ShrtstPath(T u, T v, int d) {
+        public SPResult(T u, T v, int d) {
             this.u = u;
             this.v = v;
             this.d = d;
         }
-        
+       
     }
     
-    public final static ShrtstPath INFINITY = new ShrtstPath(null, null, Integer.MAX_VALUE);
+    public final static SPResult INFINITY = new SPResult(null, null, Integer.MAX_VALUE);
     
     /**
-     * Return the shortest path of all the possible paths of the graph. A 
+     * Return the shortest path of all the possible paths of the given graph. A 
      * path exists between two vertices u,v of the graph if it is possible
      * to get to v from u.
      * 
@@ -52,11 +47,15 @@ public class ShortestPathJohnson<T> {
      * The mechanics of Johnson's algorithm for determining the shortest path 
      * are as follows:
      * 
+     * @param graph
      * @return 
      */
-    public ShrtstPath<T> sp() {
+    public SPResult<T> sp(WeightedGraph<T> graph) {
+        if (memo.containsKey(graph)) {
+            return memo.get(graph);
+        }
         T s = null;
-        Collection<T> vertices = new HashSet<T>(graph.numVertices());
+        Collection<T> vertices = new HashSet<>(graph.numVertices());
         for (T v : graph.V()) {
             vertices.add(v);
         }
@@ -80,7 +79,7 @@ public class ShortestPathJohnson<T> {
         }
         // Finished weighting
         graph.remove(s);
-        ShrtstPath<T> minPath = new ShrtstPath<>(null, null, Integer.MAX_VALUE);
+        SPResult<T> minPath = new SPResult<>(null, null, Integer.MAX_VALUE);
         ShortestPathDijkstra<T> sper = new ShortestPathDijkstra<>(graph);
         for (T u : graph.V()) {
             for (T v : graph.V()) {
@@ -100,6 +99,7 @@ public class ShortestPathJohnson<T> {
                 }
             }
         }
+        memo.put(graph, minPath);
         return minPath;
     }
 

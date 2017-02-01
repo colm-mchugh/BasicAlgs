@@ -18,8 +18,8 @@ public class ShortestPathJohnsonTest {
         g.link('z', 'x', 1);
         g.link('z', 'y', -4);
 
-        ShortestPathJohnson<Character> sper = new ShortestPathJohnson<>(g);
-        assert sper.sp().d == -6 ;
+        ShortestPathJohnson<Character> sper = new ShortestPathJohnson<>();
+        assert sper.sp(g).d == -6 ;
     }
     
     @Test
@@ -37,8 +37,8 @@ public class ShortestPathJohnsonTest {
         g.link(6, 7, -1);
         g.link(7, 6, 1);
 
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>(g);
-        assert sper.sp().d == -4;
+        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
+        assert sper.sp(g).d == -4;
     }
     
     @Test
@@ -53,8 +53,8 @@ public class ShortestPathJohnsonTest {
         g.link(6, 4, 1);
         g.link(6, 5, -4);
 
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>(g);
-        assert sper.sp().d == -6;
+        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
+        assert sper.sp(g).d == -6;
     }
     
     @Test
@@ -67,8 +67,8 @@ public class ShortestPathJohnsonTest {
         g.link(3, 4, 1);
         g.link(4, 5, -10000);
         
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>(g);
-        assert sper.sp().d == -10003;
+        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
+        assert sper.sp(g).d == -10003;
     }
 
     @Test
@@ -76,10 +76,9 @@ public class ShortestPathJohnsonTest {
         String[] files = {"resources/g1.txt", "resources/g2.txt", "resources/g3.txt"};
         Object[] expected = {Integer.MAX_VALUE, Integer.MAX_VALUE, -19};
         
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>(null);
+        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
         for (int i = 0; i < files.length; i++) {
-            sper.setGraph(this.readGraph(files[i]));
-            assert sper.sp().d == (int)expected[i];
+            assert sper.sp(this.readGraph(files[i])).d == (int)expected[i];
         }
     }
 
