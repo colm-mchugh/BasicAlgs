@@ -1,5 +1,6 @@
 package graph;
 
+import graph.shortestpath.Dijkstra;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,7 +76,7 @@ public class WGraphExps<T> extends WeightedGraphDirected<T> {
         System.out.println("Finished weighting");
         this.rep.remove(s);
         int minPath = Integer.MAX_VALUE;
-        ShortestPathDijkstra<T> sper = new ShortestPathDijkstra<>(this);
+        Dijkstra<T> sper = new Dijkstra<>(this);
         for (T u : this.V()) {           
             for (T v : this.V()) {
                 if (u.equals(v)) {

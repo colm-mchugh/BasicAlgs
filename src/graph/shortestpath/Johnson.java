@@ -1,34 +1,17 @@
-package graph;
+package graph.shortestpath;
 
+import graph.WeightedGraph;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ShortestPathJohnson<T> {
+public class Johnson<T> {
     
     // For recording shortest path results. 
-    private final Map<WeightedGraph<T>, SPResult<T>> memo = new HashMap<>();
-    
-    /**
-     * The result of a shortest path computation 
-     * @param <T> 
-     */
-    public static class SPResult<T> {
-        public T u;
-        public T v;
-        public int d;
-
-        public SPResult(T u, T v, int d) {
-            this.u = u;
-            this.v = v;
-            this.d = d;
-        }
+    private final Map<WeightedGraph<T>, Path<T>> memo = new HashMap<>();
        
-    }
-    
-    public final static SPResult INFINITY = new SPResult(null, null, Integer.MAX_VALUE);
     
     /**
      * Return the shortest path of all the possible paths of the given graph. A 
@@ -49,7 +32,7 @@ public class ShortestPathJohnson<T> {
      * @param graph
      * @return 
      */
-    public SPResult<T> sp(WeightedGraph<T> graph) {
+    public Path<T> sp(WeightedGraph<T> graph) {
         if (memo.containsKey(graph)) {
             return memo.get(graph);
         }
@@ -62,10 +45,10 @@ public class ShortestPathJohnson<T> {
             graph.link(s, v, 0);
         }
         
-        ShortestPathBellmanFord<T> negCycleDtctr = new ShortestPathBellmanFord<>(graph);
-        ShortestPathBellmanFord.ShortestPath<T> sp = negCycleDtctr.singleSourceShortestPaths(s);
+        BellmanFord<T> negCycleDtctr = new BellmanFord<>();
+        BellmanFord.ShortestPath<T> sp = negCycleDtctr.singleSourceShortestPaths(graph, s);
         if (sp.hasNegativeCycles) {
-            return INFINITY;
+            return Path.INFINITY;
         }
         Map<T, Integer> sps = sp.weights;
         for (T u : graph.V()) {
@@ -78,8 +61,8 @@ public class ShortestPathJohnson<T> {
         }
         // Finished weighting
         graph.remove(s);
-        SPResult<T> minPath = new SPResult<>(null, null, Integer.MAX_VALUE);
-        ShortestPathDijkstra<T> sper = new ShortestPathDijkstra<>(graph);
+        Path<T> minPath = new Path<>(null, null, Integer.MAX_VALUE);
+        Dijkstra<T> sper = new Dijkstra<>(graph);
         for (T u : graph.V()) {
             for (T v : graph.V()) {
                 if (u.equals(v)) {

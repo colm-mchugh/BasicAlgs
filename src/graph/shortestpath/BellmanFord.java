@@ -1,24 +1,13 @@
-package graph;
+package graph.shortestpath;
 
+import graph.WeightedGraph;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ShortestPathBellmanFord<T> {
+public class BellmanFord<T> {
     
-    private WeightedGraph<T> graph;
-
-    public ShortestPathBellmanFord(WeightedGraph<T> graph) {
-        this.graph = graph;
-    }
-
-    public WeightedGraph<T> getGraph() {
-        return graph;
-    }
-
-    public void setGraph(WeightedGraph<T> graph) {
-        this.graph = graph;
-    }
+    private final Map<WeightedGraph<T>, Map<T, ShortestPath<T>>> memo = new HashMap<>();
     
     public static class ShortestPath<T> {
 
@@ -35,8 +24,11 @@ public class ShortestPathBellmanFord<T> {
         }
     }
     
-    public ShortestPath<T> singleSourceShortestPaths(T s) {
-        
+    public ShortestPath<T> singleSourceShortestPaths(WeightedGraph<T> graph, T s) {
+        Map<T, ShortestPath<T>> rcrd = this.memo.get(graph);
+        if (rcrd != null && rcrd.containsKey(s)) {
+            return rcrd.get(s);
+        }
         if (graph.edgesOf(s) == null) {
             throw new IllegalArgumentException("No such vertex: " + s);
         }
@@ -76,6 +68,11 @@ public class ShortestPathBellmanFord<T> {
                 }
             }
         }
+        if (rcrd == null) {
+            rcrd = new HashMap<>();
+            memo.put(graph, rcrd);
+        }
+        rcrd.put(s, rv);
         return rv;
     }
 }

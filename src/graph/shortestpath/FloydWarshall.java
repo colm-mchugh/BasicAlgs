@@ -1,17 +1,18 @@
-package graph;
+package graph.shortestpath;
 
+import graph.WeightedGraph;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ShortestPathFloydWarshall<T> {
+public class FloydWarshall<T> {
     
     // For recording shortest path results. 
-    private final Map<WeightedGraph<T>, List<SPResult<T>>> memo = new HashMap<>();
+    private final Map<WeightedGraph<T>, List<Path<T>>> memo = new HashMap<>();
     
-    public List<SPResult<T>> sp(WeightedGraph<T> graph) {
+    public List<Path<T>> sp(WeightedGraph<T> graph) {
         if (this.memo.containsKey(graph)) {
             return this.memo.get(graph);
         }
@@ -21,12 +22,12 @@ public class ShortestPathFloydWarshall<T> {
         }
         int n = graph.numVertices();
 
-        Map<Integer, Map<Integer, Map<Integer, Integer>>> memo = new HashMap<>(n);
+        Map<Integer, Map<Integer, Map<Integer, Integer>>> record = new HashMap<>(n);
         for (int i = 1; i <= n; i++) {
-            if (memo.get(i) == null) {
-                memo.put(i, new HashMap<>());
+            if (record.get(i) == null) {
+                record.put(i, new HashMap<>());
             }
-            Map<Integer, Map<Integer, Integer>> iDim = memo.get(i);
+            Map<Integer, Map<Integer, Integer>> iDim = record.get(i);
             for (int j = 1; j <= n; j++) {
                 if (iDim.get(j) == null) {
                     iDim.put(j, new HashMap<>());
@@ -49,22 +50,22 @@ public class ShortestPathFloydWarshall<T> {
         for (int k = 1; k <= n; k++) {
             for (int i = 1; i <= n; i++) {
                 for (int j = 1; j <= n; j++) {
-                    int dPrev = memo.get(i).get(j).get(k - 1);
-                    int dik = memo.get(i).get(k).get(k - 1);
-                    int dkj = memo.get(k).get(j).get(k - 1);
+                    int dPrev = record.get(i).get(j).get(k - 1);
+                    int dik = record.get(i).get(k).get(k - 1);
+                    int dkj = record.get(k).get(j).get(k - 1);
                     int dPlus = Integer.MAX_VALUE;
                     if (dik != Integer.MAX_VALUE && dkj != Integer.MAX_VALUE) {
                         dPlus = dik + dkj;
                     }
-                    memo.get(i).get(j).put(k, Integer.min(dPrev, dPlus));
+                    record.get(i).get(j).put(k, Integer.min(dPrev, dPlus));
                 }
             }
         }
-        List<SPResult<T>> rv = new ArrayList<>();
+        List<Path<T>> rv = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                int dMin = memo.get(i).get(j).get(n);
-                rv.add(new SPResult<>(vertices.get(i - 1), vertices.get(j - 1), dMin));
+                int dMin = record.get(i).get(j).get(n);
+                rv.add(new Path<>(vertices.get(i - 1), vertices.get(j - 1), dMin));
             }
         }
         this.memo.put(graph, rv);
@@ -82,35 +83,8 @@ public class ShortestPathFloydWarshall<T> {
         }
         return rv;
     }
-    
-    public static class SPResult<T> {
-        T u;
-        T v;
-        int d;
+   
 
-        public SPResult(T u, T v, int d) {
-            this.u = u;
-            this.v = v;
-            this.d = d;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append('(');
-            sb.append(u);
-            sb.append(", ");
-            sb.append(v);
-            sb.append(')');
-            if (d == Integer.MAX_VALUE) {
-                sb.append( " NO PATH");
-            } else {
-                sb.append(" d=");
-                sb.append(d);
-            }
-            return sb.toString();
-        }
-
-    }
+        
 
 }

@@ -1,5 +1,8 @@
-package graph;
+package graph.shortestpath;
 
+import graph.WeightedGraph;
+import graph.WeightedGraphDirected;
+import graph.shortestpath.Dijkstra;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.junit.Test;
 
-public class ShortestPathDijkstraTest {
+public class DijkstraTest {
 
     /**
      * Test of computing Dijkstra's shortest path for positive weighted directed graphs.
@@ -24,7 +27,7 @@ public class ShortestPathDijkstraTest {
         }
         for (Integer t : g.V()) {
             if (distances.keySet().contains(t)) {
-                ShortestPathDijkstra<Integer> shortestPathCalcer = new ShortestPathDijkstra<>(g);
+                Dijkstra<Integer> shortestPathCalcer = new Dijkstra<>(g);
                 int d = shortestPathCalcer.sp(1, t); //g.sp(1, t);
                 distances.replace(t, d);
             }
@@ -85,7 +88,7 @@ public class ShortestPathDijkstraTest {
         g.link("c", "d", 2);
         g.link("b", "d", 5);
 
-        ShortestPathDijkstra<String> sper = new ShortestPathDijkstra<>(g);
+        Dijkstra<String> sper = new Dijkstra<>(g);
         
         assert sper.sp("a", "d") == 5;
 
@@ -111,7 +114,7 @@ public class ShortestPathDijkstraTest {
         g.link(4, 6, 1);
         g.link(5, 6, 2);
 
-        ShortestPathDijkstra<Integer> sper = new ShortestPathDijkstra<>(g);
+        Dijkstra<Integer> sper = new Dijkstra<>(g);
         
         assert sper.sp(1, 6) == 5;
     }
@@ -151,7 +154,7 @@ public class ShortestPathDijkstraTest {
     }
     
     private void printAllSps(WeightedGraph<Integer> g) {
-        ShortestPathDijkstra<Integer> sper = new ShortestPathDijkstra<>(g);
+        Dijkstra<Integer> sper = new Dijkstra<>(g);
         for (Integer u : g.V()) {
             for (Integer v : g.V()) {
                 if (u.equals(v)) {

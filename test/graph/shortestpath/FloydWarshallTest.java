@@ -3,8 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graph;
+package graph.shortestpath;
 
+import graph.WGraphExps;
+import graph.WeightedGraph;
+import graph.WeightedGraphDirected;
+import graph.shortestpath.FloydWarshall;
+import graph.shortestpath.Path;
 import java.util.List;
 import org.junit.Test;
 
@@ -12,7 +17,7 @@ import org.junit.Test;
  *
  * @author colm_mchugh
  */
-public class ShortestPathFloydWarshallTest {
+public class FloydWarshallTest {
     
     @Test
     public void floydWarshall() {
@@ -27,10 +32,10 @@ public class ShortestPathFloydWarshallTest {
         g.link(4, 3, -5);
         g.link(5, 4, 6);
 
-        ShortestPathFloydWarshall<Integer> sper = new ShortestPathFloydWarshall<>();
-        List<ShortestPathFloydWarshall.SPResult<Integer>> resList = sper.sp(g);
+        FloydWarshall<Integer> sper = new FloydWarshall<>();
+        List<Path<Integer>> resList = sper.sp(g);
         assert resList.size() == 25;
-        for (ShortestPathFloydWarshall.SPResult<Integer> res : resList) {
+        for (Path<Integer> res : resList) {
             if (res.u == 1 && res.v == 5) {
                 assert res.d == -4;
             }
@@ -52,10 +57,10 @@ public class ShortestPathFloydWarshallTest {
         g.link(4, 1, 1);
         g.link(4, 3, 1);
         g.link(5, 4, 1);
-        ShortestPathFloydWarshall<Integer> sper = new ShortestPathFloydWarshall<>();
-        List<ShortestPathFloydWarshall.SPResult<Integer>> resList = sper.sp(g);
+        FloydWarshall<Integer> sper = new FloydWarshall<>();
+        List<Path<Integer>> resList = sper.sp(g);
         assert resList.size() == 25;
-        for (ShortestPathFloydWarshall.SPResult<Integer> res : resList) {
+        for (Path<Integer> res : resList) {
             System.out.println(res);
         }
     }
@@ -74,9 +79,9 @@ public class ShortestPathFloydWarshallTest {
         g.link('b', 'g', 1);
         g.link('d', 'g', 1);
         g.link('f', 'g', 1);
-        ShortestPathFloydWarshall<Character> sper = new ShortestPathFloydWarshall<>();
-        List<ShortestPathFloydWarshall.SPResult<Character>> resList = sper.sp(g);
-        for (ShortestPathFloydWarshall.SPResult<Character> res : resList) {
+        FloydWarshall<Character> sper = new FloydWarshall<>();
+        List<Path<Character>> resList = sper.sp(g);
+        for (Path<Character> res : resList) {
             System.out.println(res);
         }
     }

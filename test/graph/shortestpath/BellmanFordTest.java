@@ -1,13 +1,16 @@
-package graph;
+package graph.shortestpath;
 
+import graph.WeightedGraph;
+import graph.WeightedGraphDirected;
+import graph.shortestpath.BellmanFord;
 import org.junit.Test;
 
-public class ShortestPathBellmanFordTest {
+public class BellmanFordTest {
 
-    private final ShortestPathBellmanFord<Character> bfer;
+    private final BellmanFord<Character> bfer;
 
-    public ShortestPathBellmanFordTest() {
-        this.bfer = new ShortestPathBellmanFord<>(null);
+    public BellmanFordTest() {
+        this.bfer = new BellmanFord<>();
     }
     
     @Test
@@ -24,8 +27,7 @@ public class ShortestPathBellmanFordTest {
         g.link('y', 'x', -3);
         g.link('z', 'x', 7);
         
-        bfer.setGraph(g);
-        ShortestPathBellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths('s');
+        BellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths(g, 's');
         assert !sp.hasNegativeCycles;
         assert sp.weights.get('z') == -2;
         assert sp.weights.get('x') == 4;
@@ -45,8 +47,7 @@ public class ShortestPathBellmanFordTest {
         g.link('z', 's', 3);
         g.link('z', 'x', 7);
 
-        bfer.setGraph(g);
-        ShortestPathBellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths('s');
+        BellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths(g, 's');
         assert !sp.hasNegativeCycles;
         assert sp.weights.get('z') == 11;
         assert sp.weights.get('x') == 9;
@@ -59,8 +60,7 @@ public class ShortestPathBellmanFordTest {
         g.link('i', 'j', 3);
         g.link('j', 'h', -8);
 
-        bfer.setGraph(g);
-        ShortestPathBellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths('h');
+        BellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths(g, 'h');
         assert sp.hasNegativeCycles;
     }
 
@@ -79,8 +79,7 @@ public class ShortestPathBellmanFordTest {
         g.link('d', 'g', 8);
         g.link('f', 'g', 7);
 
-        bfer.setGraph(g);
-        ShortestPathBellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths('s');
+        BellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths(g, 's');
         assert sp.hasNegativeCycles;
     }
     

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graph;
+package graph.shortestpath;
 
+import graph.WeightedGraph;
 import heap.MinHeap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ShortestPathDijkstra<T> {
+public class Dijkstra<T> {
     
     private WeightedGraph<T> graph;
 
-    public ShortestPathDijkstra(WeightedGraph<T> graph) {
+    public Dijkstra(WeightedGraph<T> graph) {
         this.graph = graph;
     }
 

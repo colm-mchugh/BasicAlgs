@@ -1,11 +1,14 @@
-package graph;
+package graph.shortestpath;
 
+import graph.WeightedGraph;
+import graph.WeightedGraphDirected;
+import graph.shortestpath.Johnson;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import org.junit.Test;
 
-public class ShortestPathJohnsonTest {
+public class PathJohnsonTest {
     
     @Test
     public void Johnson1() {
@@ -18,7 +21,7 @@ public class ShortestPathJohnsonTest {
         g.link('z', 'x', 1);
         g.link('z', 'y', -4);
 
-        ShortestPathJohnson<Character> sper = new ShortestPathJohnson<>();
+        Johnson<Character> sper = new Johnson<>();
         assert sper.sp(g).d == -6 ;
     }
     
@@ -37,7 +40,7 @@ public class ShortestPathJohnsonTest {
         g.link(6, 7, -1);
         g.link(7, 6, 1);
 
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
+        Johnson<Integer> sper = new Johnson<>();
         assert sper.sp(g).d == -4;
     }
     
@@ -53,7 +56,7 @@ public class ShortestPathJohnsonTest {
         g.link(6, 4, 1);
         g.link(6, 5, -4);
 
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
+        Johnson<Integer> sper = new Johnson<>();
         assert sper.sp(g).d == -6;
     }
     
@@ -67,7 +70,7 @@ public class ShortestPathJohnsonTest {
         g.link(3, 4, 1);
         g.link(4, 5, -10000);
         
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
+        Johnson<Integer> sper = new Johnson<>();
         assert sper.sp(g).d == -10003;
     }
 
@@ -76,7 +79,7 @@ public class ShortestPathJohnsonTest {
         String[] files = {"resources/g1.txt", "resources/g2.txt", "resources/g3.txt"};
         Object[] expected = {Integer.MAX_VALUE, Integer.MAX_VALUE, -19};
         
-        ShortestPathJohnson<Integer> sper = new ShortestPathJohnson<>();
+        Johnson<Integer> sper = new Johnson<>();
         for (int i = 0; i < files.length; i++) {
             assert sper.sp(this.readGraph(files[i])).d == (int)expected[i];
         }

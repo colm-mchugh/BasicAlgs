@@ -1,6 +1,6 @@
-package graph;
+package graph.shortestpath;
 
-import java.util.List;
+import graph.WGraphExps;
 import org.junit.Test;
 
 public class SPtest {
