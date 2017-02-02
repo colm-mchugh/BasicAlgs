@@ -3,12 +3,12 @@ package sort;
 public class InversionCounter {
 
     /**
-     * Count the number of inversions in the given array a.
+     * Count the number of inversions in the array a.
      * 
      * An inversion in an array a of length N exists if 
      * i > j and a[i] < a[j] for any 0 <= i < N and 0 <= j < N
-     * This function counts all such inversions in the given array.
-     * Additionally, the given array is sorted.
+     * This function counts all such inversions in the array.
+     * Additionally, the array is sorted.
      * @param a
      * @return 
      */
