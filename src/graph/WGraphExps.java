@@ -9,7 +9,6 @@ import java.util.Set;
 
 public class WGraphExps<T> extends WeightedGraphDirected<T> {
     
-    @Override
     public List<ShortestPathResult<T>> allPairsShortestPaths() {
         List<T> vertices = new ArrayList<>(this.rep.keySet());
         int n = this.numVertices();
@@ -130,6 +129,18 @@ public class WGraphExps<T> extends WeightedGraphDirected<T> {
                         rv.hasNegativeCycles = true;
                     }
                  }
+            }
+        }
+        return rv;
+    }
+    
+    protected Edge<T> edgeTo(T u, T v) {
+        Edge<T> rv = null;
+        Set<Edge<T>> edges = this.rep.get(u);
+        for (Edge<T> edge : edges) {
+            if (edge.v.equals(v)) {
+                rv = edge;
+                break;
             }
         }
         return rv;

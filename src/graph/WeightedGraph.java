@@ -1,7 +1,6 @@
 package graph;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -43,8 +42,8 @@ public interface WeightedGraph<T> {
      * Return true if the graph is covered by the given vertices, 
      * else return false.
      * 
-     * A graph is covered by a vertex set X if X includes all the
-     * vertices of the graph.
+     * A graph g is covered by a vertex set X if X includes all the
+     * vertices of the graph g.
      * 
      * @param vertexSet
      * @return 
@@ -61,6 +60,9 @@ public interface WeightedGraph<T> {
      * Remove the vertex u from the graph and its edges.
      * 
      * Nop if the graph does not contain a vertex u.
+     * 
+     * TODO: remove this. graphs should be immutable. its only used by the
+     * Johnson shortest paths calculator, which should clone the graph instead.
      * 
      * @param u 
      */
@@ -117,7 +119,5 @@ public interface WeightedGraph<T> {
         }
 
     }
- 
-    List<WeightedGraphDirected.ShortestPathResult<T>> allPairsShortestPaths();
     
 }
