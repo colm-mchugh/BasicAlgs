@@ -2,6 +2,9 @@ package dp;
 
 
 import dp.TSPer;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.BitSet;
@@ -42,8 +45,7 @@ public class tspTest {
     @Test
     public void testTsp1() {
         String file = "resources/tsp_small.txt";
-        TSPer t = new TSPer();
-        t.init(file);
+        TSPer t = new TSPer(this.init(file));
         t.printDistances();
         float ans = t.computeOptTsp();
         System.out.println("tsp=" + ans);
@@ -72,4 +74,36 @@ public class tspTest {
         }
         //assert bitsets.size() == Math.pow(N, k);
     }
+    
+    @Test
+    public void testBig() {
+        String file = "resources/tsp.txt";
+        TSPer t = new TSPer(this.init(file));
+        float ans = t.computeTsp();
+        System.out.println(ans);
+        assert ans == 26442.0;
+    }
+    
+    public Float[] init(String file) {
+        FileReader fr;
+        try {
+            fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+            int N = Integer.parseInt(line);
+            Float[] theData = new Float[N * 2];
+            Short c = 0;
+            while ((line = br.readLine()) != null) {
+                String[] split = line.trim().split("(\\s)+");
+                theData[c++] = Float.parseFloat(split[0]);
+                theData[c++] = Float.parseFloat(split[1]);
+            }
+            return theData;
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    
 }

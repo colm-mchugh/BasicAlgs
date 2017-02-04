@@ -15,10 +15,35 @@ public class TSPer {
 
     private int N;
 
+    TSPer(Float[] data) {
+        this.init(data);
+    }
+
+    TSPer() {
+    }
+
     private float calcDistance(Point from, Point to) {
         float d1 = from.xCoord - to.xCoord;
         float d2 = from.yCoord - to.yCoord;
         return (float) Math.sqrt(d1 * d1 + d2 * d2);
+    }
+
+    private void init(Float[] data) {
+        this.N = data.length / 2;
+        this.points = new HashMap<>(N);
+        for (short i = 0, c = 0; i < data.length; i += 2) {
+            this.points.put(c++, new Point(data[i], data[i + 1]));
+        }
+        this.distances = new float[N][N];
+        for (short cFrom = 0; cFrom < N; cFrom++) {
+            for (short cTo = 0; cTo < N; cTo++) {
+                if (cFrom == cTo) {
+                    distances[cFrom][cTo] = 0.0f;
+                } else {
+                    distances[cFrom][cTo] = this.calcDistance(this.points.get(cFrom), this.points.get(cTo));
+                }
+            }
+        }
     }
 
     public static class Point {
@@ -119,7 +144,7 @@ public class TSPer {
         }
         return rv;
     }
-    
+
     private void addOptSets(Map<Integer, Map<Short, Float>> rv, int cardinality, int setSize) {
         int originSet = 1;
         int sz = 1 << (cardinality - 1); // always include origin in each set
@@ -153,7 +178,6 @@ public class TSPer {
         }
     }
 
-
     public Map<BitSet, Map<Short, Float>> genBitSet(int cardinality) {
         Map<BitSet, Map<Short, Float>> rv = new HashMap<>();
         BitSet originSet = new BitSet();
@@ -178,7 +202,7 @@ public class TSPer {
         }
         return rv;
     }
-    
+
     public void addSets(Map<BitSet, Map<Short, Float>> rv, int cardinality, int setSize) {
         BitSet originSet = new BitSet();
         originSet.set(origin);
@@ -202,7 +226,7 @@ public class TSPer {
         }
     }
 
-    public void removeSets(Map<BitSet, Map<Short, Float>> rv,  int setSize) {
+    public void removeSets(Map<BitSet, Map<Short, Float>> rv, int setSize) {
         Set<BitSet> deletes = new HashSet<>();
         for (BitSet s : rv.keySet()) {
             if (s.cardinality() == setSize) {
@@ -213,13 +237,13 @@ public class TSPer {
             rv.remove(d);
         }
     }
-    
+
     public float computeTsp() {
         Map<BitSet, Map<Short, Float>> A = new HashMap<>();//this.genBitSet(N);
         BitSet finalSet = null;
         for (short m = 2; m <= N; m++) {
             System.out.println("Starting iteration " + m + " of " + N);
-            long startTime = System.nanoTime(); 
+            long startTime = System.nanoTime();
             this.addSets(A, N, m - 1);
             System.out.println("addSets done");
             for (BitSet s : A.keySet()) {
@@ -267,7 +291,7 @@ public class TSPer {
         int finalSet = -1;
         for (short m = 2; m <= N; m++) {
             System.out.println("Starting iteration " + m + " of " + N);
-            long startTime = System.nanoTime(); 
+            long startTime = System.nanoTime();
             this.addOptSets(A, N, m - 1);
             System.out.println("addSets done");
             for (int s : A.keySet()) {
@@ -297,7 +321,7 @@ public class TSPer {
             }
             this.removeOptSets(A, m - 2);
             long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-            System.out.println("Finished iteration " + m + " of " + N + "(" +  elapsedTime + " seconds)");
+            System.out.println("Finished iteration " + m + " of " + N + "(" + elapsedTime + " seconds)");
         }
         assert finalSet != -1;
         float minDistance = Float.MAX_VALUE;
@@ -310,42 +334,5 @@ public class TSPer {
         return minDistance;
     }
 
-    public void init(String file) {
-        FileReader fr;
-        try {
-            fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line = br.readLine();
-            this.N = Integer.parseInt(line);
-            this.points = new HashMap<>(N);
-            Short c = 0;
-            while ((line = br.readLine()) != null) {
-                String[] split = line.trim().split("(\\s)+");
-                Point p = new Point(
-                        Float.parseFloat(split[0]),
-                        Float.parseFloat(split[1]));
-                this.points.put(c++, p);
-            }
-            this.distances = new float[N][N];
-            for (short cFrom = 0; cFrom < N; cFrom++) {
-                for (short cTo = 0; cTo < N; cTo++) {
-                    if (cFrom == cTo) {
-                        distances[cFrom][cTo] = 0.0f;
-                    } else {
-                        distances[cFrom][cTo] = this.calcDistance(this.points.get(cFrom), this.points.get(cTo));
-                    }
-                }
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) {
-        String file = "resources/tsp.txt";
-        TSPer t = new TSPer();
-        t.init(file);
-        float ans = t.computeTsp();
-        System.out.println(ans);
-    }
+    
 }

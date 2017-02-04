@@ -1,9 +1,9 @@
 package dp;
 
-
-import dp.TwoSat;
-import dp.TwoSatCC;
-import dp.TwoSatLS;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import utils.RandGen;
 
@@ -36,7 +36,7 @@ public class TwoSatTest {
 
     protected void runTests(TwoSat inst) {
         for (int i = 0; i < tests.length; i++) {
-            inst.init(tests[i]);
+            inst.init(this.readData(tests[i]));
             assert inst.isSat() == expected[i];
         }
     }
@@ -58,9 +58,71 @@ public class TwoSatTest {
         long l = 1000000L;
         long inner = l * l;
         assert inner == 1000000000000L;
-        
+
         int x = 1000000;
         int xx = x * x;
         assert xx < -1;
     }
+    
+    @Test
+    public void testTwoSatCC() {
+        this.testTwoSat(new TwoSatCC());
+    }
+    
+    @Test
+    public void testTwoSatLS() {
+        this.testTwoSat(new TwoSatLS());
+    }
+    
+    private void testTwoSat(TwoSat ts) {
+        String[] files = {
+            "resources/2sat1.txt",
+            "resources/2sat2.txt",
+            "resources/2sat3.txt",
+            "resources/2sat4.txt",
+            "resources/2sat5.txt",
+            "resources/2sat6.txt",
+        };
+        StringBuilder ans = new StringBuilder(6);
+        for (String file : files) {
+            long startTime = System.nanoTime();
+
+            ts.init(this.readData(file));
+            if (ts.isSat()) {
+                ans.append('1');
+            } else {
+                ans.append('0');
+            }
+            long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+            System.out.println("Finished file " + file + " found to be " + (ans.charAt(ans.length()-1) == '0' ? " not ": "") + " satisfiable in (" + elapsedTime + " seconds)");
+        }
+        System.out.println(ans.toString());
+        
+        assert ans.equals("101100");
+    }
+
+    public int[] readData(String file) {
+        FileReader fr;
+        try {
+            fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+            int N = Integer.parseInt(line);
+            int[] data = new int[N * 2];
+            int i = 0;
+            while ((line = br.readLine()) != null) {
+                if ("".equals(line)) {
+                    continue;
+                }
+                String[] split = line.trim().split("(\\s)+");
+                data[i++] = Integer.parseInt(split[0]);
+                data[i++] = Integer.parseInt(split[1]);      
+            }
+            return data;
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

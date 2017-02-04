@@ -8,6 +8,6 @@ public interface TwoSat {
     public boolean eval();
 
     public boolean isSat();
-
-    public void init(String s);
+    
+    public void init(int[] data);
 }

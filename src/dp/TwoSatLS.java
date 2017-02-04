@@ -1,19 +1,15 @@
 package dp;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import utils.RandGen;
 
 /* TwoSatLS - 2SAT using local search
-*/
+ */
 public class TwoSatLS implements TwoSat {
 
     Map<Integer, Boolean> variables;
@@ -111,71 +107,31 @@ public class TwoSatLS implements TwoSat {
     }
 
     @Override
-    public void init(String file) {
-        FileReader fr;
-        try {
-            fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line = br.readLine();
-            this.N = Long.parseLong(line);
-            this.variables = new HashMap<>();
-            this.equation = new ArrayList<>();
-            this.appearOnce = new HashSet<>();
-            Short c = 0;
-            while ((line = br.readLine()) != null) {
-                if ("".equals(line)) {
-                    continue;
-                }
-                String[] split = line.trim().split("(\\s)+");
-                Integer Xi = Integer.parseInt(split[0]);
-                Integer Yi = Integer.parseInt(split[1]);
-                addToVariables(Xi);
-                addToVariables(Yi);
-                clause cl = new clause(Xi, Yi);
-                this.equation.add(cl);
+    public void init(int[] data) {
+        this.N = data.length / 2;
+        this.variables = new HashMap<>();
+        this.equation = new ArrayList<>();
+        this.appearOnce = new HashSet<>();
+        for (int i = 0; i < data.length; i += 2) {
+            addToVariables(data[i]);
+            addToVariables(data[i + 1]);
+            this.equation.add(new clause(data[i], data[i + 1]));
+        }
+        if (this.appearOnce.size() > 0) {
+            for (Integer once : this.appearOnce) {
+                this.variables.remove(once);
             }
-            if (this.appearOnce.size() > 0) {
-                for (Integer once : this.appearOnce) {
-                    this.variables.remove(once);
-                }
-                System.out.println("Removed " + this.appearOnce.size());
-                for (Integer once : this.appearOnce) {
-                    for (int i = 0; i < this.equation.size(); i++) {
-                        if (this.equation.get(i).lVar.equals(once) || this.equation.get(i).rVar.equals(once)) {
-                            this.equation.remove(i);
-                            break;
-                        }
+            System.out.println("Removed " + this.appearOnce.size());
+            for (Integer once : this.appearOnce) {
+                for (int i = 0; i < this.equation.size(); i++) {
+                    if (this.equation.get(i).lVar.equals(once) || this.equation.get(i).rVar.equals(once)) {
+                        this.equation.remove(i);
+                        break;
                     }
                 }
-                this.N = this.N - this.appearOnce.size();
             }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+            this.N = this.N - this.appearOnce.size();
         }
     }
 
-    public static void main(String[] args) {
-        String[] files = {
-            "resources/2sat1.txt",
-            "resources/2sat2.txt",
-            "resources/2sat3.txt",
-            "resources/2sat4.txt",
-            "resources/2sat5.txt",
-            "resources/2sat6.txt",};
-        TwoSatLS ts = new TwoSatLS();
-        StringBuilder ans = new StringBuilder(6);
-        for (String file : files) {
-            long startTime = System.nanoTime();
-
-            ts.init(file);
-            if (ts.isSat()) {
-                ans.append('1');
-            } else {
-                ans.append('0');
-            }
-            long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-            System.out.println("Finished file " + file + "(" + elapsedTime + " seconds)");
-        }
-        System.out.println(ans.toString());
-    }
 }
