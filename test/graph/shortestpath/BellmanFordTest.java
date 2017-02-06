@@ -2,7 +2,6 @@ package graph.shortestpath;
 
 import graph.WeightedGraph;
 import graph.WeightedGraphDirected;
-import graph.shortestpath.BellmanFord;
 import org.junit.Test;
 
 public class BellmanFordTest {

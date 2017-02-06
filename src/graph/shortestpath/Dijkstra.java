@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graph.shortestpath;
 
 import graph.WeightedGraph;
@@ -10,7 +5,6 @@ import heap.MinHeap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,11 +30,12 @@ public class Dijkstra<T> {
      * @param v
      * @return 
      */
-    public int sp(T u, T v) {
+    public Path<T> sp(T u, T v) {
         T s = u;
         Set<T> X = new HashSet<>();
         Map<T, Integer> d = new HashMap<>();
-        List<T> path = new ArrayList<>();
+        Path<T> rv = new Path<>(u, v, Integer.MAX_VALUE);
+        rv.path = new ArrayList<>();
         d.put(s, 0);
         MinHeap<WeightedGraph.Edge<T>> heap = new MinHeap<>();
         for (T t : graph.V()) {
@@ -49,21 +44,22 @@ public class Dijkstra<T> {
             }
         }
         X.add(u);
-        path.add(u);
+        rv.path.add(u);
         computeKeys(heap, X, u, d);
         while (!s.equals(v)) {
             WeightedGraph.Edge<T> w = heap.Delete();
             if (w.d == Integer.MAX_VALUE) { // No path from u to v ?
-                return Integer.MAX_VALUE;
+                return rv; // path length is Integer.MAX_VALUE, meaning +Infinity
             }
             d.put(w.v, w.d);
             s = w.v;
-            path.add(s);
+            rv.path.add(s);
             X.add(w.v);
             computeKeys(heap, X, w.v, d);
         }
-        path.add(v);
-        return d.get(s);
+        rv.path.add(v);
+        rv.d = d.get(s);
+        return rv;
     }
     
     private void computeKeys(MinHeap<WeightedGraph.Edge<T>> heap, Set<T> X, T w, Map<T, Integer> d) {

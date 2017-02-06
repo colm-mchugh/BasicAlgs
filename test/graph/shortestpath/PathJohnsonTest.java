@@ -2,7 +2,6 @@ package graph.shortestpath;
 
 import graph.WeightedGraph;
 import graph.WeightedGraphDirected;
-import graph.shortestpath.Johnson;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -94,10 +93,10 @@ public class PathJohnsonTest {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] split = line.trim().split("(\\s)+");
-                int u = Integer.parseInt(split[0]);
-                int v = Integer.parseInt(split[1]);
-                int d = Integer.parseInt(split[2]);
-                graph.link(u, v, d);
+                int uVertex = Integer.parseInt(split[0]);
+                int vVertex = Integer.parseInt(split[1]);
+                int edgeWeight = Integer.parseInt(split[2]);
+                graph.link(uVertex, vVertex, edgeWeight);
             }
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();

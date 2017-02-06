@@ -82,7 +82,7 @@ public class WGraphExps<T> extends WeightedGraphDirected<T> {
                 if (u.equals(v)) {
                     continue;
                 }
-                int duv = sper.sp(u, v);
+                int duv = sper.sp(u, v).d;
                 int Pu = sps.get(u);
                 int Pv = sps.get(v);
                 if (minPath > duv - Pu + Pv) {

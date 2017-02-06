@@ -68,7 +68,7 @@ public class Johnson<T> {
                 if (u.equals(v)) {
                     continue;
                 }
-                int duv = sper.sp(u, v);
+                int duv = sper.sp(u, v).d;
                 if (duv == Integer.MAX_VALUE) {
                     continue;
                 }

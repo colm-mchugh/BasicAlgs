@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package clustering;
 
 import java.io.BufferedReader;
@@ -17,7 +12,6 @@ public class TwoSumTest {
     public void testTwoSum() {
         Long[] numbers = this.readNumbers("resources/2sum.txt");
         TwoSum twoSummer = new TwoSum(numbers);
-        int t = 0;
         int lb = -10000, ub = 10000;
         int numTwoSums = 0;
         for (int target = lb; target <= ub; target++) {

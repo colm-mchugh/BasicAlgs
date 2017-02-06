@@ -11,8 +11,8 @@ import java.util.Map;
  * which is to take each element of the array and check if the sum of that 
  * element with any other element gives the target. This is O(N^2).
  * 
- * A faster solution is to create a hashmap of the elements and, for each element
- * of the array check if (element - target) is in the hashmap. This is O(N).
+ * This class's solution is to create a hash of the elements and, for each element
+ * of the array, check if (element - target) is in the hashmap. This is O(N).
  *
  */
 public class TwoSum {
@@ -33,8 +33,8 @@ public class TwoSum {
     }
 
     /**
-     * The two sum problem determines whether or not there are two numbers in a
-     * given array that sum to a given target.
+     * Determines whether or not there are two numbers in self's array
+     * that sum to the given target.
      *
      * @param target
      * @return true if there are two numbers in ar s.t. ar[i] + ar[j] = target

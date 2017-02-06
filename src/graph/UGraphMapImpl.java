@@ -71,20 +71,24 @@ public class UGraphMapImpl<T> implements Graph<T> {
         rep.get(from).add(to);
     }
 
+    /**
+     * Returns a cut of the graph.  
+     * @return 
+     */
     @Override
     public GraphCut<T> makeCut() {
         // Implement random cut computation using Karger's well known algorithhm:
         // While there are more than two vertices, pick two at random and fuse them
         // into a single vertex, removing self-loops and edge(s) between them
-        Map<T, Set<T>> clone = this.cloneRep(); // Use a copy of the graph - don't mutate this
+        Map<T, Set<T>> clone = this.cloneRep(); // Use a copy of the graph - don't mutate self
         while (clone.keySet().size() > 2) {
             T v1 = this.chooseRandom(clone.keySet());
             T v2 = this.chooseRandom(clone.get(v1));
-            // note that if v1 and v2 happen to be a crossing edge of the graph's minimum cut,
-            // then the cut created by this invocation cannot possibly be a minimum cut.
+            // note that if (v1, v2) happens to be a crossing edge of the graph's minimum cut,
+            // then the cut created by this invocation cannot be a minimum cut.
             this.fuse(v1, v2, clone);
         }
-        // Capture the vertices on either side of the cut
+        // Done fusing, now put the vertices on either side of the cut into sets
         Set<T> setA = new HashSet<>();
         Set<T> setB = new HashSet<>();
         Set<T> tmp = setA;
@@ -113,14 +117,15 @@ public class UGraphMapImpl<T> implements Graph<T> {
      */
     private T chooseRandom(Set<T> s) {
         int i = RandGen.uniform(s.size());
+        // This algorithm requires iterating the vertices, therefore is O(V())
+        // There may be a more efficient implementation, depending on how stream()
+        // is implemented: return s.stream().skip(i).findFirst().get();
         for (T v : s) {
             if (i == 0) {
                 return v;
             }
             i--;
         }
-        // this may be a more efficient implementation, depending on how stream()
-        // is implemented: return s.stream().skip(i).findFirst().get();
         return null;
     }
 

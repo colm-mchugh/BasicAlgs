@@ -26,7 +26,7 @@ public class HammingCluster {
             while ((line = br.readLine()) != null) {
                 String[] bits = line.trim().split("(\\s)+");
                 BitSet vertex = new BitSet(numBits);
-                assert bits.length == vertex.length();
+                //assert bits.length == vertex.length();
                 for (int i = 0; i < bits.length; i++) {
                     if (bits[i].equals("1")) {
                         vertex.set(i);
@@ -86,9 +86,7 @@ public class HammingCluster {
     }
 
     public static void main(String[] args) {
-        HammingCluster pish = new HammingCluster();
-        int answer = pish.doit("resources/clustering_big.txt");
-        System.out.println("Answer is " + answer);
+        
     }
 
 }

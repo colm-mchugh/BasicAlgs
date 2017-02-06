@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CC<T> {
-    private Graph<T> rep;
     private Map<T, Integer> components;
     
     
     public CC(Graph<T> rep) {
-        this.rep = rep;
         this.components = new HashMap<>();
         int id = 0;
         for (T v : rep.V()) {

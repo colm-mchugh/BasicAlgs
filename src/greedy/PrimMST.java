@@ -15,7 +15,7 @@ public class PrimMST<T> {
     private Long computedCost = Long.MIN_VALUE;
     
     public PrimMST(WeightedGraph<T> graph) {
-        assert g.numVertices() > 0;
+        assert graph.numVertices() > 0;
         this.g = graph;
     }
 
@@ -52,6 +52,7 @@ public class PrimMST<T> {
     
     /**
      * Return the Minimum Spanning Tree of g 
+     * @return 
      */ 
     public WeightedGraph<T> mst() {
         return slowMst();

@@ -20,7 +20,7 @@ public class CCCer<T> {
     private final Map<T, Set<T>> components;
     
     /**
-     * StrongCC creates the strongly connected components of a directed graph.
+     * CCCer determines the strongly connected components of a directed graph.
      *
      * The strongly connected components C1,..CN of a directed graph g are disjoint 
      * sets of the vertices of g such that, for every pair of vertices (v1, v2)
@@ -28,7 +28,7 @@ public class CCCer<T> {
      * path from v2 to v1. A single vertex v by itself is a strongly connected
      * component; v <=> v is true.
      *
-     * StrongCC computes the strongly connected components of g using Kosaraju's 
+     * CCCer computes the strongly connected components of g using Kosaraju's 
      * algorithm; this performs two Depth First (DFS) passes over the graph, as 
      * described in part 1 and part 2 below.
      * 
@@ -36,8 +36,8 @@ public class CCCer<T> {
      */
     public CCCer(Graph<T> g) {
         this.g = g; // the directed graph 
-        this.components = new HashMap<>();  // Will hold the SCCs of g
-        Set<T> visited = new HashSet<>();  // for keeping track of visited vertices during a graph search
+        this.components = new HashMap<>();  // To the SCCs of g
+        Set<T> visited = new HashSet<>();  // To keep track of visited vertices during a graph search
         
         // part 1 - reverse the graph and construct a topological ordering of all
         // the vertices of the reversed graph

@@ -1,22 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graph.shortestpath;
 
 import graph.WGraphExps;
 import graph.WeightedGraph;
 import graph.WeightedGraphDirected;
-import graph.shortestpath.FloydWarshall;
-import graph.shortestpath.Path;
 import java.util.List;
 import org.junit.Test;
 
-/**
- *
- * @author colm_mchugh
- */
 public class FloydWarshallTest {
     
     @Test

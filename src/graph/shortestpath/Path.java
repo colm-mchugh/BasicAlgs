@@ -1,11 +1,14 @@
 package graph.shortestpath;
 
+import java.util.List;
+
 public class Path<T> {
 
     public T u;
     public T v;
     public int d;
-
+    public List<T> path;
+    
     public Path(T u, T v, int d) {
         this.u = u;
         this.v = v;

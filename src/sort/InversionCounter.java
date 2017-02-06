@@ -9,6 +9,7 @@ public class InversionCounter {
      * i > j and a[i] < a[j] for any 0 <= i < N and 0 <= j < N
      * This function counts all such inversions in the array.
      * Additionally, the array is sorted.
+     * 
      * @param a
      * @return 
      */
@@ -56,7 +57,7 @@ public class InversionCounter {
         while (ui < j + 1) {  // upper half not completely processed ?
             a[ia++] = tmp[ui++]; // => copy over the remaining upper half
         }
-        while (li < m + 1) {    // upper half not completely processed ?
+        while (li < m + 1) {    // lower half not completely processed ?
             a[ia++] = tmp[li++]; // => copy over the remaining lower half
         }
         return numInversions;

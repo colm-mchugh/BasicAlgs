@@ -27,8 +27,8 @@ public class DijkstraTest {
         }
         for (Integer t : g.V()) {
             if (distances.keySet().contains(t)) {
-                Dijkstra<Integer> shortestPathCalcer = new Dijkstra<>(g);
-                int d = shortestPathCalcer.sp(1, t); //g.sp(1, t);
+                Dijkstra<Integer> dijkster = new Dijkstra<>(g);
+                int d = dijkster.sp(1, t).d; 
                 distances.replace(t, d);
             }
         }
@@ -90,7 +90,7 @@ public class DijkstraTest {
 
         Dijkstra<String> sper = new Dijkstra<>(g);
         
-        assert sper.sp("a", "d") == 5;
+        assert sper.sp("a", "d").d == 5;
 
         String s = "a";
         for (String t : g.V()) {
@@ -116,7 +116,7 @@ public class DijkstraTest {
 
         Dijkstra<Integer> sper = new Dijkstra<>(g);
         
-        assert sper.sp(1, 6) == 5;
+        assert sper.sp(1, 6).d == 5;
     }
 
     @Test
@@ -160,7 +160,7 @@ public class DijkstraTest {
                 if (u.equals(v)) {
                     System.out.println("(" + u + " -> " + v + ") = 0");
                 } else {
-                    int duv = sper.sp(u, v);
+                    int duv = sper.sp(u, v).d;
                     if (duv == Integer.MAX_VALUE) {
                         System.out.println("No path: " + u + " -> " + v);
                     } else {

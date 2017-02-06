@@ -78,11 +78,11 @@ public interface Graph<T> {
 
     /**
      * A graph cut is a partition of a graph g into two subsets A and B such that:
-     * A U B == g.V(), A intersection B == {}
+     * A U B == g.V() and A intersection B == {}
      * crossings is the number of edges between A and B
      * @param <T> 
      */
-    public static class GraphCut<T> implements Comparable<GraphCut<T>> {
+    public static class GraphCut<T> {
         public Set<T> A;
         public Set<T> B;
         public int crossings;
@@ -92,13 +92,6 @@ public interface Graph<T> {
             this.B = B;
             this.crossings = crossings;
         }
-
-        @Override
-        public int compareTo(GraphCut<T> o) {
-            return this.crossings - o.crossings;
-        }
-
-       
-        
+     
     }
 }
