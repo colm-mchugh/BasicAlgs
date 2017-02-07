@@ -68,9 +68,18 @@ public class QuickSortTest {
                 a[i] = Integer.parseInt(line);
             }
 
-            QuickSorter qs = new QuickSorter(QuickSorter.PartitionStrategy.MEDIAN, false, false);
-            Comparable theAnswer = qs.RSelect(a, 9900);
+            QuickSorter qs = new QuickSorter(QuickSorter.PartitionStrategy.MEDIAN, !QuickSorter.RANDOM, !QuickSorter.LOGGING);
+            Comparable theAnswer = qs.KSelectRecursive(a, 9900);
             assert theAnswer.equals(9901);
+            
+            int k = a.length / 2 - 1;
+            theAnswer = qs.KSelectRecursive(a, k);
+            Comparable check = qs.KSelect(a, k);
+            assert theAnswer.equals(check);
+            
+            qs.sort(a);
+            assert a[k].equals(theAnswer);
+            
         } catch (IOException ex) {
             Logger.getLogger(QuickSortTest.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -80,6 +89,16 @@ public class QuickSortTest {
                 Logger.getLogger(QuickSortTest.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    @Test
+    public void testSortUlysses() {
+        String[] Ulysses = {"Stately", "plump", "Buck", "Mulligan", "came", "from",
+            "the", "stairhead", "bearing", "a", "bowl", "of", "lather", "on",
+            "which", "a", "razor", "and", "a", "mirror", "lay", "crossed"};
+        QuickSorter qs = new QuickSorter();
+        qs.sort(Ulysses);
+        this.validateSortOrder(Ulysses);
     }
     
     private void testStrategy(QuickSorter.PartitionStrategy strategy, int expectedCompares) {
@@ -95,7 +114,7 @@ public class QuickSortTest {
 
             QuickSorter qs = new QuickSorter(strategy, false, false);
             qs.sort(a);
-            qs.validateSortOrder(a);
+            this.validateSortOrder(a);
             assert qs.getLastSortCompares() == expectedCompares;
         } catch (IOException ex) {
             Logger.getLogger(QuickSortTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,4 +126,11 @@ public class QuickSortTest {
             }
         }
     }
+    
+    private void validateSortOrder(Comparable[] a) {
+        for (int i = 0; i < a.length - 2; i++) {
+            assert a[i].compareTo(a[i + 1]) <= 0;
+        }
+    }
+
 }
