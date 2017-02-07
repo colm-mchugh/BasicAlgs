@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class UGraphMapImpl<T> implements Graph<T> {
     }
 
     @Override
-    public Iterable<T> connections(T from) {
+    public Collection<T> connections(T from) {
         Set<T> rv = this.rep.get(from);
         if (rv == null) {
             rv = this.emptySet;
@@ -107,7 +108,7 @@ public class UGraphMapImpl<T> implements Graph<T> {
         if (!fusions.isEmpty()) { 
             throw new RuntimeException("Fusions is not empty!!");
         }
-        return new GraphCut<>(setA, setB, countCrossings(setA, setB));
+        return new GraphCut<>(setA, setB, this);
     }
 
     /**
@@ -129,33 +130,52 @@ public class UGraphMapImpl<T> implements Graph<T> {
         return null;
     }
 
-    // Fuse vertices from and to into a single vertex in the graph representation clone.
-    private void fuse(T from, T to, Map<T, Set<T>> clone) {
-        Set<T> fromSet = clone.get(from);
-        Set<T> toSet = clone.get(to);
-        T mergeInto = from;
-        T mergee = to;
+    /**
+     * Fuse vertices u and v together in the cloned graph.
+     * 
+     * This involves:
+     * - Decide which of u and v have the most edges; the edges of the other
+     *   vertex will be merged into these edges.
+     * - 
+     *
+     * Postcondition: clone contains a vertex uv AND edges(uv) = edges(u) U edges(v)
+     * 
+     * @param u
+     * @param v
+     * @param clone 
+     */
+    private void fuse(T u, T v, Map<T, Set<T>> clone) {
+        Set<T> uSet = clone.get(u);
+        Set<T> vSet = clone.get(v);
+        T merger = u; 
+        T mergee = v;
         // merge the smaller set into the larger set
-        if (fromSet.size() < toSet.size()) {
-            mergeInto = to;
-            mergee = from;
+        if (uSet.size() < vSet.size()) {
+            merger = v;
+            mergee = u;
         }
+        // At this point, mergee is the vertex with smallest #edges of (u,v)
+        //                merger is the vertex with largest #edges of (u,v)
+        // In the mergee's edges, replace edges to the mergee with edges to merger       
         Set<T> mergeeSet = clone.get(mergee);
         for (T element : mergeeSet) {
             Set<T> elementSet = clone.get(element);
             elementSet.remove(mergee);
-            elementSet.add(mergeInto);
+            elementSet.add(merger);
         }
-        Set<T> mergeintoSet = clone.get(mergeInto);
-        mergeintoSet.addAll(mergeeSet);
-        mergeintoSet.remove(mergeInto);
-        clone.remove(mergee);
-        if (fusions.get(mergeInto) == null) {
-            fusions.put(mergeInto, new HashSet<>());
+        // Add the mergee's edges to the merger's edges
+        Set<T> mergerSet = clone.get(merger);
+        mergerSet.addAll(mergeeSet);
+        mergerSet.remove(merger); // removes self loops, if any
+        clone.remove(mergee); // remove mergee from cloned graph; the edge (u,v) is now a single vertex uv
+        // fusions should contain an entry for the merger vertex, with all the mergee's edges
+        // fusions should no longer contain an entry for the mergee vertex
+        if (fusions.get(merger) == null) {
+            fusions.put(merger, new HashSet<>());
         };
-        fusions.get(mergeInto).add(mergee);
+        fusions.get(merger).add(mergee);
         if (fusions.get(mergee) != null) {
-            fusions.get(mergeInto).addAll(fusions.get(mergee));
+            fusions.get(merger).addAll(fusions.get(mergee));
             fusions.remove(mergee);
         }
     }
@@ -165,18 +185,6 @@ public class UGraphMapImpl<T> implements Graph<T> {
         for (T v : this.rep.keySet()) {
             rv.put(v, new HashSet<>());
             rv.get(v).addAll(this.rep.get(v));
-        }
-        return rv;
-    }
-
-    private int countCrossings(Set<T> setA, Set<T> setB) {
-        int rv = 0;
-        for (T v : setA) {
-            for (T x : setB) {
-                if (this.rep.get(v).contains(x)) {
-                    rv++;
-                }
-            }
         }
         return rv;
     }

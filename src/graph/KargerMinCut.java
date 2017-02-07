@@ -16,13 +16,13 @@ public class KargerMinCut<T> {
      * @param graph
      * @return 
      */ 
-    public Graph.GraphCut<T> minCut(Graph<T> graph) {
-        Graph.GraphCut<T> smallestCut = new Graph.GraphCut<>(null, null, Integer.MAX_VALUE);
+    public GraphCut<T> minCut(Graph<T> graph) {
+        GraphCut<T> smallestCut = null;
         int trialNo = 0;
         int trials = graph.numVertices() * graph.numVertices();
         for (int i = 0; i < trials; i++) {
-            Graph.GraphCut<T> trial = graph.makeCut(); 
-            if (trial.crossings < smallestCut.crossings) {
+            GraphCut<T> trial = graph.makeCut(); 
+            if (smallestCut == null || trial.crossings() < smallestCut.crossings()) {
                 smallestCut = trial;
                 trialNo = i;
             }
@@ -30,7 +30,7 @@ public class KargerMinCut<T> {
                 System.out.println("Finished trial " + i + " of " + trials);
             }
         }
-        System.out.println("Min value " + smallestCut.crossings + " was found in trial " + trialNo);
+        System.out.println("Min value " + smallestCut.crossings() + " was found in trial " + trialNo);
         return smallestCut;
     }
        

@@ -22,9 +22,10 @@ public class KargerMinCutTest {
             }
             System.out.println();
         }
-        Graph.GraphCut<Integer> minCut = kmc.minCut(graph);
-        System.out.println("The minCut is " +  minCut.crossings);
-        assert minCut.crossings == 17;
+        GraphCut<Integer> minCut = kmc.minCut(graph);
+        int minCutCrossings = minCut.crossings();
+        System.out.println("The minCut is " +  minCutCrossings);
+        assert minCutCrossings == 17;
     }
     
     private Graph<Integer> getGraph(String relPath) {
