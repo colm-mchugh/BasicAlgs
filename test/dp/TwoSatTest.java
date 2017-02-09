@@ -34,23 +34,21 @@ public class TwoSatTest {
     boolean[] expected = {
         true, true, false, false, true,};
 
-    protected void runTests(TwoSat inst) {
+    protected void runTests(boolean doCC) {
         for (int i = 0; i < tests.length; i++) {
-            inst.init(this.readData(tests[i]));
-            assert inst.isSat() == expected[i];
+            TwoSat ts = (doCC? new TwoSatCC(readData(tests[i])) : new TwoSatLS(readData(tests[i])));
+            assert ts.isSat() == expected[i];
         }
     }
 
     @Test
     public void testLS() {
-        TwoSatLS ts = new TwoSatLS();
-        runTests(ts);
+        runTests(false);
     }
 
     @Test
     public void testCC() {
-        TwoSatCC ts = new TwoSatCC();
-        runTests(ts);
+        runTests(true);
     }
 
     @Test
@@ -66,15 +64,15 @@ public class TwoSatTest {
     
     @Test
     public void testTwoSatCC() {
-        this.testTwoSat(new TwoSatCC());
+        this.testTwoSat(true);
     }
     
     @Test
     public void testTwoSatLS() {
-        this.testTwoSat(new TwoSatLS());
+        this.testTwoSat(false);
     }
     
-    private void testTwoSat(TwoSat ts) {
+    private void testTwoSat(boolean doCC) {
         String[] files = {
             "resources/2sat1.txt",
             "resources/2sat2.txt",
@@ -86,8 +84,7 @@ public class TwoSatTest {
         StringBuilder ans = new StringBuilder(6);
         for (String file : files) {
             long startTime = System.nanoTime();
-
-            ts.init(this.readData(file));
+            TwoSat ts = (doCC? new TwoSatCC(readData(file)) : new TwoSatLS(readData(file)));
             if (ts.isSat()) {
                 ans.append('1');
             } else {

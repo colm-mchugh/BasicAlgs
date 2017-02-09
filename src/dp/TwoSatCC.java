@@ -33,8 +33,7 @@ public class TwoSatCC implements TwoSat {
         return true;
     }
 
-    @Override
-    public void init(int[] data) {
+    public TwoSatCC(int[] data) {
         this.N = data.length / 2;
         this.g = new DGraphImpl<>();
         this.variables = new HashMap<>();

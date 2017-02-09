@@ -106,8 +106,7 @@ public class TwoSatLS implements TwoSat {
         return false;
     }
 
-    @Override
-    public void init(int[] data) {
+    public TwoSatLS(int[] data) {
         this.N = data.length / 2;
         this.variables = new HashMap<>();
         this.equation = new ArrayList<>();

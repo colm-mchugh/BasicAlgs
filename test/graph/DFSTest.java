@@ -25,7 +25,7 @@ public class DFSTest {
         g.add(9, 12);
         g.add(11, 12);
         
-        this.myGAPI = new GraphTraversalBFS(g, 0);
+        this.myGAPI = new GraphTraversalDFS(g, 0);
 
     }
     

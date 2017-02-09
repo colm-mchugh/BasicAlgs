@@ -11,7 +11,9 @@ import java.util.Set;
 /**
  * GraphTraversal encapsulates the traversal of a graph from a given source vertex.
  * 
- * It includes the necessary state to 
+ * It includes the necessary state to answer questions about a traversal, such as
+ * "is it possible to get to a vertex v from source", or "what is the path from 
+ * the source to v"
  * 
  * @param <T> 
  */
@@ -48,6 +50,14 @@ public abstract class GraphTraversal<T> {
         return this.visited.contains(x);
     }
     
+    /**
+     * Return the path from the source to the given vertex x. The path is a sequence
+     * of vertices, starting at source and ending at x. If there is no path from
+     * s to x, the path is an empty sequence.
+     * 
+     * @param x
+     * @return 
+     */
     public Iterable<T> pathTo(T x) {
         Deque<T> path = new ArrayDeque<>();
         if (!this.hasPathTo(x)) {
@@ -60,10 +70,18 @@ public abstract class GraphTraversal<T> {
         return path;
     }
 
+    /**
+     * The graph on which the traversal was performed.
+     * @return 
+     */
     public Graph<T> getGraph() {
         return graph;
     }
 
+    /**
+     * The starting vertex for the traversal.
+     * @return 
+     */
     public T getSource() {
         return source;
     }

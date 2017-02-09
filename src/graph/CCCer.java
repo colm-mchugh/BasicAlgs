@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * CCCer (Connecting Components Computer) computes the strongly connected
- * components of a directed graph and stores them for retrieval
+ * components of a directed graph and stores them for retrieval.
  * 
  * @param <T> the type of the graph
  */
@@ -36,7 +36,7 @@ public class CCCer<T> {
      */
     public CCCer(Graph<T> g) {
         this.g = g; // the directed graph 
-        this.components = new HashMap<>();  // To the SCCs of g
+        this.components = new HashMap<>();  // The SCCs of g
         Set<T> visited = new HashSet<>();  // To keep track of visited vertices during a graph search
         
         // part 1 - reverse the graph and construct a topological ordering of all
@@ -45,14 +45,15 @@ public class CCCer<T> {
         List<T> ordering = new ArrayList<>(rev.numVertices());
         for (T v : rev.V()) {
             if (!visited.contains(v)) {
-                // following will be called for each SCC in g.rev
+                // This will be called for each SCC in g.rev
                 this.makeTopologicalOrdering(rev, v, ordering, visited);
             }
         }
         // postcondition: ordering contains a topological ordering of the 
         // vertices of g.reverse()
         
-        visited.clear();
+        visited.clear(); // reuse visited for determining the connected components
+        
         // part 2 - visit the vertices of the topological ordering from most  
         // recent first, and for each vertex v that has not been visited, it
         // becomes the leader of a new component; populateConnectedComponents 
@@ -74,6 +75,7 @@ public class CCCer<T> {
      * 
      * The graph is traversed Depth-First, and source added to the ordering after 
      * all the unvisited vertices in its connected component have been processed.
+     * This means ordering will list the vertices from the sink to the first.
      * 
      * @param graph
      * @param source
