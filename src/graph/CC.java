@@ -14,7 +14,7 @@ public class CC<T> {
             if (this.components.containsKey(v)) {
                 continue;
             }
-            DFS<T> g = new DFS(rep, v);
+            GraphTraversalDFS<T> g = new GraphTraversalDFS(rep, v);
             for (T n : g.visited) {
                 this.components.put(n, id);
             }

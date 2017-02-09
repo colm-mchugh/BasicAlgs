@@ -80,7 +80,8 @@ public class UGraphMapImpl<T> implements Graph<T> {
     public GraphCut<T> makeCut() {
         // Implement random cut computation using Karger's well known algorithhm:
         // While there are more than two vertices, pick two at random and fuse them
-        // into a single vertex, removing self-loops and edge(s) between them
+        // into a single vertex, removing self-loops and edge(s) between them.
+        // The edges of the fused vertex are the union of the randomly two vertices edges.
         Map<T, Set<T>> clone = this.cloneRep(); // Use a copy of the graph - don't mutate self
         while (clone.keySet().size() > 2) {
             T v1 = this.chooseRandom(clone.keySet());

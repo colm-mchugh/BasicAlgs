@@ -60,7 +60,7 @@ public interface Graph<T> {
      * edges between S1 and S2. The Minimum Cut is the partition with smallest
      * possible N.
      */
-    public GraphCut makeCut();
+    public GraphCut<T> makeCut();
 
     /**
      * Return a graph that is the reverse of this graph. A directed graph will
