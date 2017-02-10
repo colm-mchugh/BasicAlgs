@@ -1,3 +1,4 @@
+package string;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,15 +28,19 @@ public class Trie {
         }
     }
 
-    List<Map<Character, Integer>> buildTrie(String[] patterns) {
-        List<Map<Character, Integer>> trie = new ArrayList<>();
+    private Set<Integer> terminalNodes;
+    private List<Map<Character, Integer>> trie;
 
+    List<Map<Character, Integer>> buildTrie(String[] patterns) {
+        this.trie = new ArrayList<>();
+        this.terminalNodes = new HashSet<>();
         trie.add(new HashMap<>());
         for (String pattern : patterns) {
-            Map<Character, Integer> currentNode = trie.get(0);
+            Integer nextNodeIndex = 0;
+            Map<Character, Integer> currentNode = trie.get(nextNodeIndex);
             for (int i = 0; i < pattern.length(); i++) {
                 char currentSymbol = pattern.charAt(i);
-                Integer nextNodeIndex = trie.size();
+                nextNodeIndex = trie.size();
                 if (currentNode.containsKey(currentSymbol)) {
                     nextNodeIndex = currentNode.get(currentSymbol);
                 } else {
@@ -44,9 +49,30 @@ public class Trie {
                 }
                 currentNode = trie.get(nextNodeIndex);
             }
+            terminalNodes.add(nextNodeIndex);
         }
 
         return trie;
+    }
+    
+    public boolean prefixTrieMatching(String text, int offset) {
+        char symbol = text.charAt(offset);
+        Map<Character, Integer> node = trie.get(0);
+        while (true) {
+            if (node.containsKey(symbol)) {
+                if (terminalNodes.contains(node.get(symbol))) {
+                    return true;
+                } else {
+                    if (++offset == text.length()) {
+                        return false;
+                    }
+                    node = trie.get(node.get(symbol));
+                    symbol = text.charAt(offset);
+                }
+            } else {
+                return false;
+            }
+        }
     }
 
     static public void main(String[] args) throws IOException {
