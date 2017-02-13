@@ -20,7 +20,7 @@ public interface WeightedGraph<T> {
     void link(T u, T v, int w);
     
     /**
-     * An iterable of all vertices in the graph
+     * The vertices in the graph
      * @return 
      */
     Iterable<T> V();
@@ -31,7 +31,7 @@ public interface WeightedGraph<T> {
     public int numVertices();
 
     /**
-     * Return the edges connected to vertex u.
+     * The edges connected to vertex u.
      * 
      * @param u
      * @return 
@@ -39,8 +39,8 @@ public interface WeightedGraph<T> {
     Set<Edge<T>> edgesOf(T u);
     
     /**
-     * Return true if the graph is covered by the given vertices, 
-     * else return false.
+     * True if the graph is covered by the given vertices, 
+     * else false.
      * 
      * A graph g is covered by a vertex set X if X includes all the
      * vertices of the graph g.
@@ -69,8 +69,8 @@ public interface WeightedGraph<T> {
     void remove(T u);
     
     /**
-     * An edge consists of a weight d and target vertex v
-     * An edge is comparable on its weight and identity is its vertex
+     * An edge consists of a weight d and target vertex v.
+     * An edge is comparable on its weight and identity is its vertex.
      * 
      * @param <T> 
      */
