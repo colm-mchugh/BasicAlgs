@@ -3,19 +3,25 @@ package string;
 import org.junit.Test;
 
 public class NonSharedSubstringTest {
+            
+    @Test
+    public void testShortSolve1() {
+        this.validate("A", "T", "A");
+    }
     
     @Test
-    public void testSolve() {
-        String[] input = {
-            "CCAAGCTGCTAGAGG", "CATGCTGGGCTGGCT",
-            "ATGCGATGACCTGACTGA", "CTCAACGTATTGGCCAGA",
-            "AAAAAAAAAAAAAAAAAAAA", "TTTTTTTTTTTTTTTTTTTT",
-            "A", "T",
-            };
-        String[] expected = { "AA", "ATG", "A", "A", };
-        for (int i = 0; i < expected.length; i++) {
-            validate(input[i*2], input[i*2+1], expected[i]);
-        }
+    public void testLongSolve1() {
+        this.validate("AAAAAAAAAAAAAAAAAAAA", "TTTTTTTTTTTTTTTTTTTT", "A");
+    }
+    
+    @Test
+    public void testLongSolve2() {
+        this.validate("CCAAGCTGCTAGAGG", "CATGCTGGGCTGGCT", "AA");
+    }
+    
+    @Test
+    public void testLongSolve3() {
+        this.validate("ATGCGATGACCTGACTGA", "CTCAACGTATTGGCCAGA", "ATG");
     }
     
     @Test
@@ -28,10 +34,7 @@ public class NonSharedSubstringTest {
     
     @Test
     public void testShortSolve2() {
-        String s1 = "ABBC", s2 ="ABC";
-        String[] expected = { "BB", };
-        String rv = (new NonSharedSubstring()).solve(s1, s2);
-        assert rv.equals(expected[0]) ;
+        this.validate("ABBC", "ABC", "BB");
     }
     
     private void validate(String p, String q, String v) {

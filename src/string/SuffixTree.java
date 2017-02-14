@@ -88,12 +88,25 @@ public class SuffixTree {
 
     private Map<Suffix, Set<Suffix>> tree;
     private Suffix root;
+    private Map<Suffix, Suffix> paths;
 
     protected void link(Suffix from, Suffix to) {
         if (!tree.containsKey(from)) { // Suffix from is not in the graph
             tree.put(from, new HashSet<>());
         }
         tree.get(from).add(to);
+    }
+
+    private void buildPaths() {
+        this.paths = new HashMap<>();
+        this.treeBFS(new SuffixAction() {
+            public void f(Suffix parent, Suffix node) {
+                paths.put(node, parent);
+            }
+            public Suffix s() {
+                return null;
+            }
+        });
     }
 
     private void addTextToTree(String text, int startIndex) {
@@ -154,7 +167,7 @@ public class SuffixTree {
         this.tree = new HashMap<>();
         this.link(this.root, allText);
     }
-    
+
     private void makeTree(String text) {
         this.initRoot(text);
         this.addTextToTree(text, 1);
@@ -171,21 +184,67 @@ public class SuffixTree {
             }
         }
     }
-    
+
     public String shortestNoncommonSubstring(String p, String q) {
         String pText = p + "#";
         String qText = q + "$";
         this.initRoot(pText);
         this.addTextToTree(pText, 1);
         this.addTextToTree(qText, 0);
-        return p;
+        this.buildPaths();
+        return this.findShortestNoncommonSubstring();
+    }
+
+    public String findShortestNoncommonSubstring() {
+        SuffixAction x = new SuffixAction() {
+            Suffix minSuffix;
+            int minLen = Integer.MAX_VALUE;
+            public void f(Suffix p, Suffix n) {
+                if (n.length() > 1 && n.charAt(n.length() - 1) == '#') {
+                    int len = 0;
+                    for (Suffix t = n; t != root; t = paths.get(t)) {
+                        len += t.length();
+                    }
+                    if (len < minLen) {
+                        minLen = len;
+                        minSuffix = n;
+                    }
+                }
+            }
+            public Suffix s() {
+                return minSuffix;
+            }
+        };
+
+        this.treeBFS(x);
+        StringBuilder sb = new StringBuilder();
+        for (Suffix n = x.s(); n != root; n = paths.get(n)) {
+            sb.insert(0, n.toString());
+        }
+        int c = sb.length();
+        sb.delete(c - 1, c);
+        return sb.toString();
     }
 
     public void print() {
+        this.treeBFS(new SuffixAction() {
+            public void f(Suffix p, Suffix n) {
+                System.out.println(n.toString());
+            }
+            public Suffix s() {
+                return null;
+            }
+        });
+    }
+
+    interface SuffixAction {
+        public void f(Suffix p, Suffix n);
+        public Suffix s();
+    }
+
+    private void treeBFS(SuffixAction a) {
         Queue<Suffix> queue = new ArrayDeque<>();
         Set<Suffix> visited = new HashSet<>();
-                
-        String level = "\t";
         queue.add(root);
         visited.add(root);
         while (!queue.isEmpty()) {
@@ -195,7 +254,7 @@ public class SuffixTree {
                     if (!visited.contains(s)) {
                         queue.add(s);
                         visited.add(s);
-                        System.out.println(s.toString());
+                        a.f(next, s);
                     }
                 }
             }
