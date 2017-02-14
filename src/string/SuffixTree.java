@@ -27,11 +27,70 @@ public class SuffixTree {
         }
     }
 
+    public static class Suffix implements Comparable<Suffix> {
+
+        public int index;
+        public int length;
+        private String text;
+
+        public Suffix(int index, int length, String text) {
+            this.index = index;
+            this.length = length;
+            this.text = text;
+        }
+
+        public Suffix(int index, String text) {
+            this.index = index;
+            this.text = text;
+            this.length = Integer.MAX_VALUE;
+        }
+
+        @Override
+        public int compareTo(Suffix o) {
+            if (this == o) {
+                return 0;
+            }
+            int len = Integer.min(o.length(), this.length());
+            for (int i = 0; i < len; i++) {
+                if (this.charAt(i) < o.charAt(i)) {
+                    return -1;
+                }
+                if (this.charAt(i) > o.charAt(i)) {
+                    return 1;
+                }
+            }
+            return this.length() - o.length();
+        }
+
+        public String text() {
+            return text;
+        }
+
+        public Character charAt(int i) {
+            return text.charAt(index + i);
+        }
+
+        @Override
+        public String toString() {
+            if (this.length == Integer.MAX_VALUE) {
+                return text.substring(index);
+            }
+            return text.substring(index, index + length);
+        }
+
+        public int length() {
+            if (this.length == Integer.MAX_VALUE) {
+                return text.length() - index;
+            }
+            return length;
+        }
+    }
+
     private Map<Suffix, Set<Suffix>> tree;
     private Suffix root;
 
     protected void link(Suffix from, Suffix to) {
-        if (!tree.containsKey(from)) { // Vertex from is not in the graph
+        if (!tree.containsKey(from)) { // Suffix from is not in the graph
             tree.put(from, new HashSet<>());
         }
         tree.get(from).add(to);
@@ -47,6 +106,7 @@ public class SuffixTree {
             Set<Suffix> level = tree.get(root);
             Suffix parent = root;
             int lcpMax = 0;
+            boolean interiorSplit = false;
             for (boolean done = false; !done;) {
                 lcpMax = 0;
                 for (Suffix s : level) {
@@ -59,12 +119,24 @@ public class SuffixTree {
                 if ((lcpMax == 0) || (tree.get(parent) == null)) {
                     done = true;
                 } else {
+                    if ((lcpMax > 0) && (tree.get(parent) != null) && (lcpMax < parent.length)) {
+                        // tricky case: the lcp is a prefix of an interior (non leaf) node.
+                        Suffix parentSplit = new Suffix(parent.index + lcpMax,
+                                parent.length - lcpMax, text);
+                        tree.put(parentSplit, tree.get(parent));
+                        Set<Suffix> parentSet = new HashSet<>();
+                        parentSet.add(parentSplit);
+                        tree.put(parent, parentSet);
+                        parent.length = lcpMax;
+                        done = interiorSplit = true;
+                    }
                     nextSuffix.index = nextSuffix.index + lcpMax;
                     level = tree.get(parent);
                 }
             }
-            if (lcpMax == 0) {
-                // simple case: 
+            if ((lcpMax == 0) || interiorSplit) {
+                // simple case: the next suffix doesn't match any prefix, 
+                // or caused an interior split. 
                 link(parent, nextSuffix);
             } else {
                 // tricky case: parent and nextSuffix share a common prefix of length lcpMax
@@ -75,11 +147,11 @@ public class SuffixTree {
                 parent.length = lcpMax;
                 link(parent, nextSuffix);
                 link(parent, newSibling);
-                
+
             }
         }
     }
-    
+
     public void collectSuffixEdges(Suffix source, Set<Suffix> visited, List<String> edges) {
         visited.add(source);
         if (this.tree.get(source) != null) {
@@ -87,6 +159,27 @@ public class SuffixTree {
                 if (!visited.contains(s)) {
                     collectSuffixEdges(s, visited, edges);
                     edges.add(s.toString());
+                }
+            }
+        }
+    }
+
+    public void print() {
+        Queue<Suffix> queue = new ArrayDeque<>();
+        Set<Suffix> visited = new HashSet<>();
+                
+        String level = "\t";
+        queue.add(root);
+        visited.add(root);
+        while (!queue.isEmpty()) {
+            Suffix next = queue.remove();
+            if (tree.get(next) != null) {
+                for (Suffix s : tree.get(next)) {
+                    if (!visited.contains(s)) {
+                        queue.add(s);
+                        visited.add(s);
+                        System.out.println(s.toString());
+                    }
                 }
             }
         }
@@ -105,10 +198,10 @@ public class SuffixTree {
 
     /**
      * Return the longest common prefix (lcp) of given suffixes.
-     * 
+     *
      * @param s1
      * @param s2
-     * @return 
+     * @return
      */
     static private int lcp(Suffix s1, Suffix s2) {
         int n = Integer.min(s1.length(), s2.length());
