@@ -6,11 +6,8 @@ import java.util.*;
 
 public class NonSharedSubstring implements Runnable {
 	String solve (String p, String q) {
-		String result = p;
-                StringBuilder sb = new StringBuilder(p.length() + q.length() + 2);
-                String text = sb.append(p).append('#').append(q).append('$').toString();
-                SuffixTree sfxTree = new SuffixTree();
-                List<String> edges = sfxTree.computeSuffixTreeEdges(text);
+		SuffixTree sfxTree = new SuffixTree();
+                String result = sfxTree.shortestNoncommonSubstring(p, q);
                 sfxTree.print();
 		return result;
 	}

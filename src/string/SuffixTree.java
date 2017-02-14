@@ -96,12 +96,8 @@ public class SuffixTree {
         tree.get(from).add(to);
     }
 
-    private void makeTree(String text) {
-        root = new Suffix(-1, text);
-        Suffix allText = new Suffix(0, text);
-        tree = new HashMap<>();
-        link(root, allText);
-        for (int i = 1; i < text.length(); i++) {
+    private void addTextToTree(String text, int startIndex) {
+        for (int i = startIndex; i < text.length(); i++) {
             Suffix nextSuffix = new Suffix(i, text);
             Set<Suffix> level = tree.get(root);
             Suffix parent = root;
@@ -122,7 +118,7 @@ public class SuffixTree {
                     if ((lcpMax > 0) && (tree.get(parent) != null) && (lcpMax < parent.length)) {
                         // tricky case: the lcp is a prefix of an interior (non leaf) node.
                         Suffix parentSplit = new Suffix(parent.index + lcpMax,
-                                parent.length - lcpMax, text);
+                                parent.length - lcpMax, parent.text);
                         tree.put(parentSplit, tree.get(parent));
                         Set<Suffix> parentSet = new HashSet<>();
                         parentSet.add(parentSplit);
@@ -142,7 +138,7 @@ public class SuffixTree {
                 // tricky case: parent and nextSuffix share a common prefix of length lcpMax
                 // that needs to be refactored into a suffix which will be the parent of
                 // nextSuffix and a new sibling
-                Suffix newSibling = new Suffix(parent.index + lcpMax, text);
+                Suffix newSibling = new Suffix(parent.index + lcpMax, parent.text);
                 nextSuffix.index += lcpMax;
                 parent.length = lcpMax;
                 link(parent, nextSuffix);
@@ -150,6 +146,18 @@ public class SuffixTree {
 
             }
         }
+    }
+
+    private void initRoot(String text) {
+        this.root = new Suffix(-1, text);
+        Suffix allText = new Suffix(0, text);
+        this.tree = new HashMap<>();
+        this.link(this.root, allText);
+    }
+    
+    private void makeTree(String text) {
+        this.initRoot(text);
+        this.addTextToTree(text, 1);
     }
 
     public void collectSuffixEdges(Suffix source, Set<Suffix> visited, List<String> edges) {
@@ -162,6 +170,15 @@ public class SuffixTree {
                 }
             }
         }
+    }
+    
+    public String shortestNoncommonSubstring(String p, String q) {
+        String pText = p + "#";
+        String qText = q + "$";
+        this.initRoot(pText);
+        this.addTextToTree(pText, 1);
+        this.addTextToTree(qText, 0);
+        return p;
     }
 
     public void print() {
