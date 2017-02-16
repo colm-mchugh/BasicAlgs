@@ -27,12 +27,16 @@ public class SuffixTree {
         }
     }
 
+    private final static boolean L = true;
+    private final static boolean R = false;
+    
     public static class Suffix implements Comparable<Suffix> {
 
         public int index;
         public int length;
         private String text;
-
+        private boolean type;
+        
         public Suffix(int index, int length, String text) {
             this.index = index;
             this.length = length;
@@ -84,6 +88,15 @@ public class SuffixTree {
             }
             return length;
         }
+
+        private boolean contains(char c) {
+            for (int i = 0; i < this.length(); i++) {
+                if (this.charAt(i) == c) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private Map<Suffix, Set<Suffix>> tree;
@@ -108,6 +121,38 @@ public class SuffixTree {
             }
         });
     }
+    
+    private void markNodes() {
+        Set<Suffix> v = new HashSet<Suffix>();
+        dfs(root, v);
+    }
+    
+    private void dfs(Suffix source, Set<Suffix> visited) {
+        visited.add(source);
+        if (isLeaf(source)) {
+            if (source.contains('#')) {
+                source.type = L;
+            } else {
+                if (source.charAt(source.length() - 1) == '$') {
+                    source.type = R;
+                }
+            }
+        } else {
+            for (Suffix s : tree.get(source)) {
+                if (!visited.contains(s)) {
+                    dfs(s, visited);
+                }
+            }
+            boolean type = L;
+            for (Suffix s : tree.get(source)) {
+                if (s.type != L) {
+                    type = R;
+                    break;
+                }
+            }
+            source.type = type;
+        }
+    }
 
     private void addTextToTree(String text, int startIndex) {
         for (int i = startIndex; i < text.length(); i++) {
@@ -125,7 +170,7 @@ public class SuffixTree {
                         parent = s;
                     }
                 }
-                if ((lcpMax == 0) || (tree.get(parent) == null)) {
+                if ((lcpMax == 0) || (isLeaf(parent))) {
                     done = true;
                 } else {
                     if ((lcpMax > 0) && (tree.get(parent) != null) && (lcpMax < parent.length)) {
@@ -186,13 +231,17 @@ public class SuffixTree {
     }
 
     public String shortestNoncommonSubstring(String p, String q) {
-        String pText = p + "#";
-        String qText = q + "$";
-        this.initRoot(pText);
-        this.addTextToTree(pText, 1);
-        this.addTextToTree(qText, 0);
+        StringBuilder sb = new StringBuilder(p.length() + q.length() + 2);
+        String text = sb.append(p).append('#').append(q).append('$').toString();
+        this.initRoot(text);
+        this.addTextToTree(text, 1);
         this.buildPaths();
+        this.markNodes();
         return this.findShortestNoncommonSubstring();
+    }
+    
+    private boolean isLeaf(Suffix s) {
+        return this.tree.get(s) == null;
     }
 
     public String findShortestNoncommonSubstring() {
@@ -200,10 +249,13 @@ public class SuffixTree {
             Suffix minSuffix;
             int minLen = Integer.MAX_VALUE;
             public void f(Suffix p, Suffix n) {
-                if (n.length() > 1 && n.charAt(n.length() - 1) == '#') {
+                if (n.type == L && n.charAt(0) != '#') {
                     int len = 0;
-                    for (Suffix t = n; t != root; t = paths.get(t)) {
+                    for (Suffix t = paths.get(n); t != root; t = paths.get(t)) {
                         len += t.length();
+                    }
+                    if (isLeaf(n)) {
+                        len += 1;
                     }
                     if (len < minLen) {
                         minLen = len;
@@ -218,11 +270,14 @@ public class SuffixTree {
 
         this.treeBFS(x);
         StringBuilder sb = new StringBuilder();
-        for (Suffix n = x.s(); n != root; n = paths.get(n)) {
+        Suffix n = x.s();
+        if (isLeaf(n)) {
+            sb.append(n.charAt(0));
+            n = paths.get(n);
+        }
+        for (; n != root; n = paths.get(n)) {
             sb.insert(0, n.toString());
         }
-        int c = sb.length();
-        sb.delete(c - 1, c);
         return sb.toString();
     }
 

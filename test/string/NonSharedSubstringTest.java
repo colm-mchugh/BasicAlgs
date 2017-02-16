@@ -16,12 +16,12 @@ public class NonSharedSubstringTest {
     
     @Test
     public void testLongSolve2() {
-        this.validate("CCAAGCTGCTAGAGG", "CATGCTGGGCTGGCT", "AA");
+        this.validate("CCAAGCTGCTAGAGG", "CATGCTGGGCTGGCT", "AG");
     }
     
     @Test
     public void testLongSolve3() {
-        this.validate("ATGCGATGACCTGACTGA", "CTCAACGTATTGGCCAGA", "ATG");
+        this.validate("ATGCGATGACCTGACTGA", "CTCAACGTATTGGCCAGA", "TGA");
     }
     
     @Test
