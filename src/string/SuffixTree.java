@@ -281,17 +281,6 @@ public class SuffixTree {
         return sb.toString();
     }
 
-    public void print() {
-        this.treeBFS(new SuffixAction() {
-            public void f(Suffix p, Suffix n) {
-                System.out.println(n.toString());
-            }
-            public Suffix s() {
-                return null;
-            }
-        });
-    }
-
     interface SuffixAction {
         public void f(Suffix p, Suffix n);
         public Suffix s();

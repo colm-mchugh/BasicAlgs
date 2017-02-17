@@ -29,4 +29,9 @@ public class RotationTest {
         
     }
     
+    @Test
+    public void testBWT() {
+        String bwt = BurrowsWheelerTransform.transform("panamabananas$");
+        assert bwt.equals("smnpbnnaaaaa$a");
+    }
 }

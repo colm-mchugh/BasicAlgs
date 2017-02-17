@@ -8,8 +8,7 @@ public class NonSharedSubstring implements Runnable {
 	String solve (String p, String q) {
 		SuffixTree sfxTree = new SuffixTree();
                 String result = sfxTree.shortestNoncommonSubstring(p, q);
-                sfxTree.print();
-		return result;
+                return result;
 	}
 
 	public void run () {
