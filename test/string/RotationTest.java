@@ -31,7 +31,14 @@ public class RotationTest {
     
     @Test
     public void testBWT() {
-        String bwt = BurrowsWheelerTransform.transform("panamabananas$");
+        String bwt = BWT.transform("panamabananas$");
         assert bwt.equals("smnpbnnaaaaa$a");
+    }
+    
+    @Test
+    public void testReverseBWT() {
+        String banana = BWT.reverse("annb$aa");
+        assert banana.equals("banana$");
+        assert BWT.reverse(BWT.transform("panamabananas$")).equals("panamabananas$");
     }
 }
