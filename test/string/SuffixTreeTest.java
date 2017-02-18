@@ -55,4 +55,22 @@ public class SuffixTreeTest {
         }
     }
     
+    @Test
+    public void testSuffixArray() {
+        int[] gac = {3, 1, 2, 0};
+        int[] gagagaga = {8,7,5,3,1,6,4,2,0};
+        int[] aacgatagcggtaga = {15,14,0,1,12,6,4,2,8,13,3,7,9,10,11,5};
+        
+        compareArrays(gac, SuffixTree.suffixArray("GAC$"));
+        compareArrays(gagagaga, SuffixTree.suffixArray("GAGAGAGA$"));
+        compareArrays(aacgatagcggtaga, SuffixTree.suffixArray("AACGATAGCGGTAGA$"));
+    }
+    
+    private void compareArrays(int[] a1, int[] a2) {
+        assert a1.length == a2.length;
+        for (int i = 0; i < a1.length; i++) {
+            assert a1[i] == a2[i];
+        }
+    }
+    
 }

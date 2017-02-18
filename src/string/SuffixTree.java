@@ -3,6 +3,7 @@ package string;
 import java.util.*;
 import java.io.*;
 import java.util.zip.CheckedInputStream;
+import sort.QuickSorter;
 
 public class SuffixTree {
 
@@ -342,6 +343,20 @@ public class SuffixTree {
             System.out.println(a);
         }
     }
+    
+    public static int[] suffixArray(String text) {
+        int[] sfxIndices = new int[text.length()];
+        Suffix[] suffixes = new Suffix[text.length()];
+        for (int i = 0; i < text.length(); i++) {
+            suffixes[i] = new Suffix(i, text);
+        }
+        QuickSorter qs = new QuickSorter();
+        qs.sort(suffixes);
+        for (int i = 0; i < suffixes.length; i++) {
+            sfxIndices[i] = suffixes[i].index;
+        }
+        return sfxIndices;
+    } 
 
     public void run() throws IOException {
         FastScanner scanner = new FastScanner();
