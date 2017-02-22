@@ -56,17 +56,39 @@ public class SuffixTreeTest {
     }
     
     @Test
-    public void testSuffixArray() {
+    public void testSuffixArrayBoxed() {
+        Integer[] gac = {3, 1, 2, 0};
+        Integer[] gagagaga = {8,7,5,3,1,6,4,2,0};
+        Integer[] aacgatagcggtaga = {15,14,0,1,12,6,4,2,8,13,3,7,9,10,11,5};
+        long now = System.nanoTime();
+        compareBoxedIntArrays(gac, SuffixTree.suffixArrayBoxed("GAC$"));
+        compareBoxedIntArrays(gagagaga, SuffixTree.suffixArrayBoxed("GAGAGAGA$"));
+        compareBoxedIntArrays(aacgatagcggtaga, SuffixTree.suffixArrayBoxed("AACGATAGCGGTAGA$"));
+        long timeTaken = System.nanoTime() - now;
+        System.out.println("Boxed microsecs: " + timeTaken /1000);
+    }
+    
+    @Test
+    public void testSuffixArrayRaw() {
         int[] gac = {3, 1, 2, 0};
         int[] gagagaga = {8,7,5,3,1,6,4,2,0};
         int[] aacgatagcggtaga = {15,14,0,1,12,6,4,2,8,13,3,7,9,10,11,5};
-        
-        compareArrays(gac, SuffixTree.suffixArray("GAC$"));
-        compareArrays(gagagaga, SuffixTree.suffixArray("GAGAGAGA$"));
-        compareArrays(aacgatagcggtaga, SuffixTree.suffixArray("AACGATAGCGGTAGA$"));
+        long now = System.nanoTime();
+        compareRawIntArrays(gac, SuffixTree.suffixArray("GAC$"));
+        compareRawIntArrays(gagagaga, SuffixTree.suffixArray("GAGAGAGA$"));
+        compareRawIntArrays(aacgatagcggtaga, SuffixTree.suffixArray("AACGATAGCGGTAGA$"));
+        long timeTaken = System.nanoTime() - now;
+        System.out.println("Raw microsecs: " + timeTaken /1000);
     }
     
-    private void compareArrays(int[] a1, int[] a2) {
+    private void compareBoxedIntArrays(Integer[] a1, Integer[] a2) {
+        assert a1.length == a2.length;
+        for (int i = 0; i < a1.length; i++) {
+            assert a1[i] == a2[i];
+        }
+    }
+    
+    private void compareRawIntArrays(int[] a1, int[] a2) {
         assert a1.length == a2.length;
         for (int i = 0; i < a1.length; i++) {
             assert a1[i] == a2[i];

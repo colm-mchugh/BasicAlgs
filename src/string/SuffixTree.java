@@ -350,14 +350,47 @@ public class SuffixTree {
         for (int i = 0; i < text.length(); i++) {
             suffixes[i] = new Suffix(i, text);
         }
-        QuickSorter qs = new QuickSorter();
-        qs.sort(suffixes);
+        Arrays.sort(suffixes);
         for (int i = 0; i < suffixes.length; i++) {
             sfxIndices[i] = suffixes[i].index;
         }
         return sfxIndices;
     } 
 
+    /**
+     * Same functionality as suffixArray() but so called because it returns a 
+     * boxed integer array. 
+     * 
+     * @param text
+     * @return 
+     */
+    public static Integer[] suffixArrayBoxed(String text) {
+        final int len = text.length();
+        Integer[] sfxIndices = new Integer[len];
+        for (int i = 0; i < sfxIndices.length; i++) {
+            sfxIndices[i] = i;
+        }
+        Arrays.sort(sfxIndices, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                if (o1 == o2) {
+                return 0;
+            }
+            int n = Integer.min(len - o1, len - o2);
+            for (int i = 0; i < n; i++) {
+                if (text.charAt(o1 + i) < text.charAt(o2 + i)) {
+                    return -1;
+                }
+                if (text.charAt(o1 + i) > text.charAt(o2 + i)) {
+                    return 1;
+                }
+            }
+            return o1 - o2;
+            }
+        });
+        return sfxIndices;
+    }
+    
     public void run() throws IOException {
         FastScanner scanner = new FastScanner();
         String text = scanner.next();
