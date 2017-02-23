@@ -104,4 +104,47 @@ public class SuffixArray {
         }
         return order;
     }
+
+    private static int[] invertSuffixArray(int[] suffixes) {
+        int N = suffixes.length;
+        int[] inversions = new int[N];
+        for (int i = 0; i < N; i++) {
+            inversions[suffixes[i]] = i;
+        }
+        return inversions;
+    }
+    
+    public static int[] Lcp(String s, int[] order) {
+        int N = s.length();
+        int[] lcps = new int[N];
+        int lcp = 0;
+        int[] positionInOrder = invertSuffixArray(order);
+        int suffix = order[0];
+        for (int i = 0; i < N; i++) {
+            int orderIndex = positionInOrder[suffix];
+            if (orderIndex == N - 1) {
+                lcp = 0;
+                suffix = (suffix + 1) % N;
+                continue;
+            }
+            int nextSuffix = order[orderIndex + 1];
+            lcp = SuffixLCP(s, suffix, nextSuffix, lcp - 1);
+            lcps[orderIndex] = lcp;
+            suffix = (suffix + 1) % N;
+        }
+        return lcps;
+    }
+
+    private static int SuffixLCP(String s, int s1, int s2, int i) {
+        int N = s.length();
+        int lcp = Math.max(0, i);
+        while (s1 + lcp < N && s2 + lcp < N) {
+            if (s.charAt(s1 + lcp) == s.charAt(s2 + lcp)) {
+                lcp++;
+            } else {
+                break;
+            }
+        }
+        return lcp;
+    }
 }
