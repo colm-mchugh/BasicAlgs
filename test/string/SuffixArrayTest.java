@@ -7,11 +7,16 @@ public class SuffixArrayTest {
 
     @Test
     public void testLongestRepeatingSubstring() {
-        String t = "ABCZLMNABCZLMNABC" + "$";
+        this.validateLongestRepeatingSubstring("ABCZLMNABCZLMNABC" + "$", "ABCZLMNABC");
+        this.validateLongestRepeatingSubstring("abcpqrabpqpq$", "ab");
+        this.validateLongestRepeatingSubstring("AAAAAAAAAA$", "AAAAAAAAA");
+        this.validateLongestRepeatingSubstring("ABABABA$", "ABABA");
+        this.validateLongestRepeatingSubstring("ABCDEFG$", "");
+        this.validateLongestRepeatingSubstring("ATCGATCGA$", "ATCGA");
+    }
+
+    private void validateLongestRepeatingSubstring(String t, String expected) {
         int[] suffixes = SuffixArray.Build(t);
-        for (int i = 0; i < suffixes.length; i++) {
-            System.out.println( "" + i + ": " + t.substring(i));
-        }
         int[] prefixes = SuffixArray.Lcp(t, suffixes);
         int maxPrefix = prefixes[0];
         int maxSuffix = 0;
@@ -21,10 +26,10 @@ public class SuffixArrayTest {
                 maxSuffix = i;
             }
         }
-        String theLongestSubstring = t.substring(suffixes[maxSuffix], maxPrefix);
-        assert theLongestSubstring.equals("ABCZLMN");
+        String theLongestSubstring = t.substring(suffixes[maxSuffix]).substring(0, maxPrefix);
+        assert theLongestSubstring.equals(expected);
     }
-
+    
     @Test
     public void testSortCharacters() {
         String s = "banana$";
