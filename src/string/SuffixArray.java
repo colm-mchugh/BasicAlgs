@@ -147,4 +147,65 @@ public class SuffixArray {
         }
         return lcp;
     }
+
+    public static class SuffixTreeNode {
+        public SuffixTreeNode parent;
+        public Map<Character, SuffixTreeNode> children;
+        public int depth;
+        public int start;
+        public int end;
+
+        public SuffixTreeNode(SuffixTreeNode parent, int depth, int start, int end) {
+            this.parent = parent;
+            this.depth = depth;
+            this.start = start;
+            this.end = end;
+            this.children = new HashMap<>();
+        }
+        
+    }
+    
+    private static SuffixTreeNode newLeaf(SuffixTreeNode parent, String s, int suffix) {
+        int N = s.length();
+        SuffixTreeNode leaf = new SuffixTreeNode(parent, N - suffix, suffix + parent.depth, N - 1);
+        parent.children.put(s.charAt(leaf.start), leaf);
+        return leaf;
+    }
+    
+    private static SuffixTreeNode breakEdge(SuffixTreeNode parent, String s, int start, int offset) {
+        char startChar = s.charAt(start);
+        char midChar = s.charAt(start + offset);
+        SuffixTreeNode mid = new SuffixTreeNode(parent, parent.depth + offset, start, start + offset - 1);
+        SuffixTreeNode newChild = parent.children.get(startChar);
+        mid.children.put(midChar, newChild);
+        newChild.parent = mid;
+        newChild.start = start + offset;
+        parent.children.put(startChar, mid);
+        return mid;
+    }
+    
+    private static SuffixTreeNode STFromSA(String s, int[] order, int[] lcp) {
+        SuffixTreeNode root = new SuffixTreeNode(null, 0, -1, -1);
+        int lcpPrev = 0;
+        int N = s.length();
+        SuffixTreeNode curNode = root;
+        for (int i = 0; i < N; i ++) {
+            int suffix = order[i];
+            while (curNode.depth > lcpPrev) {
+                curNode = curNode.parent;
+            }
+            if (curNode.depth == lcpPrev) {
+                curNode = newLeaf(root, s, suffix);
+            } else {
+                int start = order[i - 1] + curNode.depth;
+                int offset = lcpPrev - curNode.depth;
+                SuffixTreeNode mid = breakEdge(curNode, s, start, offset);
+                curNode = newLeaf(mid, s, suffix);
+            }
+            if (i < N - 1) {
+                lcpPrev = lcp[i];
+            }
+        }
+        return root;
+    }
 }
