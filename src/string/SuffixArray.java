@@ -1,7 +1,9 @@
 package string;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SuffixArray {
@@ -207,5 +209,31 @@ public class SuffixArray {
             }
         }
         return root;
+    }    
+    
+    public static List<Integer> match(String s, String p, int[] suffixes) {
+        List<Integer> matches = new ArrayList<>();
+        int N = s.length();
+        int pN = p.length();
+        for (int suffix : suffixes) {
+            if ((N - suffix >= pN) && (lcp(s, suffix, p) == pN)){
+                matches.add(suffix);
+            }
+        }
+        return matches;
+    }
+
+    private static int lcp(String s, int suffix, String pattern) {
+        int N = s.length();
+        int pN = pattern.length();
+        int lcp = 0;
+        while (suffix + lcp < N && lcp < pN) {
+            if (s.charAt(suffix + lcp) == pattern.charAt(lcp)) {
+                lcp++;
+            } else {
+                break;
+            }
+        }
+        return lcp;
     }
 }
