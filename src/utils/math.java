@@ -51,7 +51,7 @@ public class math {
         }
         return 1;
     }
-    
+
     public static boolean isPrime(int n) {
         if ((n < 2) || ((n % 2 == 0) && (n != 2))) {
             return false;
@@ -63,7 +63,7 @@ public class math {
         }
         return true;
     }
-    
+
     public static int bulbs(ArrayList<Integer> a) {
         int switches = 0;
         int N = a.size();
@@ -80,7 +80,7 @@ public class math {
         }
         return switches;
     }
-    
+
     public static int gcd(int a, int b) {
         if (a == b) {
             return a;
@@ -95,41 +95,40 @@ public class math {
         }
         return gcd(b - a, a);
     }
-    
+
     public static Set<Integer> primes(int n) {
         Set<Integer> primesN = new HashSet<>();
         for (int i = 2; i <= n; i++) {
             primesN.add(i);
         }
-        for (int i = 2; i <= n; i++) {
+        double sqrtN = Math.sqrt(n);
+        for (int i = 2; i <= sqrtN; i++) {
             if (primesN.contains(i)) {
-                for (int p = 2*i; p <= n; p++) {
-                    if (p%i == 0) {
-                        primesN.remove(p);
-                    }
+                for (int p = 2; p*i <= n; p++) {
+                    primesN.remove(p*i);
                 }
             }
         }
         return primesN;
     }
-    
+
     public static boolean isExponentiable(int n) {
         int maxY = (int) Math.sqrt(n);
         for (int y = 2; y <= maxY; y++) {
             int x = n;
             while (x > 1 && ((x % n) == 0)) {
-                x = x/y;
+                x = x / y;
             }
             if (x == 1) {
                 return true;
             }
-        } 
+        }
         return false;
     }
-    
+
     public static int[] primesums(int n) {
         int[] rv = null;
-        for (int i = 2; i <= n/2; i++) {
+        for (int i = 2; i <= n / 2; i++) {
             if (isPrime(i) && isPrime(n - i)) {
                 rv = new int[2];
                 rv[0] = i;
