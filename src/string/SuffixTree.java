@@ -1,34 +1,33 @@
 package string;
 
 import java.util.*;
-import java.io.*;
 
 public class SuffixTree {
 
     private final static boolean L = true;
     private final static boolean R = false;
 
-    public static class Suffix implements Comparable<Suffix> {
+    public static class Substr implements Comparable<Substr> {
 
         public int index;
         public int length;
         private String text;
         private boolean type;
 
-        public Suffix(int index, int length, String text) {
+        public Substr(int index, int length, String text) {
             this.index = index;
             this.length = length;
             this.text = text;
         }
 
-        public Suffix(int index, String text) {
+        public Substr(int index, String text) {
             this.index = index;
             this.text = text;
             this.length = Integer.MAX_VALUE;
         }
 
         @Override
-        public int compareTo(Suffix o) {
+        public int compareTo(Substr o) {
             if (this == o) {
                 return 0;
             }
@@ -77,12 +76,12 @@ public class SuffixTree {
         }
     }
 
-    private Map<Suffix, Set<Suffix>> tree;
-    private Suffix root;
-    private Map<Suffix, Suffix> paths;
+    private Map<Substr, Set<Substr>> tree;
+    private Substr root;
+    private Map<Substr, Substr> paths;
 
-    protected void link(Suffix from, Suffix to) {
-        if (!tree.containsKey(from)) { // Suffix from is not in the graph
+    protected void link(Substr from, Substr to) {
+        if (!tree.containsKey(from)) { // Substr from is not in the graph
             tree.put(from, new HashSet<>());
         }
         tree.get(from).add(to);
@@ -91,22 +90,22 @@ public class SuffixTree {
     private void buildPaths() {
         this.paths = new HashMap<>();
         this.treeBFS(new SuffixAction() {
-            public void f(Suffix parent, Suffix node) {
+            public void f(Substr parent, Substr node) {
                 paths.put(node, parent);
             }
 
-            public Suffix s() {
+            public Substr s() {
                 return null;
             }
         });
     }
 
     private void markNodes() {
-        Set<Suffix> v = new HashSet<Suffix>();
+        Set<Substr> v = new HashSet<Substr>();
         dfs(root, v);
     }
 
-    private void dfs(Suffix source, Set<Suffix> visited) {
+    private void dfs(Substr source, Set<Substr> visited) {
         visited.add(source);
         if (isLeaf(source)) {
             if (source.contains('#')) {
@@ -115,13 +114,13 @@ public class SuffixTree {
                 source.type = R;
             }
         } else {
-            for (Suffix s : tree.get(source)) {
+            for (Substr s : tree.get(source)) {
                 if (!visited.contains(s)) {
                     dfs(s, visited);
                 }
             }
             boolean type = L;
-            for (Suffix s : tree.get(source)) {
+            for (Substr s : tree.get(source)) {
                 if (s.type != L) {
                     type = R;
                     break;
@@ -133,14 +132,14 @@ public class SuffixTree {
 
     private void addTextToTree(String text, int startIndex) {
         for (int i = startIndex; i < text.length(); i++) {
-            Suffix nextSuffix = new Suffix(i, text);
-            Set<Suffix> level = tree.get(root);
-            Suffix parent = root;
+            Substr nextSuffix = new Substr(i, text);
+            Set<Substr> level = tree.get(root);
+            Substr parent = root;
             int lcpMax = 0;
             boolean interiorSplit = false;
             for (boolean done = false; !done;) {
                 lcpMax = 0;
-                for (Suffix s : level) {
+                for (Substr s : level) {
                     int lcp = lcp(s, nextSuffix);
                     if (lcp > 0 && lcp > lcpMax) {
                         lcpMax = lcp;
@@ -152,10 +151,10 @@ public class SuffixTree {
                 } else {
                     if ((lcpMax > 0) && (tree.get(parent) != null) && (lcpMax < parent.length)) {
                         // tricky case: the lcp is a prefix of an interior (non leaf) node.
-                        Suffix parentSplit = new Suffix(parent.index + lcpMax,
+                        Substr parentSplit = new Substr(parent.index + lcpMax,
                                 parent.length - lcpMax, parent.text);
                         tree.put(parentSplit, tree.get(parent));
-                        Set<Suffix> parentSet = new HashSet<>();
+                        Set<Substr> parentSet = new HashSet<>();
                         parentSet.add(parentSplit);
                         tree.put(parent, parentSet);
                         parent.length = lcpMax;
@@ -173,7 +172,7 @@ public class SuffixTree {
                 // tricky case: parent and nextSuffix share a common prefix of length lcpMax
                 // that needs to be refactored into a suffix which will be the parent of
                 // nextSuffix and a new sibling
-                Suffix newSibling = new Suffix(parent.index + lcpMax, parent.text);
+                Substr newSibling = new Substr(parent.index + lcpMax, parent.text);
                 nextSuffix.index += lcpMax;
                 parent.length = lcpMax;
                 link(parent, nextSuffix);
@@ -184,8 +183,8 @@ public class SuffixTree {
     }
 
     private void initRoot(String text) {
-        this.root = new Suffix(-1, text);
-        Suffix allText = new Suffix(0, text);
+        this.root = new Substr(-1, text);
+        Substr allText = new Substr(0, text);
         this.tree = new HashMap<>();
         this.link(this.root, allText);
     }
@@ -195,10 +194,10 @@ public class SuffixTree {
         this.addTextToTree(text, 1);
     }
 
-    public void collectSuffixEdges(Suffix source, Set<Suffix> visited, List<String> edges) {
+    public void collectSuffixEdges(Substr source, Set<Substr> visited, List<String> edges) {
         visited.add(source);
         if (this.tree.get(source) != null) {
-            for (Suffix s : this.tree.get(source)) {
+            for (Substr s : this.tree.get(source)) {
                 if (!visited.contains(s)) {
                     collectSuffixEdges(s, visited, edges);
                     edges.add(s.toString());
@@ -217,19 +216,19 @@ public class SuffixTree {
         return this.findShortestNoncommonSubstring();
     }
 
-    private boolean isLeaf(Suffix s) {
+    private boolean isLeaf(Substr s) {
         return this.tree.get(s) == null;
     }
 
     public String findShortestNoncommonSubstring() {
         SuffixAction x = new SuffixAction() {
-            Suffix minSuffix;
+            Substr minSuffix;
             int minLen = Integer.MAX_VALUE;
 
-            public void f(Suffix p, Suffix n) {
+            public void f(Substr p, Substr n) {
                 if (n.type == L && n.charAt(0) != '#') {
                     int len = 0;
-                    for (Suffix t = paths.get(n); t != root; t = paths.get(t)) {
+                    for (Substr t = paths.get(n); t != root; t = paths.get(t)) {
                         len += t.length();
                     }
                     if (isLeaf(n)) {
@@ -242,14 +241,14 @@ public class SuffixTree {
                 }
             }
 
-            public Suffix s() {
+            public Substr s() {
                 return minSuffix;
             }
         };
 
         this.treeBFS(x);
         StringBuilder sb = new StringBuilder();
-        Suffix n = x.s();
+        Substr n = x.s();
         if (isLeaf(n)) {
             sb.append(n.charAt(0));
             n = paths.get(n);
@@ -262,20 +261,20 @@ public class SuffixTree {
 
     interface SuffixAction {
 
-        public void f(Suffix p, Suffix n);
+        public void f(Substr p, Substr n);
 
-        public Suffix s();
+        public Substr s();
     }
 
     private void treeBFS(SuffixAction a) {
-        Queue<Suffix> queue = new ArrayDeque<>();
-        Set<Suffix> visited = new HashSet<>();
+        Queue<Substr> queue = new ArrayDeque<>();
+        Set<Substr> visited = new HashSet<>();
         queue.add(root);
         visited.add(root);
         while (!queue.isEmpty()) {
-            Suffix next = queue.remove();
+            Substr next = queue.remove();
             if (tree.get(next) != null) {
-                for (Suffix s : tree.get(next)) {
+                for (Substr s : tree.get(next)) {
                     if (!visited.contains(s)) {
                         queue.add(s);
                         visited.add(s);
@@ -292,7 +291,7 @@ public class SuffixTree {
     public List<String> computeSuffixTreeEdges(String text) {
         List<String> result = new ArrayList<>();
         this.makeTree(text);
-        Set<Suffix> visited = new HashSet<>();
+        Set<Substr> visited = new HashSet<>();
         this.collectSuffixEdges(root, visited, result);
         return result;
     }
@@ -304,7 +303,7 @@ public class SuffixTree {
      * @param s2
      * @return
      */
-    static private int lcp(Suffix s1, Suffix s2) {
+    static private int lcp(Substr s1, Substr s2) {
         int n = Integer.min(s1.length(), s2.length());
         for (int i = 0; i < n; i++) {
             if (!Objects.equals(s1.charAt(i), s2.charAt(i))) {
@@ -316,9 +315,9 @@ public class SuffixTree {
 
     public static int[] suffixArray(String text) {
         int[] sfxIndices = new int[text.length()];
-        Suffix[] suffixes = new Suffix[text.length()];
+        Substr[] suffixes = new Substr[text.length()];
         for (int i = 0; i < text.length(); i++) {
-            suffixes[i] = new Suffix(i, text);
+            suffixes[i] = new Substr(i, text);
         }
         Arrays.sort(suffixes);
         for (int i = 0; i < suffixes.length; i++) {

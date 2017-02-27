@@ -9,8 +9,8 @@ public class SuffixTreeTest {
     @Test
     public void suffixProperties() {
         String text = "ATAAATG$";
-        SuffixTree.Suffix s1 = new SuffixTree.Suffix(2, 1, text);
-        SuffixTree.Suffix s2 = new SuffixTree.Suffix(4, 3, text);
+        SuffixTree.Substr s1 = new SuffixTree.Substr(2, 1, text);
+        SuffixTree.Substr s2 = new SuffixTree.Substr(4, 3, text);
         
         assert s1.toString().equals("A");
         assert s2.toString().equals("ATG");

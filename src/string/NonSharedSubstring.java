@@ -1,8 +1,6 @@
 
 package string;
 import java.io.*;
-import java.math.*;
-import java.util.*;
 
 public class NonSharedSubstring implements Runnable {
 	String solve (String p, String q) {

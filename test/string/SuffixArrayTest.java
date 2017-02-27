@@ -1,6 +1,5 @@
 package string;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
@@ -97,6 +96,12 @@ public class SuffixArrayTest {
     @Test
     public void testSuffixTreeFromSuffixArray2() {
         String t = "ACACAA$"; // expected output: 6 7, 0 1, 6 7, 5 7, 1 3, 5 7, 3 7, 1 3, 5 7, 3 7
+        int[] suffixes = SuffixArray.Build(t);
+        int[] prefixes = SuffixArray.Lcp(t, suffixes);
+        SuffixArray.SuffixTreeNode sfxTree = SuffixArray.STFromSA(t, suffixes, prefixes);
+        Map<Integer, List<SuffixArray.Edge>> edges = SuffixArray.SuffixTreeEdges(sfxTree);
+        assert edges.size() == 4;
+        
     }
     
     @Test
@@ -112,14 +117,14 @@ public class SuffixArrayTest {
         
         SuffixArray.Edge e1 = rootEdges.get(1);
         assert t.substring(e1.start, e1.end).equals("A");
-        assert e1.start == 0 && e1.end == 1;
+        assert e1.start == 2 && e1.end == 3;
         
         List<SuffixArray.Edge> e1Children = edges.get(e1.node);
         assert e1Children.size() == 2;
         
         SuffixArray.Edge e12 = e1Children.get(1);
         assert t.substring(e12.start, e12.end).equals("A");
-        assert e1.start == 1 && e1.end == 2;     
+        assert e1.start == 2 && e1.end == 3;     
     }
     
     

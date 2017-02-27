@@ -178,10 +178,10 @@ public class SuffixArray {
 
     }
 
-    private static SuffixTreeNode newLeaf(SuffixTreeNode parent, String s, int suffix) {
+    private static SuffixTreeNode newLeaf(SuffixTreeNode p, String s, int sffx) {
         int N = s.length();
-        SuffixTreeNode leaf = new SuffixTreeNode(parent, N - suffix, suffix + parent.depth, N - 1);
-        parent.children.put(s.charAt(leaf.start), leaf);
+        SuffixTreeNode leaf = new SuffixTreeNode(p, N - sffx, sffx + p.depth, N - 1);
+        p.children.put(s.charAt(leaf.start), leaf);
         return leaf;
     }
 
@@ -208,7 +208,7 @@ public class SuffixArray {
                 curNode = curNode.parent;
             }
             if (curNode.depth == lcpPrev) {
-                curNode = newLeaf(root, s, suffix);
+                curNode = newLeaf(curNode, s, suffix);
             } else {
                 int start = order[i - 1] + curNode.depth;
                 int offset = lcpPrev - curNode.depth;
