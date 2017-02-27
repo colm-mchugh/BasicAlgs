@@ -1,6 +1,7 @@
 package string;
 
 import java.util.List;
+import java.util.Objects;
 import org.junit.Test;
 
 public class SuffixTreeTest {
@@ -84,7 +85,7 @@ public class SuffixTreeTest {
     private void compareBoxedIntArrays(Integer[] a1, Integer[] a2) {
         assert a1.length == a2.length;
         for (int i = 0; i < a1.length; i++) {
-            assert a1[i] == a2[i];
+            assert Objects.equals(a1[i], a2[i]);
         }
     }
     

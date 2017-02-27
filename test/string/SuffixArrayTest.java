@@ -2,8 +2,8 @@ package string;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class SuffixArrayTest {
 
@@ -68,6 +68,62 @@ public class SuffixArrayTest {
     }
 
     @Test
+    public void testSuffixTreeFromSuffixArray() {
+        String t = "GTAGT$";
+        int[] suffixes = SuffixArray.Build(t);
+        int[] prefixes = SuffixArray.Lcp(t, suffixes);
+        SuffixArray.SuffixTreeNode sfxTree = SuffixArray.STFromSA(t, suffixes, prefixes);
+        Map<Integer, List<SuffixArray.Edge>> edges = SuffixArray.SuffixTreeEdges(sfxTree);
+        assert edges.size() == 3;
+        List<SuffixArray.Edge> rootEdges = edges.get(0);
+        assert rootEdges.size() == 4;
+        SuffixArray.Edge e1 = rootEdges.get(1);
+        assert t.substring(e1.start, e1.end).equals("AGT$");
+        
+        SuffixArray.Edge e2 = rootEdges.get(2);
+        assert t.substring(e2.start, e2.end).equals("GT");
+        assert e2.node == 3;
+        
+        List<SuffixArray.Edge> e2Children = edges.get(e2.node);
+        assert e2Children.size() == 2;
+        
+        SuffixArray.Edge e21 = e2Children.get(1);
+        assert t.substring(e21.start, e21.end).equals("AGT$");
+        
+        SuffixArray.Edge e3 = rootEdges.get(3);
+        assert t.substring(e3.start, e3.end).equals("T");
+    }
+    
+    @Test
+    public void testSuffixTreeFromSuffixArray2() {
+        String t = "ACACAA$"; // expected output: 6 7, 0 1, 6 7, 5 7, 1 3, 5 7, 3 7, 1 3, 5 7, 3 7
+    }
+    
+    @Test
+    public void testSuffixTreeFromSuffixArray1() {
+        String t = "AAA$";
+        int[] suffixes = SuffixArray.Build(t);
+        int[] prefixes = SuffixArray.Lcp(t, suffixes);
+        SuffixArray.SuffixTreeNode sfxTree = SuffixArray.STFromSA(t, suffixes, prefixes);
+        Map<Integer, List<SuffixArray.Edge>> edges = SuffixArray.SuffixTreeEdges(sfxTree);
+        assert edges.size() == 3;
+        List<SuffixArray.Edge> rootEdges = edges.get(0);
+        assert rootEdges.size() == 2;
+        
+        SuffixArray.Edge e1 = rootEdges.get(1);
+        assert t.substring(e1.start, e1.end).equals("A");
+        assert e1.start == 0 && e1.end == 1;
+        
+        List<SuffixArray.Edge> e1Children = edges.get(e1.node);
+        assert e1Children.size() == 2;
+        
+        SuffixArray.Edge e12 = e1Children.get(1);
+        assert t.substring(e12.start, e12.end).equals("A");
+        assert e1.start == 1 && e1.end == 2;     
+    }
+    
+    
+    @Test
     public void testSuffixArrayMatching() {
         int[] AAA = {0,1,2};
         validateMatch(AAA, SuffixArray.match("AAA", "A", SuffixArray.Build("AAA")));
@@ -93,140 +149,4 @@ public class SuffixArrayTest {
         }
     }
 
-    public int bulbs(ArrayList<Integer> a) {
-        int switches = 0;
-        int N = a.size();
-        int on = 1;
-        for (int i = 0; i < N; i++) {
-            while ((i < N) && (a.get(i) == on)) {
-                i++;
-            }
-            if (i == N) {
-                return switches;
-            }
-            switches++;
-            on = (on == 1 ? 0 : 1);
-        }
-        return switches;
-    }
-
-    @Test
-    public void testSwitches() {
-        int[] a1Data = {0, 1, 0, 1};
-        ArrayList<Integer> a1 = new ArrayList<>();
-        a1.add(1);
-        a1.add(1);
-        a1.add(1);
-        a1.add(1);
-        assert bulbs(a1) == 0;
-    }
-
-    ArrayList<Integer> populate(int[] data) {
-        ArrayList<Integer> a1 = new ArrayList<>(data.length);
-        for (int i = 0; i < data.length; i++) {
-            a1.add(i, data[i]);
-        }
-        return a1;
-    }
-
-    private boolean isPrime(int n) {
-        if ((n < 2) || ((n % 2 == 0) && (n != 2))) {
-            return false;
-        }
-        for (int i = 3; i <= Math.sqrt(n); i++) {
-            if (n % i == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    static class primesum implements Comparable<primesum> {
-
-        int a, b;
-
-        public primesum(int a, int b) {
-            this.a = (a <= b ? a : b);
-            this.b = (b > a ? b : a);
-        }
-
-        @Override
-        public int compareTo(primesum o) {
-            if ((this == o) || (o.a == this.a && o.b == this.b)) {
-                return 0;
-            }
-            if ((this.a < o.a) || (this.a == o.a && this.b < o.b)) {
-                return -1;
-            }
-            return 1;
-        }
-
-    }
-
-    private ArrayList<Integer> primesums(int a) {
-        ArrayList<primesum> sums = new ArrayList<>();
-        for (int i = 1; i <= a / 2; i++) {
-            int j = a - i;
-            if (isPrime(i) && isPrime(j)) {
-                sums.add(new primesum(i, j));
-            }
-        }
-        ArrayList<Integer> s = new ArrayList<>();
-        if (sums.isEmpty()) {
-            return s;
-        }
-        primesum smallest = sums.get(0);
-        for (int i = 1; i < sums.size(); i++) {
-            if (sums.get(i).compareTo(smallest) < 0) {
-                smallest = sums.get(i);
-            }
-        }
-
-        s.add(smallest.a);
-        s.add(smallest.b);
-        return s;
-    }
-
-    @Test
-    public void testPrimes() {
-        ArrayList<Integer> t4 = primesums(4);
-        assert t4.contains(2) && t4.contains(2);
-        ArrayList<Integer> t0 = primesums(100);
-        ArrayList<Integer> t1 = primesums(10003292);
-        assert t1.contains(349) && t1.contains(10002943);
-        ArrayList<Integer> t2 = primesums(10000001);
-        assert t2.isEmpty();
-        ArrayList<Integer> t3 = primesums(10000021);
-        assert t3.contains(2) && t3.contains(10000019);  
-    }
-    
-    int pow(int n, int a) {
-        int p = 1;
-        for (int i = 1; i <= a; i++) {
-            p = p * n;
-        }
-        return p;
-    }
-    
-    boolean isPower(int a) {
-        if (a <= 1) {
-            return true;
-        }
-        for (int i = 2; i <= Math.sqrt(a); i++) {
-            boolean found = true;
-            for (int p = a; p > 1; p = p / i) {
-                if (p%i > 0) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    
-    
 }

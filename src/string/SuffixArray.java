@@ -28,14 +28,14 @@ public class SuffixArray {
         }
         // note that distinct_chars is at least s.length()/freqs.keySet().size() times smaller than s
         Arrays.sort(distinct_chars);
-        
+
         // Replace each mapping in freqs with the last index
         for (i = 1; i < distinct_chars.length; i++) {
             char c = distinct_chars[i];
-            int last_idx = freqs.get(c) + freqs.get(distinct_chars[i-1]);
+            int last_idx = freqs.get(c) + freqs.get(distinct_chars[i - 1]);
             freqs.put(c, last_idx);
         }
-        
+
         // Determine the ordering of each character S(i) in the sorted array:
         int[] order = new int[s.length()];
         for (i = s.length() - 1; i >= 0; i--) {
@@ -51,15 +51,15 @@ public class SuffixArray {
         int[] classes = new int[s.length()];
         classes[0] = 0;
         for (int i = 1; i < classes.length; i++) {
-            if (s.charAt(order[i]) == s.charAt(order[i-1])) {
-                classes[order[i]] = classes[order[i-1]];
+            if (s.charAt(order[i]) == s.charAt(order[i - 1])) {
+                classes[order[i]] = classes[order[i - 1]];
             } else {
-                classes[order[i]] = classes[order[i-1]] + 1;
+                classes[order[i]] = classes[order[i - 1]] + 1;
             }
         }
         return classes;
     }
-    
+
     public static int[] SortDoubled(String s, int L, int[] order, int[] classes) {
         int[] count = new int[s.length()];
         int N = s.length();
@@ -68,7 +68,7 @@ public class SuffixArray {
             count[classes[i]] = count[classes[i]] + 1;
         }
         for (int i = 1; i < N; i++) {
-            count[i] = count[i] + count[i-1];
+            count[i] = count[i] + count[i - 1];
         }
         for (int i = N - 1; i >= 0; i--) {
             int start = (order[i] - L + N) % N;
@@ -78,14 +78,14 @@ public class SuffixArray {
         }
         return newOrder;
     }
-    
+
     public static int[] UpdateClasses(int[] newOrder, int[] classes, int L) {
         int N = newOrder.length;
         int[] newClasses = new int[N];
         newClasses[newOrder[0]] = 0;
         for (int i = 1; i < N; i++) {
             int cur = newOrder[i];
-            int prev = newOrder[i-1];
+            int prev = newOrder[i - 1];
             int mid = (cur + L) % N;
             int midPrev = (prev + L) % N;
             if ((classes[cur] == classes[prev]) && (classes[mid] == classes[midPrev])) {
@@ -96,7 +96,7 @@ public class SuffixArray {
         }
         return newClasses;
     }
-    
+
     public static int[] Build(String s) {
         int[] order = SortCharacters(s);
         int[] classes = ComputeCharClasses(s, order);
@@ -115,7 +115,7 @@ public class SuffixArray {
         }
         return inversions;
     }
-    
+
     public static int[] Lcp(String s, int[] order) {
         int N = s.length();
         int[] lcps = new int[N];
@@ -151,6 +151,7 @@ public class SuffixArray {
     }
 
     public static class SuffixTreeNode {
+
         public SuffixTreeNode parent;
         public Map<Character, SuffixTreeNode> children;
         public int depth;
@@ -164,16 +165,26 @@ public class SuffixArray {
             this.end = end;
             this.children = new HashMap<>();
         }
-        
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(5);
+            sb.append(start).append(',').append(end);
+            if (!this.children.isEmpty()) {
+                sb.append(" (").append(this.children.size()).append(')');
+            }
+            return sb.toString();
+        }
+
     }
-    
+
     private static SuffixTreeNode newLeaf(SuffixTreeNode parent, String s, int suffix) {
         int N = s.length();
         SuffixTreeNode leaf = new SuffixTreeNode(parent, N - suffix, suffix + parent.depth, N - 1);
         parent.children.put(s.charAt(leaf.start), leaf);
         return leaf;
     }
-    
+
     private static SuffixTreeNode breakEdge(SuffixTreeNode parent, String s, int start, int offset) {
         char startChar = s.charAt(start);
         char midChar = s.charAt(start + offset);
@@ -181,17 +192,17 @@ public class SuffixArray {
         SuffixTreeNode newChild = parent.children.get(startChar);
         mid.children.put(midChar, newChild);
         newChild.parent = mid;
-        newChild.start = start + offset;
+        newChild.start += offset;
         parent.children.put(startChar, mid);
         return mid;
     }
-    
-    private static SuffixTreeNode STFromSA(String s, int[] order, int[] lcp) {
+
+    public static SuffixTreeNode STFromSA(String s, int[] order, int[] lcp) {
         SuffixTreeNode root = new SuffixTreeNode(null, 0, -1, -1);
         int lcpPrev = 0;
         int N = s.length();
         SuffixTreeNode curNode = root;
-        for (int i = 0; i < N; i ++) {
+        for (int i = 0; i < N; i++) {
             int suffix = order[i];
             while (curNode.depth > lcpPrev) {
                 curNode = curNode.parent;
@@ -209,31 +220,90 @@ public class SuffixArray {
             }
         }
         return root;
-    }    
-    
+    }
+
+    public static class Edge {
+
+        int node;
+        int start;
+        int end;
+
+        Edge(int node, int start, int end) {
+            this.node = node;
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    public static Map<Integer, List<Edge>> SuffixTreeEdges(SuffixTreeNode root) {
+        List<SuffixTreeNode> visited = new ArrayList<>();
+        List<SuffixTreeNode> queue = new ArrayList<>();
+        int nodeId = 0;
+        int nextId = nodeId + 1;
+        queue.add(root);
+        Map<Integer, List<Edge>> tree = new HashMap<>();
+        while (!queue.isEmpty()) {
+            SuffixTreeNode next = queue.remove(0);
+            if (!visited.contains(next) && !next.children.isEmpty()) {
+                visited.add(next);
+                Object[] childChars = next.children.keySet().toArray();
+                Arrays.sort(childChars, 0, childChars.length);
+                List<Edge> edgeChildren = new ArrayList<>(childChars.length);
+                for (Object c : childChars) {
+                    SuffixTreeNode childNode = next.children.get(c);
+                    edgeChildren.add(new Edge(nextId++, childNode.start, childNode.end + 1));
+                    queue.add(childNode);
+                }
+                tree.put(nodeId, edgeChildren);
+            }
+            nodeId++;
+        }
+        return tree;
+    }
+
     public static List<Integer> match(String s, String p, int[] suffixes) {
         List<Integer> matches = new ArrayList<>();
         int N = s.length();
-        int pN = p.length();
-        for (int suffix : suffixes) {
-            if ((N - suffix >= pN) && (lcp(s, suffix, p) == pN)){
-                matches.add(suffix);
+        int min = 0;
+        int max = N;
+        while (min < max) {
+            int mid = (min + max) / 2;
+            if (compare(s, suffixes[mid], p) > 0) {
+                min = mid + 1;
+            } else {
+                max = mid;
             }
+        }
+        int start = min;
+        max = N;
+        while (min < max) {
+            int mid = (min + max) / 2;
+            if (compare(s, suffixes[mid], p) < 0) {
+                max = mid;
+            } else {
+                min = mid + 1;
+            }
+        }
+        int end = max;
+        for (int suffix = start; suffix < end; suffix++) {
+            matches.add(suffixes[suffix]);
         }
         return matches;
     }
 
-    private static int lcp(String s, int suffix, String pattern) {
-        int N = s.length();
+    private static int compare(String s, int suffix, String pattern) {
+        int sfxN = s.length() - suffix;
         int pN = pattern.length();
-        int lcp = 0;
-        while (suffix + lcp < N && lcp < pN) {
-            if (s.charAt(suffix + lcp) == pattern.charAt(lcp)) {
-                lcp++;
-            } else {
-                break;
+        int N = Math.min(sfxN, pN);
+        for (int i = 0; i < N; i++) {
+            if (pattern.charAt(i) > s.charAt(suffix + i)) {
+                return 1;
+            }
+            if (pattern.charAt(i) < s.charAt(suffix + i)) {
+                return -1;
             }
         }
-        return lcp;
+        return pN - N;
     }
+
 }

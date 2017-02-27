@@ -2,42 +2,19 @@ package string;
 
 import java.util.*;
 import java.io.*;
-import java.util.zip.CheckedInputStream;
-import sort.QuickSorter;
 
 public class SuffixTree {
 
-    class FastScanner {
-
-        StringTokenizer tok = new StringTokenizer("");
-        BufferedReader in;
-
-        FastScanner() {
-            in = new BufferedReader(new InputStreamReader(System.in));
-        }
-
-        String next() throws IOException {
-            while (!tok.hasMoreElements()) {
-                tok = new StringTokenizer(in.readLine());
-            }
-            return tok.nextToken();
-        }
-
-        int nextInt() throws IOException {
-            return Integer.parseInt(next());
-        }
-    }
-
     private final static boolean L = true;
     private final static boolean R = false;
-    
+
     public static class Suffix implements Comparable<Suffix> {
 
         public int index;
         public int length;
         private String text;
         private boolean type;
-        
+
         public Suffix(int index, int length, String text) {
             this.index = index;
             this.length = length;
@@ -117,26 +94,25 @@ public class SuffixTree {
             public void f(Suffix parent, Suffix node) {
                 paths.put(node, parent);
             }
+
             public Suffix s() {
                 return null;
             }
         });
     }
-    
+
     private void markNodes() {
         Set<Suffix> v = new HashSet<Suffix>();
         dfs(root, v);
     }
-    
+
     private void dfs(Suffix source, Set<Suffix> visited) {
         visited.add(source);
         if (isLeaf(source)) {
             if (source.contains('#')) {
                 source.type = L;
-            } else {
-                if (source.charAt(source.length() - 1) == '$') {
-                    source.type = R;
-                }
+            } else if (source.charAt(source.length() - 1) == '$') {
+                source.type = R;
             }
         } else {
             for (Suffix s : tree.get(source)) {
@@ -240,7 +216,7 @@ public class SuffixTree {
         this.markNodes();
         return this.findShortestNoncommonSubstring();
     }
-    
+
     private boolean isLeaf(Suffix s) {
         return this.tree.get(s) == null;
     }
@@ -249,6 +225,7 @@ public class SuffixTree {
         SuffixAction x = new SuffixAction() {
             Suffix minSuffix;
             int minLen = Integer.MAX_VALUE;
+
             public void f(Suffix p, Suffix n) {
                 if (n.type == L && n.charAt(0) != '#') {
                     int len = 0;
@@ -264,6 +241,7 @@ public class SuffixTree {
                     }
                 }
             }
+
             public Suffix s() {
                 return minSuffix;
             }
@@ -283,7 +261,9 @@ public class SuffixTree {
     }
 
     interface SuffixAction {
+
         public void f(Suffix p, Suffix n);
+
         public Suffix s();
     }
 
@@ -334,16 +314,6 @@ public class SuffixTree {
         return n;
     }
 
-    static public void main(String[] args) throws IOException {
-        new SuffixTree().run();
-    }
-
-    public void print(List<String> x) {
-        for (String a : x) {
-            System.out.println(a);
-        }
-    }
-    
     public static int[] suffixArray(String text) {
         int[] sfxIndices = new int[text.length()];
         Suffix[] suffixes = new Suffix[text.length()];
@@ -355,14 +325,14 @@ public class SuffixTree {
             sfxIndices[i] = suffixes[i].index;
         }
         return sfxIndices;
-    } 
+    }
 
     /**
-     * Same functionality as suffixArray() but so called because it returns a 
-     * boxed integer array. 
-     * 
+     * Same functionality as suffixArray() but so called because it returns a
+     * boxed integer array.
+     *
      * @param text
-     * @return 
+     * @return
      */
     public static Integer[] suffixArrayBoxed(String text) {
         final int len = text.length();
@@ -374,27 +344,21 @@ public class SuffixTree {
             @Override
             public int compare(Integer o1, Integer o2) {
                 if (o1 == o2) {
-                return 0;
-            }
-            int n = Integer.min(len - o1, len - o2);
-            for (int i = 0; i < n; i++) {
-                if (text.charAt(o1 + i) < text.charAt(o2 + i)) {
-                    return -1;
+                    return 0;
                 }
-                if (text.charAt(o1 + i) > text.charAt(o2 + i)) {
-                    return 1;
+                int n = Integer.min(len - o1, len - o2);
+                for (int i = 0; i < n; i++) {
+                    if (text.charAt(o1 + i) < text.charAt(o2 + i)) {
+                        return -1;
+                    }
+                    if (text.charAt(o1 + i) > text.charAt(o2 + i)) {
+                        return 1;
+                    }
                 }
-            }
-            return o1 - o2;
+                return o1 - o2;
             }
         });
         return sfxIndices;
     }
-    
-    public void run() throws IOException {
-        FastScanner scanner = new FastScanner();
-        String text = scanner.next();
-        List<String> edges = computeSuffixTreeEdges(text);
-        print(edges);
-    }
+
 }
