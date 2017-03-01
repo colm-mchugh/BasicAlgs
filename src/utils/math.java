@@ -172,7 +172,7 @@ public class math {
         int end;
         long sum;
 
-        public subarray(int s, int e, ArrayList<Integer> a) {
+        public subarray(int s, int e, List<Integer> a) {
             start = s;
             end = e;
             sum = 0;
@@ -185,6 +185,7 @@ public class math {
             return end - start;
         }
 
+        @Override
         public int compareTo(subarray s) {
             if (s == this) {
                 return 0;
@@ -200,7 +201,7 @@ public class math {
 
     }
 
-    public static ArrayList<Integer> maxset(ArrayList<Integer> a) {
+    public static List<Integer> maxset(List<Integer> a) {
         subarray max = null;
         int N = a.size();
         for (int i = 0; i < N;) {
@@ -225,6 +226,56 @@ public class math {
                 rv.add(a.get(k));
             }
         }
+        return rv;
+    }
+
+    public static List<Integer> findRange(List<Integer> numbers, int n) {
+        List<Integer> rv = new ArrayList<>();
+        int N = numbers.size();
+        int lo = 0;
+        int hi = N - 1;
+        int mid = -1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (numbers.get(mid) == n) {
+                if ((mid == 0) || numbers.get(mid - 1) < n) {
+                    break;
+                } else {
+                    hi = mid - 1;
+                }
+            } 
+            if (numbers.get(mid) > n) {
+                hi = mid - 1;
+            }
+            if (numbers.get(mid) < n) {
+                lo = mid + 1;
+            }
+        }
+        if (numbers.get(mid) != n) { // number of interest is not in the list
+            rv.add(-1);
+            rv.add(-1);
+            return rv;
+        }
+        rv.add(mid);
+        lo = mid;
+        hi = N - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (numbers.get(mid) == n) {
+                if ((mid == N - 1) || numbers.get(mid + 1) > n) {
+                    break;
+                } else {
+                    lo = mid + 1;
+                }
+            } 
+            if (numbers.get(mid) > n) {
+                hi = mid - 1;
+            }
+            if (numbers.get(mid) < n) {
+                lo = mid + 1;
+            }
+        }
+        rv.add(mid);
         return rv;
     }
 }
