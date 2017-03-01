@@ -1,5 +1,6 @@
 package utils;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -82,6 +83,9 @@ public class math {
     }
 
     public static int gcd(int a, int b) {
+        if ((a == 0) || (b == 0)) {
+            return Integer.max(a, b);
+        }
         if (a == b) {
             return a;
         }
@@ -104,8 +108,8 @@ public class math {
         double sqrtN = Math.sqrt(n);
         for (int i = 2; i <= sqrtN; i++) {
             if (primesN.contains(i)) {
-                for (int p = 2; p*i <= n; p++) {
-                    primesN.remove(p*i);
+                for (int p = 2; p * i <= n; p++) {
+                    primesN.remove(p * i);
                 }
             }
         }
@@ -126,6 +130,29 @@ public class math {
         return false;
     }
 
+    public static ArrayList<Integer> wave(ArrayList<Integer> a) {
+        Collections.sort(a);
+        for (int i = 0; i < a.size() - 1; i += 2) {
+            int tmp = a.get(i);
+            a.set(i, a.get(i + 1));
+            a.set(i + 1, tmp);
+        }
+        return a;
+    }
+
+    public static boolean isPowerOf2(String ns) {
+        BigInteger n = new BigInteger(ns);
+        BigInteger x = new BigInteger(ns);
+        BigInteger two = new BigInteger("2");
+        while (x.compareTo(BigInteger.ONE) > 0 && ((x.mod(two)).compareTo(BigInteger.ZERO) == 0)) {
+            x = x.divide(two);
+        }
+        if (x.compareTo(BigInteger.ONE) == 0) {
+            return true;
+        }
+        return false;
+    }
+
     public static int[] primesums(int n) {
         int[] rv = null;
         for (int i = 2; i <= n / 2; i++) {
@@ -134,6 +161,68 @@ public class math {
                 rv[0] = i;
                 rv[1] = n - i;
                 return rv;
+            }
+        }
+        return rv;
+    }
+
+    public static class subarray implements Comparable<subarray> {
+
+        int start;
+        int end;
+        long sum;
+
+        public subarray(int s, int e, ArrayList<Integer> a) {
+            start = s;
+            end = e;
+            sum = 0;
+            for (int i = s; i <= e; i++) {
+                sum += (long) a.get(i);
+            }
+        }
+
+        public int length() {
+            return end - start;
+        }
+
+        public int compareTo(subarray s) {
+            if (s == this) {
+                return 0;
+            }
+            if (this.sum == s.sum) {
+                if (this.length() == s.length()) {
+                    return s.start - this.start;
+                }
+                return this.length() - s.length();
+            }
+            return (this.sum > s.sum ? 1 : -1);
+        }
+
+    }
+
+    public static ArrayList<Integer> maxset(ArrayList<Integer> a) {
+        subarray max = null;
+        int N = a.size();
+        for (int i = 0; i < N;) {
+            while (i < N && a.get(i) < 0) {
+                i++;
+            }
+            if (i < N) {
+                int start = i;
+                while (i < N && a.get(i) >= 0) {
+                    i++;
+                }
+                int end = i - 1;
+                subarray nextsa = (new subarray(start, end, a));
+                if (max == null || max.compareTo(nextsa) < 0) {
+                    max = nextsa;
+                }
+            }
+        }
+        ArrayList<Integer> rv = new ArrayList<>();
+        if (max != null) {
+            for (int k = max.start; k <= max.end; k++) {
+                rv.add(a.get(k));
             }
         }
         return rv;
