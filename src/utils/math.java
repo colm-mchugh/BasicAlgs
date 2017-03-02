@@ -232,42 +232,38 @@ public class math {
     public static List<Integer> findRange(List<Integer> numbers, int n) {
         List<Integer> rv = new ArrayList<>();
         int N = numbers.size();
-        int lo = 0;
-        int hi = N - 1;
-        int mid = -1;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (numbers.get(mid) == n) {
-                if ((mid == 0) || numbers.get(mid - 1) < n) {
-                    break;
-                } else {
-                    hi = mid - 1;
-                }
-            } 
-            if (numbers.get(mid) > n) {
-                hi = mid - 1;
-            }
-            if (numbers.get(mid) < n) {
-                lo = mid + 1;
-            }
-        }
+        int mid = getIndex(numbers, n, true);
         if (numbers.get(mid) != n) { // number of interest is not in the list
             rv.add(-1);
             rv.add(-1);
-            return rv;
+        } else {
+            rv.add(mid);
+            rv.add(getIndex(numbers, n, false));
         }
-        rv.add(mid);
-        lo = mid;
-        hi = N - 1;
+        return rv;
+    }
+
+    private static int getIndex(List<Integer> numbers, int n, boolean lowEnd) {
+        int mid = -1;
+        int N = numbers.size();
+        int lo = 0, hi = N - 1;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
             if (numbers.get(mid) == n) {
-                if ((mid == N - 1) || numbers.get(mid + 1) > n) {
-                    break;
+                if (lowEnd) {
+                    if ((mid == 0) || numbers.get(mid - 1) < n) {
+                        break;
+                    } else {
+                        hi = mid - 1;
+                    }
                 } else {
-                    lo = mid + 1;
+                    if ((mid == N - 1) || numbers.get(mid + 1) > n) {
+                        break;
+                    } else {
+                        lo = mid + 1;
+                    }
                 }
-            } 
+            }
             if (numbers.get(mid) > n) {
                 hi = mid - 1;
             }
@@ -275,7 +271,6 @@ public class math {
                 lo = mid + 1;
             }
         }
-        rv.add(mid);
-        return rv;
+        return mid;
     }
 }
