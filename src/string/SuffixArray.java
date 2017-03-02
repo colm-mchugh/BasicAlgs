@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class SuffixArray {
 
@@ -163,7 +165,7 @@ public class SuffixArray {
             this.depth = depth;
             this.start = start;
             this.end = end;
-            this.children = new HashMap<>();
+            this.children = new TreeMap<>();
         }
 
         @Override
@@ -236,7 +238,6 @@ public class SuffixArray {
     }
 
     public static Map<Integer, List<Edge>> SuffixTreeEdges(SuffixTreeNode root) {
-        List<SuffixTreeNode> visited = new ArrayList<>();
         List<SuffixTreeNode> queue = new ArrayList<>();
         int nodeId = 0;
         int nextId = nodeId + 1;
@@ -244,12 +245,10 @@ public class SuffixArray {
         Map<Integer, List<Edge>> tree = new HashMap<>();
         while (!queue.isEmpty()) {
             SuffixTreeNode next = queue.remove(0);
-            if (!visited.contains(next) && !next.children.isEmpty()) {
-                visited.add(next);
-                Object[] childChars = next.children.keySet().toArray();
-                Arrays.sort(childChars, 0, childChars.length);
-                List<Edge> edgeChildren = new ArrayList<>(childChars.length);
-                for (Object c : childChars) {
+            if (!next.children.isEmpty()) {
+                Set<Character> childChars = next.children.keySet();
+                List<Edge> edgeChildren = new ArrayList<>(childChars.size());
+                for (Character c : childChars) {
                     SuffixTreeNode childNode = next.children.get(c);
                     edgeChildren.add(new Edge(nextId++, childNode.start, childNode.end + 1));
                     queue.add(childNode);

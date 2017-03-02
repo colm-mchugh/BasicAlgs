@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Stack;
 
-public class BinaryTree {
+public class BinaryTree<T> {
 
-    int val;
-    BinaryTree left;
-    BinaryTree right;
+    T val;
+    BinaryTree<T> left;
+    BinaryTree<T> right;
 
-    BinaryTree(int x) {
+    BinaryTree(T x) {
         val = x;
     }
 
@@ -21,26 +21,15 @@ public class BinaryTree {
     }
 
     public int isSymmetric() {
-        ArrayDeque<BinaryTree> queue = new ArrayDeque<>();
+        ArrayDeque<BinaryTree<T>> queue = new ArrayDeque<>();
+        ArrayDeque<BinaryTree<T>> childQueue = new ArrayDeque<>();
+        ArrayList<T> nextLevel = new ArrayList<>();
         queue.add(this);
-        while (!queue.isEmpty()) {
-            ArrayList<Integer> nextLevel = new ArrayList<>();
-            ArrayDeque<BinaryTree> childQueue = new ArrayDeque<>();
+        while (!queue.isEmpty()) {           
             while (!queue.isEmpty()) {
-                BinaryTree tn = queue.remove();
-                if (tn.left != null) {
-                    nextLevel.add(tn.left.val);
-                    childQueue.add(tn.left);
-                } else {
-                    nextLevel.add(null);
-                }
-                if (tn.right != null) {
-                    nextLevel.add(tn.right.val);
-                    childQueue.add(tn.right);
-                } else {
-                    nextLevel.add(null);
-                }
-
+                BinaryTree<T> tn = queue.remove();
+                nextLevel.add(enQueue(childQueue, tn.left));
+                nextLevel.add(enQueue(childQueue, tn.right));
             }
             int N = nextLevel.size();
             for (int i = 0; i < N / 2; i++) {
@@ -48,22 +37,33 @@ public class BinaryTree {
                     return 0;
                 }
             }
+            ArrayDeque<BinaryTree<T>> tmp = queue;
             queue = childQueue;
+            childQueue = tmp;
+            nextLevel.clear();
         }
         return 1;
     }
 
-    public ArrayList<ArrayList<Integer>> zigzagLevelOrder() {
-        ArrayList<ArrayList<Integer>> order = new ArrayList<>();
-        ArrayDeque<BinaryTree> queue = new ArrayDeque<>();
+    private T enQueue(ArrayDeque<BinaryTree<T>> queue, BinaryTree<T> n) {
+        T val = null;
+        if (n != null) {
+            queue.add(n);
+            val = n.val;
+        }
+        return val;
+    }
+    
+    public ArrayList<ArrayList<T>> zigzagLevelOrder() {
+        ArrayList<ArrayList<T>> order = new ArrayList<>();
+        ArrayDeque<BinaryTree<T>> queue = new ArrayDeque<>();
         Stack<BinaryTree> stack = new Stack<>();
         queue.add(this);
         while (!queue.isEmpty() || !stack.isEmpty()) {
-            ArrayList<Integer> nextLevel = new ArrayList<>();
-
+            ArrayList<T> nextLevel = new ArrayList<>();
             if (!queue.isEmpty()) {
                 while (!queue.isEmpty()) {
-                    BinaryTree tn = queue.remove();
+                    BinaryTree<T> tn = queue.remove();
                     nextLevel.add(tn.val);
                     if (tn.left != null) {
                         stack.push(tn.left);
@@ -75,7 +75,7 @@ public class BinaryTree {
             } else {
                 if (!stack.isEmpty()) {
                     while (!stack.isEmpty()) {
-                        BinaryTree tn = stack.pop();
+                        BinaryTree<T> tn = stack.pop();
                         nextLevel.add(tn.val);
                         if (tn.right != null) {
                             queue.addFirst(tn.right);
