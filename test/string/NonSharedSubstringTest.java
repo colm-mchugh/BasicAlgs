@@ -35,7 +35,7 @@ public class NonSharedSubstringTest {
     public void testShortSolve() {
         String s1 = "AXXC", s2 ="AXSC";
         String[] expected = { "XX", "XC"};
-        String rv = (new NonSharedSubstring()).solve(s1, s2);
+        String rv = (new SuffixTree()).shortestNoncommonSubstring(s1, s2);
         assert rv.equals(expected[0]) || rv.equals(expected[1]);
     }
     
@@ -45,6 +45,6 @@ public class NonSharedSubstringTest {
     }
     
     private void validate(String p, String q, String v) {
-        assert v.equals(new NonSharedSubstring().solve(p, q));
+        assert v.equals(new SuffixTree().shortestNoncommonSubstring(p, q));
     }
 }

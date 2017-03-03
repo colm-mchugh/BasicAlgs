@@ -2,7 +2,7 @@ package graph;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Iterator;
 import java.util.Stack;
 
 public class BinaryTree<T> {
@@ -21,37 +21,54 @@ public class BinaryTree<T> {
     }
 
     public int isSymmetric() {
-        ArrayDeque<BinaryTree<T>> queue = new ArrayDeque<>();
-        ArrayDeque<BinaryTree<T>> childQueue = new ArrayDeque<>();
-        ArrayList<T> nextLevel = new ArrayList<>();
-        queue.add(this);
-        while (!queue.isEmpty()) {           
-            while (!queue.isEmpty()) {
-                BinaryTree<T> tn = queue.remove();
-                nextLevel.add(enQueue(childQueue, tn.left));
-                nextLevel.add(enQueue(childQueue, tn.right));
-            }
-            int N = nextLevel.size();
-            for (int i = 0; i < N / 2; i++) {
-                if (!Objects.equals(nextLevel.get(i), nextLevel.get((N - 1) - i))) {
-                    return 0;
-                }
-            }
-            ArrayDeque<BinaryTree<T>> tmp = queue;
-            queue = childQueue;
-            childQueue = tmp;
-            nextLevel.clear();
+        inOrderIterator<T> lr = new inOrderIterator<>(this, inOrderIterator.LR);
+        inOrderIterator<T> rl = new inOrderIterator<>(this, inOrderIterator.RL);
+        while (lr.hasNext() && rl.hasNext() && (lr.next() == rl.next())) {
+        }
+        if (lr.hasNext() || rl.hasNext()) {
+            return 0;
         }
         return 1;
     }
 
-    private T enQueue(ArrayDeque<BinaryTree<T>> queue, BinaryTree<T> n) {
-        T val = null;
-        if (n != null) {
-            queue.add(n);
-            val = n.val;
+    public static class inOrderIterator<T> implements Iterator<T> {
+        final Stack<BinaryTree<T>> stack;
+        final boolean direction;
+        
+        final static boolean LR = true;
+        final static boolean RL = false;
+
+        public inOrderIterator(BinaryTree<T> root, boolean direction) {
+            this.stack = new Stack<>();
+            this.direction = direction;
+            advance(root);
         }
-        return val;
+        
+        @Override
+        public boolean hasNext() {
+            return !stack.isEmpty();
+        }
+
+        @Override
+        public T next() {
+            BinaryTree<T> n = stack.pop();
+            T val = n.val;
+            BinaryTree<T> nextNext = (this.direction == LR? n.right : n.left);
+            if (nextNext != null) {
+                n = nextNext;
+                advance(n);
+            }
+            return val;
+        }
+
+        private void advance(BinaryTree<T> n) {
+            while (n != null) {
+                stack.push(n);
+                n = (this.direction == LR? n.left : n.right);
+            }
+        }
+        
+        
     }
     
     public ArrayList<ArrayList<T>> zigzagLevelOrder() {

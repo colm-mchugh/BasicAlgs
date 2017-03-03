@@ -15,7 +15,7 @@ class Node {
     }
 }
 
-public class TrieMatching implements Runnable {
+public class TrieMatching {
 
     int letterToIndex(char letter) {
         switch (letter) {
@@ -67,29 +67,4 @@ public class TrieMatching implements Runnable {
         return result;
     }
 
-    public void run() {
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            String text = in.readLine();
-            int n = Integer.parseInt(in.readLine());
-            String[] patterns = new String[n];
-            for (int i = 0; i < n; i++) {
-                patterns[i] = in.readLine();
-            }
-
-            List<Integer> ans = solve(text, n, patterns);
-
-            for (int j = 0; j < ans.size(); j++) {
-                System.out.print("" + ans.get(j));
-                System.out.print(j + 1 < ans.size() ? " " : "\n");
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    public static void main(String[] args) {
-        new Thread(new TrieMatching()).start();
-    }
 }

@@ -38,7 +38,6 @@ public class KMP {
             }
             borders[i] = border;
         }
-        System.out.println("Whilecount: " + whileCount);
         return borders;
     }
     
