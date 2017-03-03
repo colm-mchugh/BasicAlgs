@@ -53,6 +53,9 @@ public class SuffixTree {
 
         @Override
         public String toString() {
+            if (this.length == Integer.MIN_VALUE) {
+                return "";
+            }
             if (this.length == Integer.MAX_VALUE) {
                 return text.substring(index);
             }
@@ -82,7 +85,7 @@ public class SuffixTree {
 
     protected void link(Substr from, Substr to) {
         if (!tree.containsKey(from)) { // Substr from is not in the graph
-            tree.put(from, new HashSet<>());
+            tree.put(from, new TreeSet<>());
         }
         tree.get(from).add(to);
     }
@@ -154,7 +157,7 @@ public class SuffixTree {
                         Substr parentSplit = new Substr(parent.index + lcpMax,
                                 parent.length - lcpMax, parent.text);
                         tree.put(parentSplit, tree.get(parent));
-                        Set<Substr> parentSet = new HashSet<>();
+                        Set<Substr> parentSet = new TreeSet<>();
                         parentSet.add(parentSplit);
                         tree.put(parent, parentSet);
                         parent.length = lcpMax;
@@ -183,7 +186,7 @@ public class SuffixTree {
     }
 
     private void initRoot(String text) {
-        this.root = new Substr(-1, text);
+        this.root = new Substr(-1, Integer.MIN_VALUE, text);
         Substr allText = new Substr(0, text);
         this.tree = new HashMap<>();
         this.link(this.root, allText);
@@ -360,4 +363,27 @@ public class SuffixTree {
         return sfxIndices;
     }
 
+    public void print() {
+        Queue<Substr> q1 = new ArrayDeque<>();
+        Queue<Substr> q2 = new ArrayDeque<>();
+        q1.add(root);
+        int level = 1;
+        while (!q1.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(level++).append(": ");
+            while (!q1.isEmpty()) {
+                Substr n = q1.remove(); 
+                sb.append(n.toString()).append(' ');
+                if (tree.containsKey(n)) {
+                    for (Substr c : tree.get(n)) {
+                        q2.add(c);
+                    }
+                }
+            }
+            System.out.println(sb.toString());
+            Queue<Substr> tmp = q1;
+            q1 = q2;
+            q2 = tmp;
+        }
+    }
 }

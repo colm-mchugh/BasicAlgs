@@ -21,7 +21,7 @@ public class NonSharedSubstringTest {
     
     @Test
     public void testLongSolve3() {
-        this.validate("ATGCGATGACCTGACTGA", "CTCAACGTATTGGCCAGA", "TGA");
+        this.validate("ATGCGATGACCTGACTGA", "CTCAACGTATTGGCCAGA", "ATG");
     }
     
     @Test
@@ -45,18 +45,6 @@ public class NonSharedSubstringTest {
     }
     
     private void validate(String p, String q, String v) {
-        NonSharedSubstring nss = new NonSharedSubstring();
-        int trials = 1000;
-        int fails = 0;
-        for (int i = 0; i < trials; i++) {
-        String rv = nss.solve(p, q);
-        
-        if (!v.equals(rv)) {
-            System.out.println("Trial:" + i + ", Found: " + rv + ", Expected: " + v);
-            fails++;
-        }
-        }
-        System.out.println("Fails: " + fails);
-        //assert v.equals(rv);
+        assert v.equals(new NonSharedSubstring().solve(p, q));
     }
 }
