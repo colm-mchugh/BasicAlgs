@@ -135,4 +135,19 @@ public class mathTest {
         assert r.get(0) == -1 && r.get(1) == -1;
     }
 
+    @Test
+    public void testCoins() {
+        List<Integer> coins = new ArrayList<>(8);
+        int[] vals = {1,100,500,10};
+        for (int v : vals) {
+            coins.add(v);
+        }
+        assert math.maxcoin(coins) == 501;
+        
+        assert math.revBits(0) == 0;
+        assert math.revBits(3) == 3221225472l;
+        assert math.revBits(3221225472l) == 3;
+        
+    }
+    
 }

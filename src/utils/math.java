@@ -256,12 +256,10 @@ public class math {
                     } else {
                         hi = mid - 1;
                     }
+                } else if ((mid == N - 1) || numbers.get(mid + 1) > n) {
+                    break;
                 } else {
-                    if ((mid == N - 1) || numbers.get(mid + 1) > n) {
-                        break;
-                    } else {
-                        lo = mid + 1;
-                    }
+                    lo = mid + 1;
                 }
             }
             if (numbers.get(mid) > n) {
@@ -273,4 +271,47 @@ public class math {
         }
         return mid;
     }
+
+    public static int maxcoin(List<Integer> a) {
+        if (a.isEmpty()) {
+            return 0;
+        }
+        int[][] mem = new int[a.size()][a.size()];
+        return max(a, 0, a.size() - 1, mem);
+    }
+
+    private static int max(List<Integer> coins, int i, int j, int[][] mem) {
+        if (i > j) {
+            return 0;
+        } else if (i == j) {
+            return coins.get(i);
+        }
+        if (mem[i][j] == 0) {
+            int vi = coins.get(i) + Math.min(max(coins, i + 2, j, mem), max(coins, i + 1, j - 1, mem));
+            int vj = coins.get(j) + Math.min(max(coins, i + 1, j - 1, mem), max(coins, i, j - 2, mem));
+            mem[i][j] = Math.max(vi, vj);
+        }
+        return mem[i][j];
+    }
+
+    public static long revBits(long a) {
+        long lower = 0x1;
+        long upper = lower << 31;
+        long aRev = a;
+        while (upper > lower) {
+            if (((lower & aRev) == lower) && (((upper & aRev) == 0)))  {
+                aRev = aRev & ~lower;
+                aRev = aRev | upper;
+            } else if (((upper & aRev) == upper) && (((lower & aRev) == 0)))  {
+                aRev = aRev & ~upper;
+                aRev = aRev | lower;
+            }
+            lower = lower << 1;
+            upper = upper >> 1;
+        }
+        return aRev;
+    }
+    
+
+
 }
