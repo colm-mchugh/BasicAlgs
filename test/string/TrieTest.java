@@ -3,6 +3,7 @@ package string;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.junit.Test;
 
 public class TrieTest {
@@ -256,8 +257,15 @@ public class TrieTest {
     
     @Test
     public void remDups5() {
-        int[] a1 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2};
-        int[] expected = { 1, 1, 2, 2};      
+        int[] a1 = {0, 0, 0, 0, 1, 2, 3, 3, 4, 10};
+        int[] expected = { 0, 0, 1, 2, 3, 3, 4, 10};      
+        validate (a1, expected);
+    }
+    
+    @Test
+    public void remDups6() {
+        int[] a1 = {1000, 1000, 1000, 1000, 1001, 1002, 1003, 1003, 1004, 1010};
+        int[] expected = { 1000, 1000, 1001, 1002, 1003, 1003, 1004, 1010};      
         validate (a1, expected);
     }
     
@@ -290,7 +298,7 @@ public class TrieTest {
     }
 
     private boolean notADup(int D, List<Integer> a) {
-        return !(D > 1 && a.get(D) == a.get(D - 1) && a.get(D) == a.get(D - 2));
+        return !(D > 1 && Objects.equals(a.get(D), a.get(D - 1)) && Objects.equals(a.get(D), a.get(D - 2)));
     }
 
 }
