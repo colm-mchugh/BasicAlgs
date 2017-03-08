@@ -1,31 +1,47 @@
 package graph;
 
 import java.util.Objects;
+import java.util.Set;
 
 public interface Flow<T> {
 
     /**
-     * Create an edge from u to v with capacity capacity and flow flow.
+     * Create an edge from u to v with capacity c.
      *
      * @param u
      * @param v
      * @param c
-     * @param f
      */
-    void link(T u, T v, int c, int f);
+    void link(T u, T v, int c);
 
     /**
      * The vertices in the graph
      *
      * @return
      */
-    Iterable<T> V();
+    Set<T> V();
 
     /**
      * The number of vertices in the graph
      */
     public int numVertices();
 
+    /**
+     * The edges incident on vertex u.
+     * 
+     * @param u
+     * @return 
+     */
+    Set<Edge<T>> edgesOf(T u);
+    
+    /**
+     * The excess flow at a given vertex
+     * 
+     * @param u
+     * @return 
+     */
+    int excess(T u);
+    
     static class Edge<T> implements Comparable<Edge<T>> {
 
         public T u;
@@ -33,6 +49,14 @@ public interface Flow<T> {
         public int capacity;
         public int flow;
 
+        /**
+         * Create an edge from u to v with capacity c.
+         * Flow on a newly created edge is 0.
+         * 
+         * @param u
+         * @param v
+         * @param c 
+         */
         public Edge(T u, T v, int c) {
             this.u = u;
             this.v = v;
@@ -94,10 +118,7 @@ public interface Flow<T> {
                 return false;
             }
             final Edge<?> other = (Edge<?>) obj;
-            if (!Objects.equals(this.v, other.v)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.v, other.v);
         }
 
         @Override
