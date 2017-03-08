@@ -210,14 +210,87 @@ public class TrieTest {
         }
         return sz;
     }
-    
+
     @Test
     public void removeEls() {
         List<Integer> l = new ArrayList<>();
-        l.add(4); l.add(1); l.add(1); l.add(2); l.add(1); l.add(3);
+        l.add(4);
+        l.add(1);
+        l.add(1);
+        l.add(2);
+        l.add(1);
+        l.add(3);
         assert removeElement(l, 1) == 3;
         assert l.get(0) == 4;
         assert l.get(1) == 2;
         assert l.get(2) == 3;
     }
+
+    @Test
+    public void remDups1() {
+        int[] a1 = {1, 2, 2, 3, 4, 4, 4, 5, 6, 6, 6, 6, 6, 7, 8, 8, 8, 8, 9, 10, 10, 10, 10, 10, 10};
+        int[] expected = {1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10};      
+        validate (a1, expected);
+    }
+
+    @Test
+    public void remDups2() {
+        int[] a1 = {};
+        int[] expected = {};      
+        validate (a1, expected);
+    }
+
+    @Test
+    public void remDups3() {
+        int[] a1 = {1, 2, 2, 3, 4, 4, 4, 5};
+        int[] expected = {1, 2, 2, 3, 4, 4, 5};      
+        validate (a1, expected);
+    }
+    
+    @Test
+    public void remDups4() {
+        int[] a1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] expected = a1;      
+        validate (a1, expected);
+    }
+    
+    @Test
+    public void remDups5() {
+        int[] a1 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2};
+        int[] expected = { 1, 1, 2, 2};      
+        validate (a1, expected);
+    }
+    
+    List<Integer> fillList(int[] a) {
+        List<Integer> l = new ArrayList<>(a.length);
+        for (int i : a) {
+            l.add(i);
+        }
+        return l;
+    }
+
+    void validate(int[] a1, int[] e) {
+        List<Integer> l = fillList(a1);
+        int d = removeDups(l);
+        assert e.length == d;
+        for (int i = 0; i < d; i++) {
+            assert l.get(i) == e[i];
+        }
+    }
+
+    int removeDups(List<Integer> a) {
+        int D = 0;
+        for (int i = 0; i < a.size(); i++) {
+            a.set(D, a.get(i));
+            if (notADup(D, a)) {
+                D++;
+            }
+        }
+        return D;
+    }
+
+    private boolean notADup(int D, List<Integer> a) {
+        return !(D > 1 && a.get(D) == a.get(D - 1) && a.get(D) == a.get(D - 2));
+    }
+
 }
