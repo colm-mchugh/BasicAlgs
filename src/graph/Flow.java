@@ -1,6 +1,6 @@
 package graph;
 
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Set;
 
 public interface Flow<T> {
@@ -42,7 +42,7 @@ public interface Flow<T> {
      */
     int excess(T u);
     
-    static class Edge<T> implements Comparable<Edge<T>> {
+    static class Edge<T> {
 
         public T u;
         public T v;
@@ -96,36 +96,42 @@ public interface Flow<T> {
         }
 
         @Override
-        public int compareTo(Edge<T> o) {
-            if (this.capacity < o.capacity) {
-                return -1;
-            }
-            if (this.capacity > o.capacity) {
-                return 1;
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Edge<?> other = (Edge<?>) obj;
-            return Objects.equals(this.v, other.v);
-        }
-
-        @Override
         public String toString() {
             return u + " -> " + v + ", " + flow + "/" + capacity;
         }
 
     }
 
+    /**
+     * Data for a maximum flow in the graph.
+     * @param <T> 
+     */
+    static class Max<T> {
+        T source;
+        T sink;
+        int value;
+        Set<T> mincut;
+        int augmentations;
+
+        public Max(T source, T sink, Flow<T> g) {
+            assert g.V().contains(source) && g.V().contains(sink);
+            assert !source.equals(sink);
+            this.source = source;
+            this.sink = sink;
+            this.mincut = new HashSet<>(g.numVertices());
+            this.value = g.excess(sink);
+            this.augmentations = 0;
+        }
+               
+    }
+    
+    /**
+     * Return the maximum flow possible in the graph using the given source and 
+     * sink.
+     * 
+     * @param s The source vertex; must be in the graph
+     * @param t The sink vertex; must be in the graph
+     * @return 
+     */
+    Max<T> getMax(T s, T t);
 }
