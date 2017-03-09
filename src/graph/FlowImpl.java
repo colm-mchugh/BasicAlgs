@@ -60,7 +60,13 @@ public class FlowImpl<T>  implements Flow<T> {
     }
 
     /**
-     * Determine the maximum flow possible from source vertex s to  
+     * Determine the maximum flow possible from source vertex s to sink t.
+     * Uses Ford-Fulkerson algorithm(*) as follows: while there is an 
+     * augmenting path from source to sink - a path along which flow can be
+     * increased - increase the flow along that path by the maximal allowed.
+     * Stop when no more paths can be found.
+     * 
+     * (*) CLRS ch.26, KT ch. 7, DPV 7.1-7.3, among others.
      * @param s
      * @param t 
      */

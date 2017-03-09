@@ -15,7 +15,7 @@ public class FlowBPMatcher<T> {
      * can go where".. For example, if trying to match workers to jobs, the
      * matcher may be given the jobs each worker can do:
      *
-     * W1 -> J1 W2 -> J1, J3 W3 -> J2, J3, J4 W4 -> J3 W5 -> J3
+     * W1 -> J1; W2 -> J1,J3; W3 -> J2,J3,J4; W4 -> J3; W5 -> J3.
      *
      * In addition, the client also specifies two values not in the matchings;
      * these are used as the source and sink in the flow network that calculates
