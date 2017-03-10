@@ -64,7 +64,7 @@ public class FlowImpl<T>  implements Flow<T> {
      * Uses Ford-Fulkerson algorithm(*) as follows: while there is an 
      * augmenting path from source to sink - a path along which flow can be
      * increased - increase the flow along that path by the maximal allowed.
-     * Stop when no more paths can be found.
+     * Stop when no more paths can be found
      * 
      * (*) CLRS ch.26, KT ch. 7, DPV 7.1-7.3, among others.
      * @param s

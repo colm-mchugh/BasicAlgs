@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class KnapsackRcrsv extends Knapsack {
 
-    private Map<Integer, Map<Integer, Integer>> recMemo;
+    private final Map<Integer, Map<Integer, Integer>> recMemo;
 
     public KnapsackRcrsv(int knapSackWeight, int[] data) {
         super(knapSackWeight);

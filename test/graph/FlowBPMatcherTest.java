@@ -2,9 +2,7 @@ package graph;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class FlowBPMatcherTest {
     

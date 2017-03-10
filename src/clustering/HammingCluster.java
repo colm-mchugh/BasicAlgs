@@ -85,8 +85,4 @@ public class HammingCluster {
         return this.clusters.numClusters();
     }
 
-    public static void main(String[] args) {
-        
-    }
-
 }
