@@ -300,5 +300,30 @@ public class TrieTest {
     private boolean notADup(int D, List<Integer> a) {
         return !(D > 1 && Objects.equals(a.get(D), a.get(D - 1)) && Objects.equals(a.get(D), a.get(D - 2)));
     }
+    
+    @Test
+    public void testIP() {
+        System.out.println(findIPs("25525511135", 3));
+    }
+
+    public static List<String> findIPs(String s, int dots) {
+        List<String> ips = new ArrayList<>();
+        for (int i = 1; i <= 3 && i < s.length(); i++) {
+            String cip = s.substring(0, i);
+            if (Integer.parseInt(cip) < 256) {
+                if (dots == 1) {
+                    if (Integer.parseInt(s.substring(i)) < 256) {
+                        ips.add(cip + "." + s.substring(i));
+                    }
+                } else {
+                    for (String ip : findIPs(s.substring(i), dots - 1)) {
+                        ips.add(cip + "." + ip);
+                    }
+                }
+            }
+        }
+        return ips;
+    }
+
 
 }
