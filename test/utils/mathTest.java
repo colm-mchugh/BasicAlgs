@@ -150,4 +150,33 @@ public class mathTest {
         
     }
     
+    @Test
+    public void testContainer() {
+        List<Integer> test = new ArrayList<>();
+        test.add(1);
+        test.add(5);
+        test.add(4);
+        test.add(3);
+        
+        int area = math.maxContainer(test);
+        assert area == 6;
+        
+        test.clear();
+        test.add(0);
+        test.add(0);
+        test.add(1);
+        test.add(1);
+        int x = math.remDups(test);
+        assert x == 2;
+             
+        int[] ar = { 2, 14, 18, 23, 25, 36, 40, 44, 44, 53, 54, 68, 71, 80, 94 };
+        
+         test.clear();
+         for (int a : ar) {
+             test.add(a);
+         }
+         assert math.diffK(test, 1) == 1;
+
+    }
+    
 }

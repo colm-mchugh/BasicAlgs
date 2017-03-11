@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class math {
@@ -343,5 +344,97 @@ public class math {
     private static int getMin(int a, int b, int c) {
         return Integer.max(Math.abs(a - b), Integer.max(Math.abs(b - c), Math.abs(c - a)));
     }
+    
+    
+    public static class Container implements Comparable<Container> {
+        int x0, y0;
+        int x1, y1;
 
+        public Container(int x0, int y0, int x1, int y1) {
+            this.x0 = x0;
+            this.y0 = y0;
+            this.x1 = x1;
+            this.y1 = y1;
+        }
+
+        public int area() {
+            return Integer.min(y0, y1) * Math.abs(x0 - x1);
+        }
+        
+        @Override
+        public int compareTo(Container o) {
+            if (o == this) {
+                return 0;
+            }
+            int mine = this.area();
+            int theirs = o.area();
+            if (mine > theirs) {
+                return 1;
+            }
+            if (mine < theirs) {
+                return -1;
+            }
+            return 0;
+        }
+        
+        
+        
+    }
+    
+    public static int maxContainer(List<Integer> a) {
+        int N = a.size();
+        Container max = new Container(0, a.get(0), N - 1, a.get(N - 1));
+        int i = 0, j = N - 1;
+        while (i < j) {
+            if (a.get(i) > a.get(j)) {
+                j--;
+            } else {
+                i++;
+            }
+            Container next = new Container(i, a.get(i), j, a.get(j));
+            if (next.compareTo(max) > 0) {
+                max = next;
+            }
+        }        
+        return max.area();
+    }
+
+    private static boolean notDup(int l, List<Integer> a) {
+        return !(l > 0 && Objects.equals(a.get(l), a.get(l - 1)));
+    }
+
+
+    public static int remDups(List<Integer> a) {
+        int l = 0;
+        for (int i = 0; i < a.size(); i++) {
+            a.set(l, a.get(i));
+            if (notDup(l, a)) {
+                l++;
+            }
+        }
+        return l;
+    }
+    
+    public static int diffK(List<Integer> a, int b) {
+        int N = a.size();
+        if (N == 1) {
+            return 0;
+        }
+        for (int i = 0; i < N; i++) {
+            int seek = a.get(i) + b;
+            int lo = 0;
+            int hi = N - 1;
+            for (int mid = (hi - lo)/2; lo <=hi; mid = lo + (hi - lo)/2) {
+                if ((a.get(mid) == seek) && mid != i) {
+                    return 1;
+                }
+                if (a.get(mid) > seek) {
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+        }
+        return 0;
+    }
 }
