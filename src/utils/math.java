@@ -312,6 +312,36 @@ public class math {
         return aRev;
     }
     
-
+    public static int sumClosestElements(List<Integer> a, List<Integer> b, List<Integer> c) {
+        int minSoFar = Integer.MAX_VALUE;
+        int i = 0, j = 0, k = 0;
+        int aN = a.size(), bN = b.size(), cN = c.size();
+        int mini = i, minj = j, mink = k;
+        while (i < aN && j < bN && k < cN) {
+            int min = Integer.min(a.get(i), Integer.min(b.get(j), c.get(k)));
+            int max = Integer.max(a.get(i), Integer.max(b.get(j), c.get(k)));
+            if (max - min < minSoFar) {
+                minSoFar = max - min;
+                mini = i;
+                minj = j;
+                mink = k;
+            }
+            if (minSoFar == 0) {
+                break;
+            }
+            if (a.get(i) == min) {
+                i++;
+            } else if (b.get(j) == min) {
+                j++;
+            } else {
+                k++;
+            }
+        }
+        return getMin(a.get(mini), b.get(minj), c.get(mink));
+    }
+    
+    private static int getMin(int a, int b, int c) {
+        return Integer.max(Math.abs(a - b), Integer.max(Math.abs(b - c), Math.abs(c - a)));
+    }
 
 }
