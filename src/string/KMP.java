@@ -24,12 +24,9 @@ public class KMP {
         int border = 0;
         int[] borders = new int[s.length()];
         borders[0] = 0;
-        int whileCount=0;
         for (int i = 1; i < borders.length; i++) {
-            whileCount++;
             while ((border > 0) && s.charAt(border) != s.charAt(i)) {
                 border = borders[border - 1];
-                whileCount++;
             }
             if (s.charAt(border) == s.charAt(i)) {
                 border = border + 1;

@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public interface Flow<T> {
@@ -100,6 +101,28 @@ public interface Flow<T> {
             return u + " -> " + v + ", " + flow + "/" + capacity;
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Edge<?> other = (Edge<?>) obj;
+            if (this.capacity != other.capacity) {
+                return false;
+            }
+            if (!Objects.equals(this.u, other.u)) {
+                return false;
+            }
+            return Objects.equals(this.v, other.v);
+        }
+
+        
     }
 
     /**
@@ -112,7 +135,7 @@ public interface Flow<T> {
         int value;
         Set<T> mincut;
         int augmentations;
-
+                
         public Max(T source, T sink, Flow<T> g) {
             assert g.V().contains(source) && g.V().contains(sink);
             assert !source.equals(sink);

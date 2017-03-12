@@ -18,6 +18,9 @@ public class FlowImpl<T>  implements Flow<T> {
     @Override
     public void link(T u, T v, int c) {
         Edge<T> newEdge = new Edge<>(u, v, c);
+        if (linked(newEdge)) {
+            throw new IllegalArgumentException("Edge already present: " + newEdge);
+        }        
         addToGraph(u, newEdge);
         addToGraph(v, newEdge);
     }
@@ -122,5 +125,14 @@ public class FlowImpl<T>  implements Flow<T> {
         }
         mf.augmentations++;
         return pathTo;
+    }
+
+    private boolean linked(Edge<T> e) {
+        Set<Edge<T>> uSet = this.graph.get(e.u);
+        Set<Edge<T>> vSet = this.graph.get(e.v);
+        if (uSet != null && vSet != null) {
+            return uSet.contains(e) && vSet.contains(e);
+        }
+        return false;
     }
 }
