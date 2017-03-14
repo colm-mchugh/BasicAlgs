@@ -14,13 +14,20 @@ public class TimSort {
 
     public static class Run {
         int i, j;
+        Run(int i, int j) {
+            this.i = i;
+            this.j = j;
+        }
+        
+        int len() {
+            return j - i + 1;
+        }
     }
 
     public static List<Run> identifyRuns(Comparable[] a) {
         List<Run> runs = new ArrayList<>();
         for (int i = 0; i < a.length;) {
-            Run run = new Run();
-            run.i = run.j = i;
+            Run run = new Run(i, i);
             if (run.j + 1 < a.length) {
                 boolean isDesc = a[run.j].compareTo(a[run.j + 1]) > 0;
                 while ((run.j + 1 < a.length)) {
@@ -37,6 +44,12 @@ public class TimSort {
             }
             i = run.j + 1;
             runs.add(run);
+        }
+        for (int i = 0, j = 0; i < runs.size(); i++) {
+            int l = runs.get(i).len();
+            for (j = i + 1; j < runs.size() && l < MINRUN; j++) {
+                l += runs.get(j).len();
+            }
         }
         return runs;
     }

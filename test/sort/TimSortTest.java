@@ -12,6 +12,7 @@ public class TimSortTest {
     Integer[] aDsc = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
     Integer[] rnd1 = {23, 74, 30, 12, 45, 98, 53, 75, 23, 95, 17, 23, 89, 32, 54, 67, 48, 75};
     Integer[] aAsc1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1};
+    Integer[] aAscDes = {1, 20, 2, 19, 3, 18, 4, 17, 5, 16};
     
     @Test
     public void insertionSort() {
@@ -39,6 +40,7 @@ public class TimSortTest {
         testRun(aDsc, 1);
         testRun(aAsc1, 2);
         testRun(rnd1, 8);
+        testRun(aAscDes, aAscDes.length/2);
     }
     
     private void testRun(Comparable[] a, int expectedSz) {
@@ -46,7 +48,7 @@ public class TimSortTest {
         assert runs.size() == expectedSz;
         if (expectedSz == 1) {
             TimSort.Run run = runs.get(0);
-            assert run.i == 0 && run.j == a.length - 1;
+            assert run.len() == a.length;
         }
     }
     
