@@ -1,6 +1,5 @@
 package graph;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,9 +8,9 @@ import java.util.Stack;
 
 /**
  * Created an ordering of the vertices of a Directed acyclic graph such that,
- * for each edge in the graph: u -> v, the vertex u precedes v in the ordering.
- * i.e. index(u) < index(v), where index(x) gives the position of a vertex in the
- * ordering.
+ * for each edge in the graph: u -> v, the vertex u succeeds v in the ordering.
+ * i.e. index(u) > index(v), where index(x) gives the position of a vertex in the
+ * ordering. Sink nodes will precede source nodes in the ordering.
  * 
  * @param <T> 
  */
@@ -20,7 +19,7 @@ public class TopologicalSort<T> {
     public List<T> sort(DGraphImpl<T> graph) {
         if (!graph.isAcyclic()) {
             // graph has no sink vertices => cannot determine a final vertex
-            // in an ordering
+            // in any ordering
             throw new IllegalArgumentException("Graph must be acyclic");
         }
         Set<T> visited = new HashSet<>();

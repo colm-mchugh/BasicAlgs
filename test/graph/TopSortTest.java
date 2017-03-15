@@ -32,8 +32,8 @@ public class TopSortTest {
                 wIndex = i;
             }
         }  
-        assert sIndex < tIndex && sIndex < wIndex;
-        assert wIndex < tIndex;
+        assert sIndex >tIndex && sIndex > wIndex;
+        assert wIndex > tIndex;
     }
     
     /*                
