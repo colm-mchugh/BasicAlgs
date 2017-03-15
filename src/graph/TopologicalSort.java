@@ -1,54 +1,46 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
 
+/**
+ * Created an ordering of the vertices of a Directed acyclic graph such that,
+ * for each edge in the graph: u -> v, the vertex u precedes v in the ordering.
+ * i.e. index(u) < index(v), where index(x) gives the position of a vertex in the
+ * ordering.
+ * 
+ * @param <T> 
+ */
 public class TopologicalSort<T> {
-    private final DGraphImpl<T> graph;
-    private Set<T> visited;
-    private Stack<T> ordering;
-    
-    public TopologicalSort(DGraphImpl<T> graph) {
-        this.graph = graph;
-        if (false && !graph.isAcyclic()) {
+   
+    public List<T> sort(DGraphImpl<T> graph) {
+        if (!graph.isAcyclic()) {
             // graph has no sink vertices => cannot determine a final vertex
             // in an ordering
             throw new IllegalArgumentException("Graph must be acyclic");
         }
-        this.orderIt();
-    }
-
-    private void orderIt() {
-        visited = new HashSet<T>();
-        ordering = new Stack<>();
-        for (T v : this.graph.V()) {
+        Set<T> visited = new HashSet<>();
+        Stack<T> ordering = new Stack<>();
+        for (T v : graph.V()) {
             if (!visited.contains(v)) {
-                this.doDFS(graph, v);
+                this.doDFS(graph, v, visited, ordering);
             }
         }
+        return ordering;
     }
     
-    public Iterable<T> getOrdering() {
-        return this.ordering;
-    }
-    
-    private void doDFS(DGraphImpl<T> graph, T source) {
+    private void doDFS(DGraphImpl<T> graph, T source, Set<T> visited, Stack<T> ordering) {
         visited.add(source);
         for (T v : graph.connections(source)) {
             if (!visited.contains(v)) {
-                doDFS(graph, v);
+                doDFS(graph, v, visited, ordering);
             }
         }
         ordering.push(source);
-    }
-    
-    public T next() {
-        if (ordering.empty()) {
-            return null;
-        }
-        return ordering.pop();
     }
     
 }

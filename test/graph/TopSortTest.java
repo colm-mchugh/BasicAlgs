@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.List;
 import org.junit.Test;
 
 public class TopSortTest {
@@ -13,16 +14,38 @@ public class TopSortTest {
         graph.add('v', 't');
         graph.add('v', 's');
         graph.add('w', 't');
-        //graph.add('t' , 's');
             
-        TopologicalSort<Character> sorter = new TopologicalSort<>(graph);
-        for (Character i = sorter.next(); i != null; i = sorter.next()) {
-            System.out.println(i);
-        }
-           
+        TopologicalSort<Character> topSorter = new TopologicalSort<>();
+        List<Character> graphOrdering = topSorter.sort(graph);
+        int sIndex = Integer.MAX_VALUE;
+        int tIndex = Integer.MAX_VALUE;
+        int wIndex = Integer.MAX_VALUE;
+        for (int i = 0; i < graphOrdering.size(); i++) {
+            Character c = graphOrdering.get(i);
+            System.out.print(c);
+            System.out.print(' ');
+            if (c == 's') {
+                sIndex = i;
+            } else if (c == 't') {
+                tIndex = i;
+            } else if (c == 'w') {
+                wIndex = i;
+            }
+        }  
+        assert sIndex < tIndex && sIndex < wIndex;
+        assert wIndex < tIndex;
     }
     
-    @Test
+    /*                
+       A cyclic graph should produce an illegal argument exception:
+    
+       3 ->4-> 5->6-> 9-> 7
+       ^  /    ^      ^  /
+       | /     |      | /
+       2       5      8
+    
+    */
+    @Test(expected = IllegalArgumentException.class)
     public void test2() {
         DGraphImpl<Integer> g = new DGraphImpl<>();
         g.add(9, 7);
@@ -38,11 +61,8 @@ public class TopSortTest {
         g.add(1, 5);
 
         
-        TopologicalSort<Integer> s2 = new TopologicalSort<>(g);
-        for (Integer i = s2.next(); i != null; i = s2.next()) {
-            System.out.print(i);
-            System.out.print(' ');
-        }
-        System.out.println();
+        TopologicalSort<Integer> topSorter = new TopologicalSort<>();
+        topSorter.sort(g);
+        System.out.println("This will never be printed.");
     }
 }
