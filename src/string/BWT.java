@@ -6,15 +6,15 @@ import java.util.Map;
 import sort.QuickSorter;
 
 /**
- * BWT (Burrows Wheeler Transform)
- *
- * transform - Apply Burrows Wheeler Transform to a string reverse - Reverse a
- * Burrows Wheeler Transformed string match - Return number of times pattern
- * occurs in given string
- *
+ * BWT (Burrows Wheeler Transform) functionality
  */
 public class BWT {
 
+    /**
+     * Apply Burrows Wheeler Transform (BWT) to a string 
+     * @param p input string
+     * @return BWT'd input string
+     */
     public static String transform(String p) {
         Rotation[] rotations = new Rotation[p.length()];
 

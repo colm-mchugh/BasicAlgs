@@ -80,11 +80,11 @@ public class mathTest {
 
         assert m.get(0) == 1433925857;
     }
-    
+
     @Test
     public void testRange() {
         List<Integer> a = new ArrayList<>();
-        
+
         a.add(3);
         a.add(4);
         a.add(5);
@@ -94,7 +94,7 @@ public class mathTest {
         a.add(9);
         List<Integer> r = math.findRange(a, 8);
         assert r.get(0) == 3 && r.get(1) == 5;
-        
+
         a.clear();
         a.add(8);
         a.add(8);
@@ -103,7 +103,7 @@ public class mathTest {
         a.add(11);
         r = math.findRange(a, 8);
         assert r.get(0) == 0 && r.get(1) == 2;
-        
+
         a.clear();
         a.add(3);
         a.add(4);
@@ -113,23 +113,23 @@ public class mathTest {
         a.add(8);
         r = math.findRange(a, 8);
         assert r.get(0) == 4 && r.get(1) == 5;
-        
+
         a.clear();
         a.add(3);
         a.add(4);
         a.add(5);
         a.add(6);
-         a.add(8);
+        a.add(8);
         a.add(9);
         r = math.findRange(a, 8);
         assert r.get(0) == 4 && r.get(1) == 4;
-        
+
         a.clear();
         a.add(3);
         a.add(4);
         a.add(5);
         a.add(6);
-         a.add(9);
+        a.add(9);
         a.add(9);
         r = math.findRange(a, 8);
         assert r.get(0) == -1 && r.get(1) == -1;
@@ -138,18 +138,18 @@ public class mathTest {
     @Test
     public void testCoins() {
         List<Integer> coins = new ArrayList<>(8);
-        int[] vals = {1,100,500,10};
+        int[] vals = {1, 100, 500, 10};
         for (int v : vals) {
             coins.add(v);
         }
         assert math.maxcoin(coins) == 501;
-        
+
         assert math.revBits(0) == 0;
         assert math.revBits(3) == 3221225472l;
         assert math.revBits(3221225472l) == 3;
-        
+
     }
-    
+
     @Test
     public void testContainer() {
         List<Integer> test = new ArrayList<>();
@@ -157,10 +157,10 @@ public class mathTest {
         test.add(5);
         test.add(4);
         test.add(3);
-        
+
         int area = math.maxContainer(test);
         assert area == 6;
-        
+
         test.clear();
         test.add(0);
         test.add(0);
@@ -168,15 +168,15 @@ public class mathTest {
         test.add(1);
         int x = math.remDups(test);
         assert x == 2;
-             
-        int[] ar = { 2, 14, 18, 23, 25, 36, 40, 44, 44, 53, 54, 68, 71, 80, 94 };
-        
-         test.clear();
-         for (int a : ar) {
-             test.add(a);
-         }
-         assert math.diffK(test, 1) == 1;
+
+        int[] ar = {2, 14, 18, 23, 25, 36, 40, 44, 44, 53, 54, 68, 71, 80, 94};
+
+        test.clear();
+        for (int a : ar) {
+            test.add(a);
+        }
+        assert math.diffK(test, 1) == 1;
 
     }
-    
+
 }

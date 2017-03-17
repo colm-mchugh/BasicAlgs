@@ -345,7 +345,7 @@ public class SuffixTree {
         Arrays.sort(sfxIndices, new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
-                if (o1 == o2) {
+                if (Objects.equals(o1, o2)) {
                     return 0;
                 }
                 int n = Integer.min(len - o1, len - o2);

@@ -3,8 +3,10 @@ package utils;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -300,10 +302,10 @@ public class math {
         long upper = lower << 31;
         long aRev = a;
         while (upper > lower) {
-            if (((lower & aRev) == lower) && (((upper & aRev) == 0)))  {
+            if (((lower & aRev) == lower) && (((upper & aRev) == 0))) {
                 aRev = aRev & ~lower;
                 aRev = aRev | upper;
-            } else if (((upper & aRev) == upper) && (((lower & aRev) == 0)))  {
+            } else if (((upper & aRev) == upper) && (((lower & aRev) == 0))) {
                 aRev = aRev & ~upper;
                 aRev = aRev | lower;
             }
@@ -312,7 +314,7 @@ public class math {
         }
         return aRev;
     }
-    
+
     public static int sumClosestElements(List<Integer> a, List<Integer> b, List<Integer> c) {
         int minSoFar = Integer.MAX_VALUE;
         int i = 0, j = 0, k = 0;
@@ -340,13 +342,13 @@ public class math {
         }
         return getMin(a.get(mini), b.get(minj), c.get(mink));
     }
-    
+
     private static int getMin(int a, int b, int c) {
         return Integer.max(Math.abs(a - b), Integer.max(Math.abs(b - c), Math.abs(c - a)));
     }
-    
-    
+
     public static class Container implements Comparable<Container> {
+
         int x0, y0;
         int x1, y1;
 
@@ -360,7 +362,7 @@ public class math {
         public int area() {
             return Integer.min(y0, y1) * Math.abs(x0 - x1);
         }
-        
+
         @Override
         public int compareTo(Container o) {
             if (o == this) {
@@ -376,11 +378,9 @@ public class math {
             }
             return 0;
         }
-        
-        
-        
+
     }
-    
+
     public static int maxContainer(List<Integer> a) {
         int N = a.size();
         Container max = new Container(0, a.get(0), N - 1, a.get(N - 1));
@@ -395,14 +395,13 @@ public class math {
             if (next.compareTo(max) > 0) {
                 max = next;
             }
-        }        
+        }
         return max.area();
     }
 
     private static boolean notDup(int l, List<Integer> a) {
         return !(l > 0 && Objects.equals(a.get(l), a.get(l - 1)));
     }
-
 
     public static int remDups(List<Integer> a) {
         int l = 0;
@@ -414,7 +413,7 @@ public class math {
         }
         return l;
     }
-    
+
     public static int diffK(List<Integer> a, int b) {
         int N = a.size();
         if (N == 1) {
@@ -424,7 +423,7 @@ public class math {
             int seek = a.get(i) + b;
             int lo = 0;
             int hi = N - 1;
-            for (int mid = (hi - lo)/2; lo <=hi; mid = lo + (hi - lo)/2) {
+            for (int mid = (hi - lo) / 2; lo <= hi; mid = lo + (hi - lo) / 2) {
                 if ((a.get(mid) == seek) && mid != i) {
                     return 1;
                 }

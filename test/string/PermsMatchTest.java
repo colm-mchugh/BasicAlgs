@@ -21,7 +21,5 @@ public class PermsMatchTest {
         e.add(12);
         List<Integer> result = instance.permutationsOf(p, t);
         assertEquals(e, result);
-        
-
     }
 }
