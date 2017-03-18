@@ -436,4 +436,29 @@ public class math {
         }
         return 0;
     }
+
+    public static List<List<Integer>> combinations(int n, int k) {
+        List<List<Integer>> combs = new ArrayList<>();
+        List<Integer> prefix = new ArrayList<>();
+        buildCombinations(combs, prefix, k, n);
+        return combs;
+    }
+
+    private static void buildCombinations(List<List<Integer>> combs, List<Integer> prefix, int k, int n) {
+        int pN = prefix.size();
+        if (k == 1) {
+            for (int s = (pN == 0 ? 1 : prefix.get(pN - 1) + 1); s <= n; s++) {
+                List<Integer> nextComb = new ArrayList<>(prefix);
+                nextComb.add(s);
+                combs.add(nextComb);
+            }
+        } else {
+            for (int s = (pN == 0 ? 1 : prefix.get(pN - 1) + 1); s < n; s++) {
+                prefix.add(s);
+                buildCombinations(combs, prefix, k - 1, n);
+                prefix.remove(prefix.size() - 1);
+            }
+        }
+    }
+
 }

@@ -179,4 +179,16 @@ public class mathTest {
 
     }
 
+    @Test
+    public void testCombs() {
+        List<List<Integer>> combs = math.combinations(5, 3);
+        assert combs.size() == 10;
+        for (List<Integer> comb : combs){
+            assert comb.size() == 3;
+            for (int i = 0; i < comb.size() - 1; i++) {
+                assert comb.get(i) < comb.get(i + 1);
+            }
+            System.out.println(comb);
+        }
+    }
 }
