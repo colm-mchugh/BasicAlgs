@@ -1,5 +1,6 @@
-package huffman;
+package encoding;
 
+import encoding.Huffman;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -14,25 +15,25 @@ public class HuffmanEncoderTest {
     @Test
     public void testMakeEncoding() {
         System.out.println("makeEncoding");
-        List<HuffmanEncoder.Node> alphabet = new ArrayList<>(5);
-        alphabet.add(new HuffmanEncoder.Leaf('A', 15));
-        alphabet.add(new HuffmanEncoder.Leaf('E', 5));
-        alphabet.add(new HuffmanEncoder.Leaf('B', 7));
-        alphabet.add(new HuffmanEncoder.Leaf('D', 6));
-        alphabet.add(new HuffmanEncoder.Leaf('C', 6));
+        List<Huffman.Node> alphabet = new ArrayList<>(5);
+        alphabet.add(new Huffman.Leaf('A', 15));
+        alphabet.add(new Huffman.Leaf('E', 5));
+        alphabet.add(new Huffman.Leaf('B', 7));
+        alphabet.add(new Huffman.Leaf('D', 6));
+        alphabet.add(new Huffman.Leaf('C', 6));
         Map<Character, BitSet> expResult = null;
-        Map<Character, BitSet> result = HuffmanEncoder.makeEncoding(alphabet);
+        Map<Character, BitSet> result = Huffman.makeEncoding(alphabet);
     }
     
     @Test
     public void testEncoding() {
         char[] letters = { ' ', 'a', 'e', 'f', 'h', 'i', 'm', 'n', 's', 't', 'l', 'o', 'p', 'r', 'u', 'x'};
         int[] frequencies = {7, 4, 4, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1};
-        List<HuffmanEncoder.Node> alphabet = new ArrayList<>(letters.length);
+        List<Huffman.Node> alphabet = new ArrayList<>(letters.length);
         for (int i = 0; i < letters.length; i++) {
-            alphabet.add(new HuffmanEncoder.Leaf(letters[i], frequencies[i]));
+            alphabet.add(new Huffman.Leaf(letters[i], frequencies[i]));
         }
-        Map<Character, BitSet> result = HuffmanEncoder.makeEncoding(alphabet);
+        Map<Character, BitSet> result = Huffman.makeEncoding(alphabet);
         
         for (BitSet b : result.values()) {
             for (BitSet a : result.values()) {

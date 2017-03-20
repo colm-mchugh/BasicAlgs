@@ -1,46 +1,38 @@
 package dp;
 
-import sort.QuickSorter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class KnapsackGrdy extends Knapsack  {
+public class KnapsackGrdy extends Knapsack {
 
     public KnapsackGrdy(int knapSackWeight, int[] data) {
         super(knapSackWeight);
-        items = new Item[data.length / 2];
-        for (int i = 0; i < items.length; i++) {
-            items[i] = (new Item(data[2 * i], data[2 * i + 1]));
+        items = new ArrayList<>(data.length / 2);
+        for (int i = 0; i < data.length / 2; i++) {
+            items.add(new Knapsack.Item(data[2 * i], data[2 * i + 1]));
         }
-        QuickSorter qs = new QuickSorter();
-        qs.sort(items);
-    }
-
-    public static class Item extends Knapsack.Item  {
-
-        public Item(int value, int weight) {
-            super(value, weight);
-        }
-
-        public int compareTo(Knapsack.Item o) {
-            float myRatio = value / (float) weight;
-            float itsRatio = o.value / (float) o.weight;
-            if (myRatio > itsRatio) {
-                return -1;
-            } else if (myRatio < itsRatio) {
-                return 1;
+        Collections.sort(items, new Comparator<Knapsack.Item>() {
+            @Override
+            public int compare(Knapsack.Item o1, Knapsack.Item o2) {
+                float myRatio = o1.value / (float) o1.weight;
+                float itsRatio = o2.value / (float) o2.weight;
+                if (myRatio > itsRatio) {
+                    return -11;
+                } else if (myRatio < itsRatio) {
+                    return 1;
+                }
+                return 0;
             }
-            return 0;
-        }
-
+        });
     }
 
-    private Item[] items;
-
+    @Override
     public int knapsack() {
-        int v = 0;
-        int w = 0;
-        for (int i = 0; i < items.length && w + items[i].weight < this.knapSackWeight; i++) {
-            w += items[i].weight;
-            v += items[i].value;
+        int v = 0; 
+        for (int w = 0, i = 0;i < items.size() && w + items.get(i).weight < this.knapSackWeight; i++) {            
+                w += items.get(i).weight;
+                v += items.get(i).value;
         }
         return v;
     }

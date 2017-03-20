@@ -1,4 +1,4 @@
-package huffman;
+package encoding;
 
 import heap.MinHeap;
 import java.io.BufferedReader;
@@ -19,7 +19,7 @@ import java.util.Stack;
  * 
  * @author colm_mchugh
  */
-public class HuffmanEncoder {
+public class Huffman {
     
     static final boolean ZERO = Boolean.FALSE;
     static final boolean ONE = Boolean.TRUE;
