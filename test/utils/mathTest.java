@@ -83,55 +83,21 @@ public class mathTest {
 
     @Test
     public void testRange() {
-        List<Integer> a = new ArrayList<>();
+        int[] a1 = {3, 4, 5, 8, 8, 8, 9};
+        int[] a2 = {8, 8, 8, 9, 11};
+        int[] a3 = {3, 4, 5, 6, 8, 8};
+        int[] a4 = {3, 4, 5, 6, 8, 9};
+        int[] a5 = {3, 4, 5, 6, 9, 9};
 
-        a.add(3);
-        a.add(4);
-        a.add(5);
-        a.add(8);
-        a.add(8);
-        a.add(8);
-        a.add(9);
-        List<Integer> r = math.findRange(a, 8);
+        List<Integer> r = math.findRange(makeList(a1), 8);
         assert r.get(0) == 3 && r.get(1) == 5;
-
-        a.clear();
-        a.add(8);
-        a.add(8);
-        a.add(8);
-        a.add(9);
-        a.add(11);
-        r = math.findRange(a, 8);
+        r = math.findRange(makeList(a2), 8);
         assert r.get(0) == 0 && r.get(1) == 2;
-
-        a.clear();
-        a.add(3);
-        a.add(4);
-        a.add(5);
-        a.add(6);
-        a.add(8);
-        a.add(8);
-        r = math.findRange(a, 8);
+        r = math.findRange(makeList(a3), 8);
         assert r.get(0) == 4 && r.get(1) == 5;
-
-        a.clear();
-        a.add(3);
-        a.add(4);
-        a.add(5);
-        a.add(6);
-        a.add(8);
-        a.add(9);
-        r = math.findRange(a, 8);
+        r = math.findRange(makeList(a4), 8);
         assert r.get(0) == 4 && r.get(1) == 4;
-
-        a.clear();
-        a.add(3);
-        a.add(4);
-        a.add(5);
-        a.add(6);
-        a.add(9);
-        a.add(9);
-        r = math.findRange(a, 8);
+        r = math.findRange(makeList(a5), 8);
         assert r.get(0) == -1 && r.get(1) == -1;
     }
 
@@ -152,29 +118,19 @@ public class mathTest {
 
     @Test
     public void testContainer() {
-        List<Integer> test = new ArrayList<>();
-        test.add(1);
-        test.add(5);
-        test.add(4);
-        test.add(3);
+        int[] a1 = {1, 5, 4, 3};
+        int[] a2 = {0, 0, 1, 1};
+        int[] a3 = {2, 14, 18, 23, 25, 36, 40, 44, 44, 53, 54, 68, 71, 80, 94};
+        List<Integer> test = makeList(a1);
 
         int area = math.maxContainer(test);
         assert area == 6;
 
-        test.clear();
-        test.add(0);
-        test.add(0);
-        test.add(1);
-        test.add(1);
+        test = makeList(a2);
         int x = math.remDups(test);
         assert x == 2;
 
-        int[] ar = {2, 14, 18, 23, 25, 36, 40, 44, 44, 53, 54, 68, 71, 80, 94};
-
-        test.clear();
-        for (int a : ar) {
-            test.add(a);
-        }
+        test = makeList(a3);
         assert math.diffK(test, 1) == 1;
 
     }
@@ -183,7 +139,7 @@ public class mathTest {
     public void testCombs() {
         List<List<Integer>> combs = math.combinations(5, 3);
         assert combs.size() == 10;
-        for (List<Integer> comb : combs){
+        for (List<Integer> comb : combs) {
             assert comb.size() == 3;
             for (int i = 0; i < comb.size() - 1; i++) {
                 assert comb.get(i) < comb.get(i + 1);
@@ -191,4 +147,51 @@ public class mathTest {
             System.out.println(comb);
         }
     }
+
+    @Test
+    public void testSubsets() {
+        int[][] a1 = {{1, 2, 3, 4}, {3}, {4,6,3,2,5,7,8,9,1}, {} };
+
+        for (int[] ar  : a1) {
+            List<Integer> s = makeList(ar);
+            System.out.println("Next set: " + s);
+            List<List<Integer>> subsets = math.subsets(s);
+            int expectedNumSubsets = s.size() + 1;
+            if (s.size() > 1) {
+                expectedNumSubsets = math.pow(2, s.size()) - 1;
+            }
+            //assert subsets.size() == expectedNumSubsets;
+            assert subsets.get(0).isEmpty();
+            for (List<Integer> subset : subsets) {
+                System.out.println(subset);
+            }
+        }
+
+    }
+
+    @Test
+    public void testSubsetsWithDuplicates() {
+        int[][] a1 = {{1, 2, 3}, {1, 2, 2} };
+
+        for (int[] ar  : a1) {
+            List<Integer> set1 = makeList(ar);
+            System.out.println("Next set: " + set1);
+            List<List<Integer>> subsets = math.subsets(set1);
+            //assert subsets.size() == math.pow(set1.size(), 2) - 1;
+            assert subsets.get(0).isEmpty();
+            for (List<Integer> subset : subsets) {
+                System.out.println(subset);
+            }
+        }
+
+    }
+    
+    private List<Integer> makeList(int[] data) {
+        List<Integer> rv = new ArrayList<>(data.length);
+        for (int d : data) {
+            rv.add(d);
+        }
+        return rv;
+    }
+
 }

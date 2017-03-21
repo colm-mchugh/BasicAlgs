@@ -169,6 +169,19 @@ public class math {
         return rv;
     }
 
+    public static int pow(int datum, int e) {
+        if (e == 1) {
+            return datum;
+        } else {
+            int t = pow(datum, e / 2);
+            if (e % 2 == 1) {
+                return t * t * e;
+            } else {
+                return t * t;
+            }
+        }
+    }
+
     public static class subarray implements Comparable<subarray> {
 
         int start;
@@ -461,4 +474,35 @@ public class math {
         }
     }
 
+    public static List<List<Integer>> subsets(List<Integer> s) {
+        List<List<Integer>> subsets = new ArrayList<>();
+        Collections.sort(s);
+        int sN = s.size();
+        subsets.add(new ArrayList<>()); // the empty set
+        for (int i = 0; i < sN; i++) {
+            int eli = s.get(i);
+            if ((i > 0) && (eli == s.get(i - 1))) {
+                continue;
+            }
+            // single element set: { eli }
+            List<Integer> oneEl = new ArrayList<>();
+            oneEl.add(eli);
+            subsets.add(oneEl);
+            for (int j = i + 1; j < sN; j++) {
+                if ((j > i + 1) && (s.get(j) == s.get(j - 1))) {
+                    continue;
+                }
+                for (int N = j; N < sN; N++) {
+                    List<Integer> next = new ArrayList<>();
+                    next.add(eli);
+                    for (int k = j; k <= N; k++) {
+                        next.add(s.get(k));
+                    }
+                    subsets.add(next);
+                }
+
+            }
+        }
+        return subsets;
+    }
 }
