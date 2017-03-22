@@ -3,6 +3,7 @@ package dp;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import utils.RandGen;
@@ -49,6 +50,14 @@ public class TwoSatTest {
     @Test
     public void testCC() {
         runTests(true);
+    }
+    
+    @Test
+    public void testCCAssignment() {
+        int[] equation = {1,-3, -1,2, -2,-3}; // (x1^!x3)(!x1^x2)(!x2^!x3)
+        TwoSat solver = new TwoSatCC(equation);
+        solver.eval();
+        Map<Integer, Boolean> assignment = solver.getAssignment();
     }
 
     @Test
