@@ -150,17 +150,13 @@ public class mathTest {
 
     @Test
     public void testSubsets() {
-        int[][] a1 = {{1, 2, 3, 4}, {3}, {4,6,3,2,5,7,8,9,1}, {} };
-
+        int[][] a1 = { {1, 2, 3, 4, 5}, {1, 2, 3}, {3}, {4,6,3,2,5,7,8,9,1}, };
         for (int[] ar  : a1) {
             List<Integer> s = makeList(ar);
             System.out.println("Next set: " + s);
             List<List<Integer>> subsets = math.subsets(s);
-            int expectedNumSubsets = s.size() + 1;
-            if (s.size() > 1) {
-                expectedNumSubsets = math.pow(2, s.size()) - 1;
-            }
-            //assert subsets.size() == expectedNumSubsets;
+            int expectedNumSubsets = 1 << s.size();
+            assert subsets.size() == expectedNumSubsets;
             assert subsets.get(0).isEmpty();
             for (List<Integer> subset : subsets) {
                 System.out.println(subset);
@@ -171,8 +167,7 @@ public class mathTest {
 
     @Test
     public void testSubsetsWithDuplicates() {
-        int[][] a1 = {{1, 2, 3}, {1, 2, 2} };
-
+        int[][] a1 = {{2,2,3,4}, {3,3,5,6,6,6},{3, 3, 3, 3}, {1, 2, 2},  };
         for (int[] ar  : a1) {
             List<Integer> set1 = makeList(ar);
             System.out.println("Next set: " + set1);
@@ -184,6 +179,16 @@ public class mathTest {
             }
         }
 
+    }
+    
+    @Test
+    public void testGrayCode() {
+        int n = 3;
+        List<Integer> codes = math.grayCode(3);
+        int[] expected = {0,1,3,2,6,7,5,4};
+        for (int i = 0; i < expected.length; i++) {
+            assert expected[i] == codes.get(i);
+        }
     }
     
     private List<Integer> makeList(int[] data) {

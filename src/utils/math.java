@@ -1,8 +1,11 @@
 package utils;
 
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -474,35 +477,78 @@ public class math {
         }
     }
 
-    public static List<List<Integer>> subsets(List<Integer> s) {
+    public static List<List<Integer>> subsets(List<Integer> a) {
         List<List<Integer>> subsets = new ArrayList<>();
-        Collections.sort(s);
-        int sN = s.size();
-        subsets.add(new ArrayList<>()); // the empty set
-        for (int i = 0; i < sN; i++) {
-            int eli = s.get(i);
-            if ((i > 0) && (eli == s.get(i - 1))) {
-                continue;
-            }
-            // single element set: { eli }
-            List<Integer> oneEl = new ArrayList<>();
-            oneEl.add(eli);
-            subsets.add(oneEl);
-            for (int j = i + 1; j < sN; j++) {
-                if ((j > i + 1) && (s.get(j) == s.get(j - 1))) {
-                    continue;
-                }
-                for (int N = j; N < sN; N++) {
-                    List<Integer> next = new ArrayList<>();
-                    next.add(eli);
-                    for (int k = j; k <= N; k++) {
-                        next.add(s.get(k));
-                    }
-                    subsets.add(next);
-                }
-
-            }
+        if (a.isEmpty()) {
+            return subsets;
         }
+        subsets = makeSubsets(new ArrayList<>(), 0, a, subsets);
+        Collections.sort(subsets, new Comparator<List<Integer>>() {
+            @Override
+            public int compare(List<Integer> o1, List<Integer> o2) {
+                int o1N = o1.size();
+                int o2N = o2.size();
+                int N = Integer.min(o1N, o2N);
+                for (int i = 0; i < N; i++) {
+                    if (!Objects.equals(o1.get(i), o2.get(i))) {
+                        return o1.get(i) - o2.get(i);
+                    }
+                }
+                return o1N - o2N;
+            }
+        });
         return subsets;
+    }
+    
+    private static List<List<Integer>> makeSubsets(List<Integer> prefix, int i, List<Integer> n, List<List<Integer>> ssets) {
+        if (i == n.size() - 1) {
+            List<Integer> withI = new ArrayList<>(prefix);
+            List<Integer> withoutI = new ArrayList<>(prefix);
+            withI.add(n.get(i));
+            ssets.add(withoutI);
+            ssets.add(withI);
+        } else {
+            prefix.add(n.get(i));
+            int ii = prefix.size() - 1;
+            makeSubsets(prefix, i + 1, n, ssets);
+            prefix.remove(ii);
+            makeSubsets(prefix, i + 1, n, ssets);
+        }
+        return ssets;
+    }
+
+    public static List<Integer> grayCode(int a) {
+        int N = 1 << a;
+        List<Integer> numbers = new ArrayList<>(N);
+        List<BitSet> codes = new ArrayList<>(N);
+        List<BitSet> tmp = new ArrayList<>();
+        makeGrayCodes(a, codes, tmp);
+        for (BitSet code : codes) {
+            int nextNum = 0;
+            for (int i = 0; i < 32; i++) {
+                if (code.get(i)) {
+                    nextNum |= (1 << i);
+                }
+            }
+            numbers.add(nextNum);
+        }
+        return numbers;
+    }
+
+    private static void makeGrayCodes(int n, List<BitSet> codes, List<BitSet> tmps) {
+        if (n == 0) {
+            BitSet zeroCode = new BitSet(n);
+            codes.add(zeroCode);
+        } else {
+            makeGrayCodes(n - 1, codes, tmps);
+            for (int i = codes.size() - 1; i >= 0; i--) {
+                BitSet nextCode = new BitSet(n);
+                nextCode.or(codes.get(i));
+                nextCode.set(n - 1);
+                tmps.add(nextCode);
+            }
+            codes.addAll(tmps);
+            tmps.clear();
+        }
     }
 }
