@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -18,6 +20,7 @@ public class CCCer<T> {
 
     private final Graph<T> g;
     private final Map<T, Set<T>> components;
+    private final Map<T, T> index;
     
     /**
      * CCCer determines the strongly connected components of a directed graph.
@@ -37,6 +40,7 @@ public class CCCer<T> {
     public CCCer(Graph<T> g) {
         this.g = g; // the directed graph 
         this.components = new HashMap<>();  // The SCCs of g
+        this.index = new Hashtable<>(); // index for O(1) resolution of vertices being in same CC
         Set<T> visited = new HashSet<>();  // To keep track of visited vertices during a graph search
         
         // part 1 - reverse the graph and construct a topological ordering of all
@@ -103,6 +107,7 @@ public class CCCer<T> {
      */
     private void populateConnectedComponents(Graph<T> graph, T leader, T source, List<T> ordering, Set<T> visited) {
         this.components.get(leader).add(source);
+        this.index.put(source, leader);
         visited.add(source);
         for (T v : graph.connections(source)) {
             if (!visited.contains(v)) {
@@ -137,17 +142,16 @@ public class CCCer<T> {
      * Return true if vertices t1 and t2 are in the same connected component,
      * false otherwise.
      *
+     * Uses the component index to enable O(1) running time.
+     * 
      * @param t1
      * @param t2
      * @return
      */
     public boolean sameCC(T t1, T t2) {
-        for (Set<T> s : this.components.values()) {
-            if (s.contains(t1) && s.contains(t2)) {
-                return true;
-            }
-        }
-        return false;
+        T l1 = this.index.get(t1);
+        T l2 = this.index.get(t2);
+        return l1 != null && l2 != null && l1 == l2;
     }
 
     /**

@@ -3,18 +3,14 @@ package dp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import utils.RandGen;
 
 /* TwoSatLS - 2SAT using local search
  */
-public class TwoSatLS implements TwoSat {
+public class TwoSatLS extends TwoSat {
 
-    Map<Integer, Boolean> variables;
-    long N;
-    List<clause> equation;
     Set<Integer> appearOnce;
 
     private void addToVariables(Integer Xi) {
@@ -30,52 +26,6 @@ public class TwoSatLS implements TwoSat {
     @Override
     public Map<Integer, Boolean> getAssignment() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public static class clause {
-
-        public Integer lVar;
-        public Integer rVar;
-
-        public clause(Integer lVar, Integer rVar) {
-            this.lVar = lVar;
-            this.rVar = rVar;
-        }
-
-        public boolean eval(Map<Integer, Boolean> ctxt) {
-            Boolean lval = this.lookup(lVar, ctxt);
-            Boolean rval = this.lookup(rVar, ctxt);
-            return lval || rval;
-        }
-
-        public boolean lookup(Integer k, Map<Integer, Boolean> ctxt) {
-            Boolean v = ctxt.get(Math.abs(k));
-            if (v == null) {
-                return true;
-            }
-            return (k < 0 ? !v : v);
-        }
-
-        public void flip(Map<Integer, Boolean> ctxt) {
-            // uniformly flip one of lVar or rVar
-            Integer toflip = Math.abs((RandGen.uniformBool() ? lVar : rVar));
-            ctxt.put(toflip, !ctxt.get(toflip));
-        }
-
-        @Override
-        public String toString() {
-            return "(" + lVar + " || " + rVar + ')';
-        }
-    }
-
-    @Override
-    public boolean eval() {
-        for (clause c : equation) {
-            if (!c.eval(variables)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public void randomizeEquation() {

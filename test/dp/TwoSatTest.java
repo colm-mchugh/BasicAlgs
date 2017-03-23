@@ -39,6 +39,9 @@ public class TwoSatTest {
         for (int i = 0; i < tests.length; i++) {
             TwoSat ts = (doCC? new TwoSatCC(readData(tests[i])) : new TwoSatLS(readData(tests[i])));
             assert ts.isSat() == expected[i];
+            if (expected[i]) {
+                assert ts.eval();
+            }
         }
     }
 
@@ -56,8 +59,7 @@ public class TwoSatTest {
     public void testCCAssignment() {
         int[] equation = {1,-3, -1,2, -2,-3}; // (x1^!x3)(!x1^x2)(!x2^!x3)
         TwoSat solver = new TwoSatCC(equation);
-        solver.eval();
-        Map<Integer, Boolean> assignment = solver.getAssignment();
+        assert solver.eval();
     }
 
     @Test
@@ -104,7 +106,7 @@ public class TwoSatTest {
         }
         System.out.println(ans.toString());
         
-        assert ans.equals("101100");
+        assert ans.toString().equals("101100");
     }
 
     public int[] readData(String file) {
