@@ -1,7 +1,9 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -16,9 +18,10 @@ import java.util.Stack;
  */
 public class CCTarjan<T> {
     
-    private Map<T, List<T>> components;
+    private final Map<T, List<T>> components;
     private int index;
-    private Stack<T> stack;
+    private final Stack<T> stack;
+    private final Map<T, T> revCmpntIndx;
     
     public static class Node<T> {
         T v;
@@ -43,6 +46,7 @@ public class CCTarjan<T> {
         this.components = new HashMap<>();
         this.index = 0;
         this.stack = new Stack<>();
+        this.revCmpntIndx = new Hashtable<>();
         HashMap<T, Node<T>> vertices = new HashMap<>(rep.numVertices());
         for (T v : rep.V()) {
             vertices.put(v, new Node<>(v));
@@ -75,6 +79,7 @@ public class CCTarjan<T> {
                 w = stack.pop();
                 vertices.get(w).onStack = false;
                 scc.add(w);
+                revCmpntIndx.put(w, curr.v);
             }
             this.components.put(curr.v, scc);
         }
@@ -82,6 +87,27 @@ public class CCTarjan<T> {
 
     public Map<T, List<T>> getComponents() {
         return components;
+    }
+    
+    public List<Integer> ccSizes() {
+        List<Integer> rv = new ArrayList<>(this.components.keySet().size());
+        for (T v : this.components.keySet()) {
+            rv.add(this.components.get(v).size());
+        }
+        rv.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        System.out.println("#components=" + this.components.keySet().size());
+        return rv;
+    }
+    
+    public boolean sameCC(T t1, T t2) {
+        T l1 = this.revCmpntIndx.get(t1);
+        T l2 = this.revCmpntIndx.get(t2);
+        return l1 != null && l2 != null && l1 == l2;
     }
     
 }

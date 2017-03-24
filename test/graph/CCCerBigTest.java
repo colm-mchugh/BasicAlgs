@@ -39,6 +39,27 @@ public class CCCerBigTest {
     }
 
     @Test
+    public void test1Tarjan() {       
+        int[] graphData = { 9,7, 8,9, 7,8, 6,9, 6,1, 5,6, 4,5, 4,2, 3,4, 2,3, 1,5, 3,6, };
+        Graph<Integer> g = this.makeDiGraph(graphData);
+        CCTarjan<Integer> scc = new CCTarjan<>(g);
+        List<Integer> szs = scc.ccSizes();
+        assert szs.size() == 3; 
+        for (int sz : szs) {
+            assert sz == 3;
+        };
+        assert scc.sameCC(7, 8) && scc.sameCC(8, 9) && scc.sameCC(9, 7) && !scc.sameCC(6, 9);
+        assert scc.sameCC(1, 6) && scc.sameCC(1, 5) && scc.sameCC(5, 6);
+        
+        // Adding an edge from 7 to 3 means there is one connected component
+        g.add(7, 3);
+        
+        scc = new CCTarjan<>(g);
+        szs = scc.ccSizes();
+        assert szs.size() == 1 && szs.get(0) == 9;
+    }
+    
+    @Test
     public void test2() {
         int[] graphData = { 1,2, 2,3, 3,1, 2,4, 3,5, 3,6, 5,6, 6,7, 6,8, 8,5, 7,8, 
             4,9, 4,10, 10,11, 11,9, 9,10, 6,9, 7,11
@@ -60,9 +81,9 @@ public class CCCerBigTest {
     @Test
     public void testBigGraph() {
         String file = "resources/SCC.txt";
-        Graph directedGraph = readGraph(file);
+        Graph g = readGraph(file);
         System.out.println("Completed creating DiGraph");
-        CCCer sccer = new CCCer(directedGraph);
+        CCCer sccer = new CCCer(g);
         Iterator<Integer> ccSizes = sccer.ccSizes().iterator();
         int[] expectedCCSizes = {434821, 968, 459, 313, 211};
         for (int sz : expectedCCSizes) {
@@ -71,6 +92,20 @@ public class CCCerBigTest {
         }
     }
 
+    @Test
+    public void testBigGraphTarjan() {
+        String file = "resources/SCC.txt";
+        Graph g = readGraph(file);
+        System.out.println("Completed creating DiGraph");
+        int[] expectedCCSizes = {434821, 968, 459, 313, 211};
+        CCTarjan<Integer> sccTrjn = new CCTarjan<>(g);
+        Iterator<Integer> ccSizes = sccTrjn.ccSizes().iterator();
+        for (int sz : expectedCCSizes) {
+            int nextSize = ccSizes.next();
+            assert sz == nextSize;
+        }
+    }
+    
     /**
      * Initialize a directed graph of integers from data based in the given file.
      * The format of the data in the file is one or more lines of:
@@ -86,8 +121,8 @@ public class CCCerBigTest {
      * @param path path to the file containing the data
      * @return 
      */
-    private Graph readGraph(String path) {
-        DGraphImpl graph = new DGraphImpl<>();
+    private Graph<Integer> readGraph(String path) {
+        DGraphImpl<Integer> graph = new DGraphImpl<>();
         FileReader fr;
         try {
             fr = new FileReader(path);
