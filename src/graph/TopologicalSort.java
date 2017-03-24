@@ -12,7 +12,6 @@ import java.util.Stack;
  * i.e. index(u) > index(v), where index(x) gives the position of a vertex in the
  * ordering. Sink nodes will precede source nodes in the ordering.
  * 
- * TODO: extend with Tarjan's algorithm (https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
  * 
  * @param <T> 
  */

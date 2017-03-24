@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -142,7 +141,7 @@ public class CCCer<T> {
      * Return true if vertices t1 and t2 are in the same connected component,
      * false otherwise.
      *
-     * Uses the component index to enable O(1) running time.
+     * Uses the component index for O(1) running time.
      * 
      * @param t1
      * @param t2

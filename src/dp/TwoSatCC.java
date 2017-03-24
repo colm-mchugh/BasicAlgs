@@ -29,6 +29,7 @@ public class TwoSatCC extends TwoSat {
             for (Integer v : this.variables.keySet()) {
                 if (scc.sameCC(v, -v)) {
                     satisfiability = false;
+                    break;
                 }
             }
         }
