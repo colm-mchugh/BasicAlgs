@@ -31,6 +31,12 @@ public class CCTarjan<T> {
             this.index = Integer.MIN_VALUE;
             this.onStack = false;
         }      
+
+        @Override
+        public String toString() {
+            return "" + v + ", (" + index + ", " + lowlink + "), " + (onStack ? "on" : "off") + '}';
+        }      
+        
     }
     
     public CCTarjan(Graph<T> rep) {
