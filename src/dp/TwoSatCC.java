@@ -1,7 +1,7 @@
 package dp;
 
 import graph.DGraphImpl;
-import graph.CCCer;
+import graph.CCKosaraju;
 import graph.TopologicalSort;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import utils.RandGen;
 public class TwoSatCC extends TwoSat {
 
     DGraphImpl<Integer> g;
-    final CCCer scc;
+    final CCKosaraju scc;
     Boolean satisfiability = null;
 
     private void addToVariables(Integer Xi) {
@@ -48,7 +48,8 @@ public class TwoSatCC extends TwoSat {
             g.add(-data[i + 1], data[i]);
             this.equation.add(new TwoSatLS.clause(data[i], data[i + 1]));
         }
-        scc = new CCCer(g);
+        scc = new CCKosaraju();
+        scc.getComponents(g);
         if (this.isSat()) {
             TopologicalSort<Integer> gSorter = new TopologicalSort<>();
             List<Integer> varOrder = gSorter.sort(g);

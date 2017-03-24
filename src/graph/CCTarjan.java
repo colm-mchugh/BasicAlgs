@@ -16,12 +16,10 @@ import java.util.Stack;
  * 
  * @param <T> 
  */
-public class CCTarjan<T> {
+public class CCTarjan<T> extends CCer<T> {
     
-    private final Map<T, List<T>> components;
-    private int index;
+    private int pathIndex;
     private final Stack<T> stack;
-    private final Map<T, T> revCmpntIndx;
     
     public static class Node<T> {
         T v;
@@ -41,33 +39,41 @@ public class CCTarjan<T> {
         }      
         
     }
-    
-    public CCTarjan(Graph<T> rep) {
-        this.components = new HashMap<>();
-        this.index = 0;
+
+    public CCTarjan() {
+        super();
         this.stack = new Stack<>();
-        this.revCmpntIndx = new Hashtable<>();
-        HashMap<T, Node<T>> vertices = new HashMap<>(rep.numVertices());
-        for (T v : rep.V()) {
+    }
+       
+    public Map<T, List<T>> getComponents(Graph<T> g) {
+        if (this.g == g && !this.components.isEmpty()) {
+            return this.components;
+        }
+        this.g = g;
+        this.pathIndex = 0;
+        this.stack.clear();
+        HashMap<T, Node<T>> vertices = new HashMap<>(g.numVertices());
+        for (T v : g.V()) {
             vertices.put(v, new Node<>(v));
         }
         for (Node<T> v : vertices.values()) {
             if (v.index == Integer.MIN_VALUE) {
-                strongconnect(rep, v, vertices);
+                strongconnect(v, vertices);
             }
         }
+        return this.components;
     }
     
-    private void strongconnect(Graph<T> rep, Node<T> curr, HashMap<T, Node<T>> vertices) {
-        curr.index = index;
-        curr.lowlink = index;
-        index++;
+    private void strongconnect(Node<T> curr, HashMap<T, Node<T>> vertices) {
+        curr.index = pathIndex;
+        curr.lowlink = pathIndex;
+        pathIndex++;
         stack.push(curr.v);
         curr.onStack = true;
-        for (T w : rep.connections(curr.v)) {
+        for (T w : g.connections(curr.v)) {
             Node<T> wNode = vertices.get(w);
             if (wNode.index == Integer.MIN_VALUE) {
-                strongconnect(rep, wNode, vertices);
+                strongconnect(wNode, vertices);
                 curr.lowlink = Integer.min(curr.lowlink, wNode.lowlink);
             } else if (wNode.onStack) {
                 curr.lowlink = Integer.min(curr.lowlink, wNode.lowlink);
@@ -79,35 +85,10 @@ public class CCTarjan<T> {
                 w = stack.pop();
                 vertices.get(w).onStack = false;
                 scc.add(w);
-                revCmpntIndx.put(w, curr.v);
+                index.put(w, curr.v);
             }
             this.components.put(curr.v, scc);
         }
     }
-
-    public Map<T, List<T>> getComponents() {
-        return components;
-    }
-    
-    public List<Integer> ccSizes() {
-        List<Integer> rv = new ArrayList<>(this.components.keySet().size());
-        for (T v : this.components.keySet()) {
-            rv.add(this.components.get(v).size());
-        }
-        rv.sort(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o2.compareTo(o1);
-            }
-        });
-        System.out.println("#components=" + this.components.keySet().size());
-        return rv;
-    }
-    
-    public boolean sameCC(T t1, T t2) {
-        T l1 = this.revCmpntIndx.get(t1);
-        T l2 = this.revCmpntIndx.get(t2);
-        return l1 != null && l2 != null && l1 == l2;
-    }
-    
+   
 }

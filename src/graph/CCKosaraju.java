@@ -1,34 +1,22 @@
 package graph;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * CCCer (Connecting Components Computer) computes the strongly connected
+ * CCKosaraju (Connecting Components Computer) computes the strongly connected
  * components of a directed graph and stores them for retrieval.
  * 
  * @param <T> the type of the graph
  */
-public class CCCer<T> {
+public class CCKosaraju<T> extends CCer<T> {
 
-    private final Graph<T> g;
-    private final Map<T, Set<T>> components;
-    private final Map<T, T> index;
-    
     /**
      * CCCer determines the strongly connected components of a directed graph.
      *
-     * The strongly connected components C1,..CN of a directed graph g are disjoint 
-     * sets of the vertices of g such that, for every pair of vertices (v1, v2)
-     * in each Ci, v1 <=> v2, i.e. there is a path from v1 to v2 and there is a
-     * path from v2 to v1. A single vertex v by itself is a strongly connected
-     * component; v <=> v is true.
      *
      * CCCer computes the strongly connected components of g using Kosaraju's 
      * algorithm; this performs two Depth First (DFS) passes over the graph, as 
@@ -36,10 +24,11 @@ public class CCCer<T> {
      * 
      * @param g the graph g
      */
-    public CCCer(Graph<T> g) {
-        this.g = g; // the directed graph 
-        this.components = new HashMap<>();  // The SCCs of g
-        this.index = new Hashtable<>(); // index for O(1) resolution of vertices being in same CC
+    public Map<T, List<T>> getComponents(Graph<T> g) {
+        if (this.g == g && !this.components.isEmpty()) {
+            return this.components;
+        }
+        this.g = g;
         Set<T> visited = new HashSet<>();  // To keep track of visited vertices during a graph search
         
         // part 1 - reverse the graph and construct a topological ordering of all
@@ -52,8 +41,8 @@ public class CCCer<T> {
                 this.makeTopologicalOrdering(rev, v, ordering, visited);
             }
         }
-        // postcondition: ordering contains a topological ordering of the 
-        // vertices of g.reverse()
+        // postcondition: ordering is a topological ordering of the vertices of
+        // g.reverse()
         
         visited.clear(); // reuse visited for determining the connected components
         
@@ -65,11 +54,12 @@ public class CCCer<T> {
         for (int i = ordering.size() - 1; i >= 0; i--) {
             T v = ordering.get(i);
             if (!visited.contains(v)) {  
-                this.components.put(v, new HashSet<>());
+                this.components.put(v, new ArrayList<>());
                 // v will be leader of a new component, which will also include v
                 this.populateConnectedComponents(g, v, v, ordering, visited);
             }
         }
+        return this.components;
     }
     
     /**
@@ -115,75 +105,4 @@ public class CCCer<T> {
         }
     }
     
-    /**
-     * Return the strongly connected components of g as computed by the
-     * constructor.
-     *
-     * @return a map of leader -> vertex set, where leader is the leader vertex
-     * of the set and vertex set is a set of vertices such that v1 <=> v2 for
-     * all pairs v1 and v2 in the set (including the leader).
-     */
-    public Map<T, Set<T>> ccs() {
-        return this.components;
-    }
-
-    /**
-     * 
-     * @return the graph this CCCer operates on
-     */
-    public Graph<T> getGraph() {
-        return g;
-    }
-    
-    
-
-    /**
-     * Return true if vertices t1 and t2 are in the same connected component,
-     * false otherwise.
-     *
-     * Uses the component index for O(1) running time.
-     * 
-     * @param t1
-     * @param t2
-     * @return
-     */
-    public boolean sameCC(T t1, T t2) {
-        T l1 = this.index.get(t1);
-        T l2 = this.index.get(t2);
-        return l1 != null && l2 != null && l1 == l2;
-    }
-
-    /**
-     * Return a list of the size of the connected components. The list is in
-     * descending order, i.e. the first number is the size of the largest
-     * component, second number is the size of the second largest component,
-     * etc.
-     *
-     * @return
-     */
-    public List<Integer> ccSizes() {
-        List<Integer> rv = new ArrayList<>(this.components.keySet().size());
-        for (T v : this.components.keySet()) {
-            rv.add(this.components.get(v).size());
-        }
-        rv.sort(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o2.compareTo(o1);
-            }
-        });
-        System.out.println("#components=" + this.components.keySet().size());
-        return rv;
-    }
-
-    public void print() {
-        for (T foo : this.components.keySet()) {
-            Set<T> comps = this.components.get(foo);
-            for (T c : comps) {
-                System.out.print(c);
-                System.out.print(' ');
-            }
-            System.out.println();
-        }
-    }
 }

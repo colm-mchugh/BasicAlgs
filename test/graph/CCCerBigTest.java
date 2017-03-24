@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 
 public class CCCerBigTest {
@@ -19,9 +20,16 @@ public class CCCerBigTest {
     
     @Test
     public void test1() {       
+        test1(new CCKosaraju<>());
+        test1(new CCTarjan<>());
+        test2(new CCKosaraju<>());
+        test2(new CCTarjan<>());
+    }
+    
+    private void test1(CCer<Integer> scc) {
         int[] graphData = { 9,7, 8,9, 7,8, 6,9, 6,1, 5,6, 4,5, 4,2, 3,4, 2,3, 1,5, 3,6, };
         Graph<Integer> g = this.makeDiGraph(graphData);
-        CCCer<Integer> scc = new CCCer(g);
+        Map<Integer, List<Integer>> components = scc.getComponents(g);
         List<Integer> szs = scc.ccSizes();
         assert szs.size() == 3; 
         for (int sz : szs) {
@@ -29,34 +37,28 @@ public class CCCerBigTest {
         };
         assert scc.sameCC(7, 8) && scc.sameCC(8, 9) && scc.sameCC(9, 7) && !scc.sameCC(6, 9);
         assert scc.sameCC(1, 6) && scc.sameCC(1, 5) && scc.sameCC(5, 6);
-        
-        // Adding an edge from 7 to 3 means there is one connected component
-        g.add(7, 3);
-        
-        scc = new CCCer(g);
-        szs = scc.ccSizes();
+    }
+    
+    private void test2(CCer<Integer> scc) {
+        int[] graphData = { 9,7, 8,9, 7,8, 6,9, 6,1, 5,6, 4,5, 4,2, 3,4, 2,3, 1,5, 3,6, 7, 3};
+        Graph<Integer> g = this.makeDiGraph(graphData);
+        Map<Integer, List<Integer>> components = scc.getComponents(g);
+        List<Integer> szs = scc.ccSizes();
         assert szs.size() == 1 && szs.get(0) == 9;
     }
-
+    
     @Test
-    public void test1Tarjan() {       
-        int[] graphData = { 9,7, 8,9, 7,8, 6,9, 6,1, 5,6, 4,5, 4,2, 3,4, 2,3, 1,5, 3,6, };
-        Graph<Integer> g = this.makeDiGraph(graphData);
-        CCTarjan<Integer> scc = new CCTarjan<>(g);
-        List<Integer> szs = scc.ccSizes();
-        assert szs.size() == 3; 
-        for (int sz : szs) {
-            assert sz == 3;
-        };
-        assert scc.sameCC(7, 8) && scc.sameCC(8, 9) && scc.sameCC(9, 7) && !scc.sameCC(6, 9);
-        assert scc.sameCC(1, 6) && scc.sameCC(1, 5) && scc.sameCC(5, 6);
+    public void testCCTarjan() {
+        Graph<Character> g = new DGraphImpl<>();
+        char[] links = { 'A','B', 'B','C', 'C','A', 'D','B', 'D','C', 'D','F', 'F','D', 'F','E', 
+                            'E','C', 'E','G', 'G','E', 'H','F', 'H','G', 'H','H', };
+        for (int i = 0; i < links.length; i += 2) {
+            g.add(links[i], links[i+1]);
+        }
+        CCTarjan<Character> Tarjaner = new CCTarjan<>();
+        Map<Character, List<Character>> sccs = Tarjaner.getComponents(g);
+        assert sccs.size() == 4;
         
-        // Adding an edge from 7 to 3 means there is one connected component
-        g.add(7, 3);
-        
-        scc = new CCTarjan<>(g);
-        szs = scc.ccSizes();
-        assert szs.size() == 1 && szs.get(0) == 9;
     }
     
     @Test
@@ -72,34 +74,29 @@ public class CCCerBigTest {
     public void test3() {
         int[] graphData = { 2,3, 3,4, 4,5, 5,6, 6,1, 1,5, 4,2, 7,8, 8,9, 9,7, 6,9, 6,8 };
         Graph<Integer> g = this.makeDiGraph(graphData);
-        CCCer scc = new CCCer(g);
+        CCKosaraju scc = new CCKosaraju();
+        scc.getComponents(g);
         scc.ccSizes(); 
     }
-    /**
-     * Test of a "large" graph.
-     */
-    @Test
-    public void testBigGraph() {
-        String file = "resources/SCC.txt";
-        Graph g = readGraph(file);
-        System.out.println("Completed creating DiGraph");
-        CCCer sccer = new CCCer(g);
-        Iterator<Integer> ccSizes = sccer.ccSizes().iterator();
-        int[] expectedCCSizes = {434821, 968, 459, 313, 211};
-        for (int sz : expectedCCSizes) {
-            int nextSize = ccSizes.next();
-            assert sz == nextSize;
-        }
-    }
-
+    
+    private final static String FILE = "resources/SCC.txt";
+    
     @Test
     public void testBigGraphTarjan() {
-        String file = "resources/SCC.txt";
-        Graph g = readGraph(file);
-        System.out.println("Completed creating DiGraph");
+        testBigGraph(new CCTarjan<>());
+    }
+    
+    @Test
+    public void testBigGraphKosaraju() {
+        testBigGraph(new CCKosaraju<>());
+    }
+    
+    // This test may require setting JVM -Xss parameter.
+    private void testBigGraph(CCer<Integer> ccer) {
+        Graph<Integer> g = readGraph(FILE);
+        Map<Integer, List<Integer>> components = ccer.getComponents(g);
         int[] expectedCCSizes = {434821, 968, 459, 313, 211};
-        CCTarjan<Integer> sccTrjn = new CCTarjan<>(g);
-        Iterator<Integer> ccSizes = sccTrjn.ccSizes().iterator();
+        Iterator<Integer> ccSizes = ccer.ccSizes().iterator();
         for (int sz : expectedCCSizes) {
             int nextSize = ccSizes.next();
             assert sz == nextSize;
