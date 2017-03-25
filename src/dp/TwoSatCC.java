@@ -1,39 +1,29 @@
 package dp;
 
 import graph.DGraphImpl;
-import graph.CCKosaraju;
-import graph.TopologicalSort;
+import graph.CCTarjan;
+import graph.CCer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import utils.RandGen;
 
 public class TwoSatCC extends TwoSat {
 
     DGraphImpl<Integer> g;
-    final CCKosaraju scc;
-    Boolean satisfiability = null;
+    final CCer<Integer> scc;
+    final Boolean satisfiable;
 
-    private void addToVariables(Integer Xi) {
+    private void addVar(Integer Xi) {
         int key = Math.abs(Xi);
         if (!variables.containsKey(key)) {
-            variables.put(key, RandGen.uniformBool());
+            variables.put(key, null);
         }
     }
 
     @Override
     public boolean isSat() {
-        if (satisfiability == null) {
-            satisfiability = true;
-            for (Integer v : this.variables.keySet()) {
-                if (scc.sameCC(v, -v)) {
-                    satisfiability = false;
-                    break;
-                }
-            }
-        }
-        return satisfiability;
+        return satisfiable;
     }
 
     public TwoSatCC(int[] data) {
@@ -42,29 +32,33 @@ public class TwoSatCC extends TwoSat {
         this.variables = new HashMap<>();
         this.equation = new ArrayList<>(data.length / 2);
         for (int i = 0; i < data.length; i += 2) {
-            addToVariables(data[i]);
-            addToVariables(data[i + 1]);
+            addVar(data[i]);
+            addVar(data[i + 1]);
             g.add(-data[i], data[i + 1]);
             g.add(-data[i + 1], data[i]);
             this.equation.add(new TwoSatLS.clause(data[i], data[i + 1]));
         }
-        scc = new CCKosaraju();
-        scc.getComponents(g);
-        if (this.isSat()) {
-            TopologicalSort<Integer> gSorter = new TopologicalSort<>();
-            List<Integer> varOrder = gSorter.sort(g);
-            Map<Integer, Integer> varIndex = new HashMap<>(this.variables.size());
-            for (int i = 0; i < varOrder.size(); i++) {
-                varIndex.put(varOrder.get(i), i);
+        scc = new CCTarjan<>();
+        Map<Integer, List<Integer>> sccs = scc.getComponents(g);
+        Boolean isSat = true;
+        for (Integer v : this.variables.keySet()) {
+            if (scc.sameCC(v, -v)) {
+                isSat = false;
+                break;
             }
-            for (Integer var : this.variables.keySet()) {
-                if (varIndex.containsKey(-var) && varIndex.get(var) > varIndex.get(-var)) {
-                    variables.put(var, Boolean.FALSE);
-                } else {
-                    variables.put(var, Boolean.TRUE);
+        }
+        if (isSat) {
+            variables.clear();
+            for (List<Integer> cc : sccs.values()) {
+                for (Integer var : cc) {                   
+                    if (!variables.containsKey(var)) {
+                        variables.put(var, Boolean.TRUE);
+                        variables.put(-var, Boolean.FALSE);
+                    }
                 }
             }
         }
+        this.satisfiable = isSat;
     }
 
     @Override

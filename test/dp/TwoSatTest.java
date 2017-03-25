@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import org.junit.Ignore;
 import org.junit.Test;
 import utils.RandGen;
 
@@ -77,6 +78,7 @@ public class TwoSatTest {
         this.testTwoSat(true);
     }
     
+    @Ignore // this test is whack - takes way too long
     @Test
     public void testTwoSatLS() {
         this.testTwoSat(false);
@@ -93,10 +95,12 @@ public class TwoSatTest {
         };
         StringBuilder ans = new StringBuilder(6);
         for (String file : files) {
+            System.out.println("Starting file: " + file);
             long startTime = System.nanoTime();
             TwoSat ts = (doCC? new TwoSatCC(readData(file)) : new TwoSatLS(readData(file)));
             if (ts.isSat()) {
                 ans.append('1');
+                assert ts.eval();
             } else {
                 ans.append('0');
             }

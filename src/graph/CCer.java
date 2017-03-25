@@ -3,7 +3,7 @@ package graph;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +27,8 @@ public abstract class CCer<T> {
 
     public CCer() {
         this.g = null;
-        this.components = new HashMap<>();  // The SCCs of g
-        this.index = new Hashtable<>(); // index for O(1) resolution of vertices being in same CC
+        this.components = new LinkedHashMap<>();  // The SCCs of g
+        this.index = new HashMap<>(); // index for O(1) resolution of vertices being in same CC
     }
 
     /**
