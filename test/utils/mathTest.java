@@ -191,6 +191,17 @@ public class mathTest {
         }
     }
     
+    @Test
+    public void testPerms() {
+        int[] data = {1,2,3,4,5};
+        List<List<Integer>> perms = math.permutations(makeList(data));
+        System.out.println("#perms=" + perms.size());
+        assert perms.size() == 120;
+        for (List<Integer> perm : perms) {
+            System.out.println(perm);
+        }
+    }
+    
     private List<Integer> makeList(int[] data) {
         List<Integer> rv = new ArrayList<>(data.length);
         for (int d : data) {

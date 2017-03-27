@@ -1,8 +1,8 @@
 package graph.shortestpath;
 
+import graph.GraphIO;
 import graph.WeightedGraph;
 import graph.WeightedGraphDirected;
-import graph.shortestpath.Dijkstra;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -103,17 +103,8 @@ public class DijkstraTest {
     @Test
     public void test2() {
         WeightedGraph<Integer> g = new WeightedGraphDirected();
-
-        g.link(1, 2, 3);
-        g.link(1, 3, 2);
-        g.link(2, 4, 4);
-        g.link(3, 2, 1);
-        g.link(3, 4, 2);
-        g.link(3, 5, 3);
-        g.link(4, 5, 2);
-        g.link(4, 6, 1);
-        g.link(5, 6, 2);
-
+        int[] links = {1,2,3, 1,3,2, 2,4,4, 3,2,1, 3,4,2, 3,5,3, 4,5,2, 4,6,1, 5,6,2};
+        GraphIO.populateGraph(g, links);
         Dijkstra<Integer> sper = new Dijkstra<>(g);
         
         assert sper.sp(1, 6).d == 5;
@@ -122,35 +113,17 @@ public class DijkstraTest {
     @Test
     public void test3() {
         WeightedGraph<Integer> g = new WeightedGraphDirected();
-
-        g.link(1, 2, 1);
-        g.link(1, 3, 1);
-        g.link(2, 4, 2);
-        g.link(2, 3, 3);
-        g.link(3, 4, 2);
-        g.link(4, 5, 1);
-        g.link(4, 6, 2);
-        g.link(5, 7, 1);
-        g.link(6, 7, 1);
-        g.link(7, 6, 1);
-        
+        int[] links = {1,2,1, 1,3,1, 2,4,2, 2,3,3, 3,4,2, 4,5,1, 4,6,2, 5,7,1, 6,7,1, 7,6,1};
+        GraphIO.populateGraph(g, links);
         printAllSps(g);
     }
 
     @Test
     public void Test4() {
         WeightedGraph<Integer> g = new WeightedGraphDirected();
-
-        g.link(1, 2, 2);
-        g.link(2, 3, 1);
-        g.link(3, 1, 4);
-        g.link(3, 4, 2);
-        g.link(3, 5, 3);
-        g.link(6, 4, 1);
-        g.link(6, 5, 4);
-        
-        printAllSps(g);
-        
+        int[] links = {1,2,2, 2,3,1, 3,1,4, 3,4,2, 3,5,3, 6,4,1, 6,5,4};
+        GraphIO.populateGraph(g, links);
+        printAllSps(g);     
     }
     
     private void printAllSps(WeightedGraph<Integer> g) {

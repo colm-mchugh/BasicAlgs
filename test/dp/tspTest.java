@@ -1,7 +1,8 @@
 package dp;
 
-
-import dp.TSPer;
+import graph.GraphIO;
+import graph.WeightedGraph;
+import graph.WeightedGraphUndirected;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,15 +10,18 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 
 public class tspTest {
 
+    private final static boolean DOPRUNE = true;
+    
     @Test
     public void test1() {
-        TSPer t = new TSPer();
+        TSPer t = new TSPer(DOPRUNE);
         // Test that subsets are correctly generated
         int N = 5;
         
@@ -45,7 +49,7 @@ public class tspTest {
     @Test
     public void testTsp1() {
         String file = "resources/tsp_small.txt";
-        TSPer t = new TSPer(this.init(file));
+        TSPer t = new TSPer(this.init(file), !DOPRUNE);
         t.printDistances();
         float ans = t.computeOptTsp();
         System.out.println("tsp=" + ans);
@@ -57,7 +61,7 @@ public class tspTest {
     
     @Test
     public void testSetSz() {
-        TSPer t = new TSPer();
+        TSPer t = new TSPer(DOPRUNE);
         assert (t.setSize(0) == 0);
         assert (t.setSize(8) == 1);
         assert (t.setSize(15) == 4);
@@ -72,16 +76,61 @@ public class tspTest {
         for (BitSet b : bitsets) {
             System.out.println("Next set: " + b + " cardinality=" + b.cardinality());
         }
-        //assert bitsets.size() == Math.pow(N, k);
     }
     
     @Test
     public void testBig() {
         String file = "resources/tsp.txt";
-        TSPer t = new TSPer(this.init(file));
-        float ans = t.computeTsp();
-        System.out.println(ans);
-        assert ans == 26442.0;
+        TSPer t = new TSPer(this.init(file), DOPRUNE);
+        long now = System.currentTimeMillis();
+        float ans = t.computeOptTsp();
+        System.out.println(ans + " in " + (System.currentTimeMillis() - now)/1000 + " secs");
+        assert Math.floor(ans) == 26442.0;
+        
+        ans = t.computeTsp();
+        System.out.println(ans + " in " + (System.currentTimeMillis() - now)/1000 + " secs");
+        assert Math.floor(ans) == 26442.0;
+        
+    }
+    
+    @Test
+    public void testGraph1() {
+        WeightedGraph<Integer> g = new WeightedGraphUndirected<>();
+        int[] links = {1,2,20, 1,3,42, 1,4,35, 2,3,30, 2,4,34, 3,4,12};
+        int[] p = {1,4,3,2};
+        GraphIO.populateGraph(g, links);
+        TSPer t = new TSPer(g, !DOPRUNE);       
+        float ans1 = t.computeTsp();
+        List<Integer> path = t.getShortestPath();
+        for (int i = 0; i < p.length; i++) {
+            assert p[i] == path.get(i);
+        }
+        float ans2 = t.computeOptTsp();       
+        path = t.getShortestPath();
+        for (int i = 0; i < p.length; i++) {
+            assert p[i] == path.get(i);
+        }
+        assert ans1 == ans2 && ans1 == 97;
+    }
+    
+    @Test
+    public void testGraph2() {
+        WeightedGraph<Integer> g = new WeightedGraphUndirected<>();
+        int[] links = {1,2,1, 1,3,10, 2,3,10, 2,4,10, 2,5,10, 3,5,10, 4,5,1};
+        int[] p = {1,3,5,4,2};
+        GraphIO.populateGraph(g, links);
+        TSPer t = new TSPer(g, !DOPRUNE);       
+        float ans1 = t.computeTsp();
+        List<Integer> path = t.getShortestPath();
+        for (int i = 0; i < p.length; i++) {
+            assert p[i] == path.get(i);
+        }
+        float ans2 = t.computeOptTsp();       
+        path = t.getShortestPath();
+        for (int i = 0; i < p.length; i++) {
+            assert p[i] == path.get(i);
+        }
+        assert ans1 == ans2 && ans1 == 32;
     }
     
     public Float[] init(String file) {

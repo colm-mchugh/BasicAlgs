@@ -548,4 +548,24 @@ public class math {
             tmps.clear();
         }
     }
+    
+    public static List<List<Integer>> permutations(List<Integer> a) {
+        return buildPermutations(a, 0, new ArrayList<>());
+    }
+    
+    private static List<List<Integer>> buildPermutations(List<Integer> a, int k, List<List<Integer>> perms) {
+        if (k >= a.size()) {
+            return perms;
+        }
+        for (int i = k; i < a.size(); i++) {
+            Collections.swap(a, k, i);
+            buildPermutations(a, k+1, perms);
+            Collections.swap(a, i, k);
+        }
+        if (k == a.size() - 1) {
+            perms.add(new ArrayList<>(a));
+        } 
+        return perms;
+    }
+    
 }
