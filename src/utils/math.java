@@ -5,15 +5,19 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 public class math {
 
+    /**
+     * Given an N x N matrix M, return a list of all the diagonals in M.
+     *
+     * @param M
+     * @return
+     */
     public static List<List<Integer>> diagonal(int[][] M) {
         assert M.length == M[0].length; // Must be an N x N matrix
         List<List<Integer>> diagonal = new ArrayList<>();
@@ -35,6 +39,17 @@ public class math {
         return diagonal;
     }
 
+    /**
+     * Given a number, return 1 if it is colorful, 0 otherwise.
+     *
+     * A number is colorful if all the contiguous subsequences of it's digits
+     * produce a different product. If a number has N digits, then it has SUM(N)
+     * - 1 subsequences, from 1 digit length to N - 1 digit length. If all of
+     * them yield a different product, the number is colorful.
+     *
+     * @param a
+     * @return
+     */
     public static int colorful(int a) {
         List<Integer> digits = new ArrayList<>();
         Set<Integer> products = new HashSet<>();
@@ -58,6 +73,12 @@ public class math {
         return 1;
     }
 
+    /**
+     * Given a number, return true if it is prime, false otherwise.
+     *
+     * @param n
+     * @return
+     */
     public static boolean isPrime(int n) {
         if ((n < 2) || ((n % 2 == 0) && (n != 2))) {
             return false;
@@ -70,6 +91,16 @@ public class math {
         return true;
     }
 
+    /**
+     * Input: a list of bulb states: on = 1, off = 0. Switching a bulb b changes
+     * all bulb states to the right of b.
+     *
+     * Output: the minimum number of times the bulbs need to be switched before
+     * they are all on.
+     *
+     * @param a
+     * @return
+     */
     public static int bulbs(ArrayList<Integer> a) {
         int switches = 0;
         int N = a.size();
@@ -87,6 +118,16 @@ public class math {
         return switches;
     }
 
+    /**
+     * Return the greatest common divisor of two numbers. Uses Euclid's
+     * algorithm: successively reduce the bigger by the smaller until one of: at
+     * least one of them is zero; they're both the same; the smaller wholly
+     * divides the bigger.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
     public static int gcd(int a, int b) {
         if ((a == 0) || (b == 0)) {
             return Integer.max(a, b);
@@ -105,6 +146,14 @@ public class math {
         return gcd(b - a, a);
     }
 
+    /**
+     * Return all prime numbers less than the given number. Uses Erathothenes
+     * algorithm: create a list of all numbers up to and including the number,
+     * then, for each prime p, remove all its multiples.
+     *
+     * @param n
+     * @return
+     */
     public static Set<Integer> primes(int n) {
         Set<Integer> primesN = new HashSet<>();
         for (int i = 2; i <= n; i++) {
@@ -121,6 +170,14 @@ public class math {
         return primesN;
     }
 
+    /**
+     * Return true if the given number can be expressed as an exponent x^y.
+     * Proceed by brute force: for each possible exponent y in 2..sqrt(N), check
+     * if N can be successively divided by y without any remainders.
+     *
+     * @param n
+     * @return
+     */
     public static boolean isExponentiable(int n) {
         int maxY = (int) Math.sqrt(n);
         for (int y = 2; y <= maxY; y++) {
@@ -135,6 +192,15 @@ public class math {
         return false;
     }
 
+    /**
+     * Transform the given list into a wave. A wave is a sorted list of numbers
+     * with every pair swapped, yielding two interleaved sequences, with the
+     * property: a[i] < a[i-1] && a[i] < a[i+1] for odd i,
+     *           a[i] > a[i-1] && a[i] > a[i+1] for even i.
+     *
+     * @param a
+     * @return
+     */
     public static ArrayList<Integer> wave(ArrayList<Integer> a) {
         Collections.sort(a);
         for (int i = 0; i < a.size() - 1; i += 2) {
@@ -145,8 +211,14 @@ public class math {
         return a;
     }
 
+    /**
+     * Return true if the number in the given string can be expressed as a power
+     * of 2, false otherwise.
+     *
+     * @param ns
+     * @return
+     */
     public static boolean isPowerOf2(String ns) {
-        BigInteger n = new BigInteger(ns);
         BigInteger x = new BigInteger(ns);
         BigInteger two = new BigInteger("2");
         while (x.compareTo(BigInteger.ONE) > 0 && ((x.mod(two)).compareTo(BigInteger.ZERO) == 0)) {
@@ -158,24 +230,40 @@ public class math {
         return false;
     }
 
+    /**
+     * Given a number N, return two prime numbers that sum to N. Start from i=2,
+     * incrementally test if i and (N-i) are both primes. If so, we've found two
+     * primes that sum to the target.
+     *
+     * @param n
+     * @return
+     */
     public static int[] primesums(int n) {
-        int[] rv = null;
+        int[] primesum = null;
         for (int i = 2; i <= n / 2; i++) {
             if (isPrime(i) && isPrime(n - i)) {
-                rv = new int[2];
-                rv[0] = i;
-                rv[1] = n - i;
-                return rv;
+                primesum = new int[2];
+                primesum[0] = i;
+                primesum[1] = n - i;
+                return primesum;
             }
         }
-        return rv;
+        return primesum;
     }
 
-    public static int pow(int datum, int e) {
+    /**
+     * Return x to the power of e. Use recursion, saving the result of x to the
+     * power of e/2, to give log(X) running time.
+     *
+     * @param x
+     * @param e
+     * @return
+     */
+    public static int pow(int x, int e) {
         if (e == 1) {
-            return datum;
+            return x;
         } else {
-            int t = pow(datum, e / 2);
+            int t = pow(x, e / 2);
             if (e % 2 == 1) {
                 return t * t * e;
             } else {
@@ -184,41 +272,43 @@ public class math {
         }
     }
 
-    public static class subarray implements Comparable<subarray> {
-
-        int start;
-        int end;
-        long sum;
-
-        public subarray(int s, int e, List<Integer> a) {
-            start = s;
-            end = e;
-            sum = 0;
-            for (int i = s; i <= e; i++) {
-                sum += (long) a.get(i);
-            }
-        }
-
-        public int length() {
-            return end - start;
-        }
-
-        @Override
-        public int compareTo(subarray s) {
-            if (s == this) {
-                return 0;
-            }
-            if (this.sum == s.sum) {
-                if (this.length() == s.length()) {
-                    return s.start - this.start;
+    /**
+     * Return a list of all stepping numbers between a and b, inclusive.
+     *
+     * A stepping number is a number whose digits differ by at most 1.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public ArrayList<Integer> stepnum(int a, int b) {
+        ArrayList<Integer> steppingNumbers = new ArrayList<>();
+        for (int N = a; N <= b; N++) {
+            boolean isStepping = true;
+            for (int x = N, dPrev = 0, d = -1; x != 0 && isStepping; x = x / 10) {
+                dPrev = d;
+                d = x % 10;
+                if ((dPrev != -1) && (Math.abs(d - dPrev) != 1)) {
+                    isStepping = false;
                 }
-                return this.length() - s.length();
             }
-            return (this.sum > s.sum ? 1 : -1);
+            if (isStepping) {
+                steppingNumbers.add(N);
+            }
         }
-
+        return steppingNumbers;
     }
 
+    /**
+     * Given a list of positive and negative numbers, return the list of
+     * positive numbers within that list that has the maximum sum.
+     *
+     * Works by successively locating sequences of positive numbers, noting
+     * their sum, and keeping track of the sequence with the largest sum found.
+     *
+     * @param a
+     * @return
+     */
     public static List<Integer> maxset(List<Integer> a) {
         subarray max = null;
         int N = a.size();
@@ -247,20 +337,81 @@ public class math {
         return rv;
     }
 
-    public static List<Integer> findRange(List<Integer> numbers, int n) {
-        List<Integer> rv = new ArrayList<>();
-        int N = numbers.size();
-        int mid = getIndex(numbers, n, true);
-        if (numbers.get(mid) != n) { // number of interest is not in the list
-            rv.add(-1);
-            rv.add(-1);
-        } else {
-            rv.add(mid);
-            rv.add(getIndex(numbers, n, false));
+    public static class subarray implements Comparable<subarray> {
+
+        int start;
+        int end;
+        long sum;
+
+        /**
+         * subarray is the sum of a contiguous subsequence of a list of numbers.
+         *
+         * @param s
+         * @param e
+         * @param a
+         */
+        public subarray(int s, int e, List<Integer> a) {
+            start = s;
+            end = e;
+            sum = 0;
+            for (int i = s; i <= e; i++) {
+                sum += (long) a.get(i);
+            }
         }
-        return rv;
+
+        public int length() {
+            return end - start;
+        }
+
+        @Override
+        public int compareTo(subarray s) {
+            if (s == this) {
+                return 0;
+            }
+            if (this.sum == s.sum) {
+                // Break ties by comparing on length
+                if (this.length() == s.length()) {
+                    return s.start - this.start;
+                }
+                return this.length() - s.length();
+            }
+            return (this.sum > s.sum ? 1 : -1);
+        }
+
     }
 
+    /**
+     * Given a list of numbers and a number n, return the range {s,t} of that
+     * number in the list, where s is the index of the first occurrence of n and
+     * t is the index of the last occurrence of n. If s and t are -1, n is not
+     * in the list.
+     *
+     * @param numbers
+     * @param n
+     * @return
+     */
+    public static int[] findRange(List<Integer> numbers, int n) {
+        int[] range = {-1, -1}; // -1 means n is not in the list
+        int N = numbers.size();
+        int mid = getIndex(numbers, n, true);
+        if (numbers.get(mid) == n) { // number of interest is not in the list
+            range[0] = (mid);
+            range[1] = (getIndex(numbers, n, false));
+        }
+        return range;
+    }
+
+    /**
+     * Locate the number n in numbers using binary search. The flag 'lowEnd'
+     * means locate the first occurrence of n; if false, the index returned is
+     * that of the last occurrence of n. In the case where n appears exactly
+     * once in numbers, lowEnd and !lowEnd will return the same index.
+     *
+     * @param numbers
+     * @param n
+     * @param lowEnd
+     * @return
+     */
     private static int getIndex(List<Integer> numbers, int n, boolean lowEnd) {
         int mid = -1;
         int N = numbers.size();
@@ -429,13 +580,42 @@ public class math {
         return l;
     }
 
-    public static int diffK(List<Integer> a, int b) {
+    /**
+     * Given a list N and an element that may be in that list 0 or more times,
+     * remove all occurrences of the element from the list.
+     * Return the logical size of the list after all occurrences have been 
+     * removed.
+     * 
+     * @param N
+     * @param el
+     * @return 
+     */
+    public int filterElement(List<Integer> N, int el) {
+        int sz = 0;
+        for (int i = 0; i < N.size(); i++) {
+            N.set(sz, N.get(i));
+            if (N.get(sz) != el) {
+                sz++;
+            }
+        }
+        return sz;
+    }
+
+    /**
+     * Given a sorted list of numbers and a target number, find if there are 
+     * two elements of the list i, j such that: a[i] - a[j] = target (i!=j)
+     * 
+     * @param a
+     * @param target
+     * @return 
+     */
+    public static int diffK(List<Integer> a, int target) {
         int N = a.size();
         if (N == 1) {
             return 0;
         }
         for (int i = 0; i < N; i++) {
-            int seek = a.get(i) + b;
+            int seek = a.get(i) + target;
             int lo = 0;
             int hi = N - 1;
             for (int mid = (hi - lo) / 2; lo <= hi; mid = lo + (hi - lo) / 2) {
@@ -588,11 +768,11 @@ public class math {
         if (N == 0) {
             List<Integer> comb = new ArrayList<>(prefix);
             combos.add(comb);
-            return ;
+            return;
         }
         for (int j = i; j < a.size(); j++) {
             if (N < a.get(j)) {
-                return ;
+                return;
             }
             prefix.add(a.get(j));
             genCombos(combos, a, N - a.get(j), j, prefix);

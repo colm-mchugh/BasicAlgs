@@ -13,7 +13,7 @@ public class mathTest {
         int[][] M0 = {{1, 2}, {3, 4}};
         int[][] M1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         int[][] M = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
-        List<List<Integer>> result = math.diagonal(M0);
+        List<List<Integer>> result = math.diagonal(M1);
         System.out.println("[");
         for (List<Integer> r : result) {
             System.out.print("[ ");
@@ -89,16 +89,16 @@ public class mathTest {
         int[] a4 = {3, 4, 5, 6, 8, 9};
         int[] a5 = {3, 4, 5, 6, 9, 9};
 
-        List<Integer> r = math.findRange(makeList(a1), 8);
-        assert r.get(0) == 3 && r.get(1) == 5;
+        int[] r = math.findRange(makeList(a1), 8);
+        assert r[0] == 3 && r[1] == 5;
         r = math.findRange(makeList(a2), 8);
-        assert r.get(0) == 0 && r.get(1) == 2;
+        assert r[0] == 0 && r[1] == 2;
         r = math.findRange(makeList(a3), 8);
-        assert r.get(0) == 4 && r.get(1) == 5;
+        assert r[0] == 4 && r[1] == 5;
         r = math.findRange(makeList(a4), 8);
-        assert r.get(0) == 4 && r.get(1) == 4;
+        assert r[0] == 4 && r[1] == 4;
         r = math.findRange(makeList(a5), 8);
-        assert r.get(0) == -1 && r.get(1) == -1;
+        assert r[0] == -1 && r[1] == -1;
     }
 
     @Test
