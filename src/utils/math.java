@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -496,7 +498,7 @@ public class math {
         });
         return subsets;
     }
-    
+
     private static List<List<Integer>> makeSubsets(List<Integer> prefix, int i, List<Integer> n, List<List<Integer>> ssets) {
         if (i == n.size() - 1) {
             List<Integer> withI = new ArrayList<>(prefix);
@@ -548,24 +550,53 @@ public class math {
             tmps.clear();
         }
     }
-    
+
     public static List<List<Integer>> permutations(List<Integer> a) {
         return buildPermutations(a, 0, new ArrayList<>());
     }
-    
+
     private static List<List<Integer>> buildPermutations(List<Integer> a, int k, List<List<Integer>> perms) {
         if (k >= a.size()) {
             return perms;
         }
         for (int i = k; i < a.size(); i++) {
             Collections.swap(a, k, i);
-            buildPermutations(a, k+1, perms);
+            buildPermutations(a, k + 1, perms);
             Collections.swap(a, i, k);
         }
         if (k == a.size() - 1) {
             perms.add(new ArrayList<>(a));
-        } 
+        }
         return perms;
     }
-    
+
+    public static List<List<Integer>> combinations(List<Integer> a, int b) {
+        List<List<Integer>> combos = new ArrayList<>();
+        if (a == null || a.isEmpty()) {
+            return combos;
+        }
+        Collections.sort(a);
+        int nr = a.size() - remDups(a);
+        for (int i = 0; i < nr; i++) {
+            a.remove(a.size() - 1);
+        }
+        genCombos(combos, a, b, 0, new ArrayList<>());
+        return combos;
+    }
+
+    private static void genCombos(List<List<Integer>> combos, List<Integer> a, int N, int i, List<Integer> prefix) {
+        if (N == 0) {
+            List<Integer> comb = new ArrayList<>(prefix);
+            combos.add(comb);
+            return ;
+        }
+        for (int j = i; j < a.size(); j++) {
+            if (N < a.get(j)) {
+                return ;
+            }
+            prefix.add(a.get(j));
+            genCombos(combos, a, N - a.get(j), j, prefix);
+            prefix.remove(prefix.size() - 1);
+        }
+    }
 }

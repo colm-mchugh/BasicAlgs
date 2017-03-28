@@ -76,4 +76,12 @@ public interface Graph<T> {
      */
     void print();
 
+    /**
+     * Return a vertex cover of the graph.
+     * 
+     * A vertex cover is a subset of the vertices of the graph that touches
+     * every edge at least once.
+     * 
+     */
+    Set<T> vertexCover();
 }

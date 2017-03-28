@@ -3,6 +3,7 @@ package graph;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import utils.RandGen;
@@ -204,6 +205,38 @@ public class UGraphMapImpl<T> implements Graph<T> {
             }
             System.out.println();
         }
+    }
+    
+    public Set<T> vertexCover() {
+        Map<T, Set<T>> conns = cloneRep();
+        Set<T> vCover = new HashSet<>();
+        while (!conns.isEmpty()) {
+            T u = null;
+            Set<T> uEdges = null;
+            T v = null;
+            for (Iterator<T> it = conns.keySet().iterator();
+                    it.hasNext(); ) {
+                u = it.next();
+                uEdges = (Set<T>) this.connections(u);
+                if (!uEdges.isEmpty()) {
+                    break;
+                }
+            }
+            if (!uEdges.isEmpty()) {
+                v = uEdges.iterator().next();
+            }
+            if (u != null && v != null) {
+                vCover.add(u);
+                vCover.add(v);
+                for (Set<T> edges : conns.values()) {
+                    edges.remove(u);
+                    edges.remove(v);
+                }
+                conns.remove(u);
+                conns.remove(v);
+            }
+        }
+        return vCover;
     }
     
 }

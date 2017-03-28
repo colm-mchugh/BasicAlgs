@@ -202,6 +202,17 @@ public class mathTest {
         }
     }
     
+    @Test
+    public void testCombos() {
+        int[] data = {7,8,10,6,11,1,16,8};
+        int N = 28;
+        List<List<Integer>> combos = math.combinations(makeList(data), N);
+        //assert combos.size() == 2;
+        for (List<Integer> comb : combos) {
+            System.out.println(comb);
+        }
+    }
+    
     private List<Integer> makeList(int[] data) {
         List<Integer> rv = new ArrayList<>(data.length);
         for (int d : data) {
