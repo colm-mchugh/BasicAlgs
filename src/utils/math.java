@@ -782,4 +782,9 @@ public class math {
             prefix.remove(prefix.size() - 1);
         }
     }
+    
+    // Return n/N as a percentage
+    public static int asPercentage(int n, int N) {
+        return (int) Math.round((100.0 * n) / N);
+    }
 }

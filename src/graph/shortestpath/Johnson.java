@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import utils.math;
 
 public class Johnson<T> {
     
@@ -63,8 +64,14 @@ public class Johnson<T> {
         graph.remove(s);
         Path<T> minPath = new Path<>(null, null, Integer.MAX_VALUE);
         Dijkstra<T> sper = new Dijkstra<>(graph);
+        int N = graph.numVertices();
         for (T u : graph.V()) {
+            int n = 0;
             for (T v : graph.V()) {
+                n++;
+                if (math.asPercentage(n, N)%10 == 0) {
+                    System.out.print(math.asPercentage(n, N)%10 +"%..");
+                }
                 if (u.equals(v)) {
                     continue;
                 }
@@ -81,6 +88,7 @@ public class Johnson<T> {
                 }
             }
         }
+        System.out.println();
         memo.put(graph, minPath);
         return minPath;
     }
