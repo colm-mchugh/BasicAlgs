@@ -98,7 +98,7 @@ public class tspTest {
         WeightedGraph<Integer> g = new WeightedGraphUndirected<>();
         int[] links = {1,2,20, 1,3,42, 1,4,35, 2,3,30, 2,4,34, 3,4,12};
         int[] p = {1,4,3,2};
-        GraphIO.populateGraph(g, links);
+        GraphIO.populateWeightedGraph(g, links);
         TSPer t = new TSPer(g, !DOPRUNE);       
         float ans1 = t.computeTsp();
         List<Integer> path = t.getShortestPath();
@@ -118,7 +118,7 @@ public class tspTest {
         WeightedGraph<Integer> g = new WeightedGraphUndirected<>();
         int[] links = {1,2,1, 1,3,10, 2,3,10, 2,4,10, 2,5,10, 3,5,10, 4,5,1};
         int[] p = {1,3,5,4,2};
-        GraphIO.populateGraph(g, links);
+        GraphIO.populateWeightedGraph(g, links);
         TSPer t = new TSPer(g, !DOPRUNE);       
         float ans1 = t.computeTsp();
         List<Integer> path = t.getShortestPath();

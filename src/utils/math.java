@@ -260,6 +260,9 @@ public class math {
      * @return
      */
     public static int pow(int x, int e) {
+        if (e == 0) {
+            return 1;
+        }
         if (e == 1) {
             return x;
         } else {

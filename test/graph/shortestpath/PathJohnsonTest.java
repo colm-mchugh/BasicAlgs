@@ -26,7 +26,7 @@ public class PathJohnsonTest {
     public void Johnson2() {
         WeightedGraph<Integer> g = new WeightedGraphDirected();
         int[] links = {1,2,1, 1,3,1, 2,4,2, 2,3,3, 3,4,-2, 4,5,-1, 4,6,2, 5,7,-1, 6,7,-1, 7,6,1};
-        GraphIO.populateGraph(g, links);
+        GraphIO.populateWeightedGraph(g, links);
         Johnson<Integer> sper = new Johnson<>();
         assert sper.sp(g).d == -4;
     }
@@ -35,7 +35,7 @@ public class PathJohnsonTest {
     public void Johnson3() {
         WeightedGraph<Integer> g = new WeightedGraphDirected();
         int[] links = {1,2,-2, 2,3,-1, 3,1,4, 3,4,2, 3,5,-3, 6,4,1, 6,5,-4};
-        GraphIO.populateGraph(g, links);
+        GraphIO.populateWeightedGraph(g, links);
         Johnson<Integer> sper = new Johnson<>();
         assert sper.sp(g).d == -6;
     }
@@ -44,7 +44,7 @@ public class PathJohnsonTest {
     public void Johnson4() {
         WeightedGraph<Integer> g = new WeightedGraphDirected();
         int[] links = {1,6,-10, 1,2,-5, 2,3,1, 3,4,1, 4,5,-10000};
-        GraphIO.populateGraph(g, links);
+        GraphIO.populateWeightedGraph(g, links);
         Johnson<Integer> sper = new Johnson<>();
         assert sper.sp(g).d == -10003;
     }

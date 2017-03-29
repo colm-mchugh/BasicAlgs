@@ -15,9 +15,15 @@ public class GraphIO {
         return readWeightedGraph(file, new WeightedGraphUndirected<>());
     }
     
-    public static void populateGraph(WeightedGraph<Integer> graph, int[] links) {
+    public static void populateWeightedGraph(WeightedGraph<Integer> graph, int[] links) {
         for (int i = 0; i < links.length; i += 3) {
             graph.link(links[i], links[i+1], links[i+2]);
+        }
+    }
+    
+    public static void populateGraph(Graph<Integer> graph, int[] links) {
+        for (int i = 0; i < links.length; i += 2) {
+            graph.add(links[i], links[i+1]);
         }
     }
     

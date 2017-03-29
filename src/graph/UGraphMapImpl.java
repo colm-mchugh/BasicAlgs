@@ -79,7 +79,7 @@ public class UGraphMapImpl<T> implements Graph<T> {
      */
     @Override
     public GraphCut<T> makeCut() {
-        // Implement random cut computation using Karger's well known algorithhm:
+        // Implement random cut using Karger's algorithhm:
         // While there are more than two vertices, pick two at random and fuse them
         // into a single vertex, removing self-loops and edge(s) between them.
         // The edges of the fused vertex are the union of the randomly two vertices edges.
@@ -206,37 +206,24 @@ public class UGraphMapImpl<T> implements Graph<T> {
             System.out.println();
         }
     }
-    
+
+    @Override
     public Set<T> vertexCover() {
-        Map<T, Set<T>> conns = cloneRep();
-        Set<T> vCover = new HashSet<>();
-        while (!conns.isEmpty()) {
-            T u = null;
-            Set<T> uEdges = null;
-            T v = null;
-            for (Iterator<T> it = conns.keySet().iterator();
-                    it.hasNext(); ) {
-                u = it.next();
-                uEdges = (Set<T>) this.connections(u);
-                if (!uEdges.isEmpty()) {
-                    break;
-                }
-            }
-            if (!uEdges.isEmpty()) {
-                v = uEdges.iterator().next();
-            }
-            if (u != null && v != null) {
-                vCover.add(u);
-                vCover.add(v);
-                for (Set<T> edges : conns.values()) {
-                    edges.remove(u);
-                    edges.remove(v);
-                }
-                conns.remove(u);
-                conns.remove(v);
-            }
-        }
-        return vCover;
+        throw new UnsupportedOperationException("Not supported yet."); 
+        // TODO: Add support for accessing the edges of the graph randomly.
+        //       Also: given a vertex, access its inbound and outbound edges.
+        // Given this, the following algorithm can be used to implement 
+        // approximate vertex cover in O(E), where E is the number of edges.
+        //
+        // Edges = all edges E(u,v) of the graph
+        // Vertex Cover = {}
+        // while (Edges are not empty)
+        //      Select an edge E at random from Edges
+        //      Add E.u, E.v to the Vertex Cover.
+        //      From Edges, remove all edges touched by E
+        //      i.e. All edges Er where Er.u = E.u or Er.v = E.u or Er.u = E.v or Er.v = E.v
+        // Return Vertex Cover
     }
     
+        
 }

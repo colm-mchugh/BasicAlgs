@@ -24,7 +24,7 @@ public class Johnson<T> {
      * Otherwise, the graph is re-weighted to contain only positive edges, and
      * Dijkstra's Shortest Path is used to compute the paths between each pair
      * of vertices, keeping track of the shortest path found, which is finally 
-     * returned by sp().
+     * returned.
      * 
      * The mechanics of Johnson's algorithm for determining the shortest path 
      * are as follows:

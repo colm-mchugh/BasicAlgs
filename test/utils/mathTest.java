@@ -150,8 +150,8 @@ public class mathTest {
 
     @Test
     public void testSubsets() {
-        int[][] a1 = { {1, 2, 3, 4, 5}, {1, 2, 3}, {3}, {4,6,3,2,5,7,8,9,1}, };
-        for (int[] ar  : a1) {
+        int[][] a1 = {{1, 2, 3, 4, 5}, {1, 2, 3}, {3}, {4, 6, 3, 2, 5, 7, 8, 9, 1},};
+        for (int[] ar : a1) {
             List<Integer> s = makeList(ar);
             System.out.println("Next set: " + s);
             List<List<Integer>> subsets = math.subsets(s);
@@ -167,8 +167,8 @@ public class mathTest {
 
     @Test
     public void testSubsetsWithDuplicates() {
-        int[][] a1 = {{2,2,3,4}, {3,3,5,6,6,6},{3, 3, 3, 3}, {1, 2, 2},  };
-        for (int[] ar  : a1) {
+        int[][] a1 = {{2, 2, 3, 4}, {3, 3, 5, 6, 6, 6}, {3, 3, 3, 3}, {1, 2, 2},};
+        for (int[] ar : a1) {
             List<Integer> set1 = makeList(ar);
             System.out.println("Next set: " + set1);
             List<List<Integer>> subsets = math.subsets(set1);
@@ -180,20 +180,20 @@ public class mathTest {
         }
 
     }
-    
+
     @Test
     public void testGrayCode() {
         int n = 3;
         List<Integer> codes = math.grayCode(3);
-        int[] expected = {0,1,3,2,6,7,5,4};
+        int[] expected = {0, 1, 3, 2, 6, 7, 5, 4};
         for (int i = 0; i < expected.length; i++) {
             assert expected[i] == codes.get(i);
         }
     }
-    
+
     @Test
     public void testPerms() {
-        int[] data = {1,2,3,4,5};
+        int[] data = {1, 2, 3, 4, 5};
         List<List<Integer>> perms = math.permutations(makeList(data));
         System.out.println("#perms=" + perms.size());
         assert perms.size() == 120;
@@ -201,10 +201,10 @@ public class mathTest {
             System.out.println(perm);
         }
     }
-    
+
     @Test
     public void testCombos() {
-        int[] data = {7,8,10,6,11,1,16,8};
+        int[] data = {7, 8, 10, 6, 11, 1, 16, 8};
         int N = 28;
         List<List<Integer>> combos = math.combinations(makeList(data), N);
         //assert combos.size() == 2;
@@ -212,7 +212,7 @@ public class mathTest {
             System.out.println(comb);
         }
     }
-    
+
     private List<Integer> makeList(int[] data) {
         List<Integer> rv = new ArrayList<>(data.length);
         for (int d : data) {
