@@ -9,29 +9,28 @@ import java.util.Set;
 import utils.math;
 
 public class Johnson<T> {
-    
+
     // For recording shortest path results. 
     private final Map<WeightedGraph<T>, Path<T>> memo = new HashMap<>();
-       
-    
+
     /**
-     * Return the shortest path of all the possible paths of the given graph. A 
-     * path exists between two vertices u,v of the graph if it is possible
-     * to get to v from u.
-     * 
-     * If the graph has a negative cycle, it is not possible to determine the 
+     * Return the shortest path of all the possible paths of the given graph. A
+     * path exists between two vertices u,v of the graph if it is possible to
+     * get to v from u.
+     *
+     * If the graph has a negative cycle, it is not possible to determine the
      * shortest path. In this case Integer.MAX_VALUE is used to mean +Infinity.
-     * 
+     *
      * Otherwise, the graph is re-weighted to contain only positive edges, and
      * Dijkstra's Shortest Path is used to compute the paths between each pair
-     * of vertices, keeping track of the shortest path found, which is finally 
+     * of vertices, keeping track of the shortest path found, which is finally
      * returned.
-     * 
-     * The mechanics of Johnson's algorithm for determining the shortest path 
+     *
+     * The mechanics of Johnson's algorithm for determining the shortest path
      * are as follows:
-     * 
+     *
      * @param graph
-     * @return 
+     * @return
      */
     public Path<T> sp(WeightedGraph<T> graph) {
         if (memo.containsKey(graph)) {
@@ -45,7 +44,7 @@ public class Johnson<T> {
         for (T v : vertices) {
             graph.link(s, v, 0);
         }
-        
+
         BellmanFord<T> negCycleDtctr = new BellmanFord<>();
         BellmanFord.ShortestPath<T> sp = negCycleDtctr.singleSourceShortestPaths(graph, s);
         if (sp.hasNegativeCycles) {
@@ -68,10 +67,6 @@ public class Johnson<T> {
         for (T u : graph.V()) {
             int n = 0;
             for (T v : graph.V()) {
-                n++;
-                if (math.asPercentage(n, N)%10 == 0) {
-                    System.out.print(math.asPercentage(n, N)%10 +"%..");
-                }
                 if (u.equals(v)) {
                     continue;
                 }
@@ -86,6 +81,10 @@ public class Johnson<T> {
                     minPath.u = u;
                     minPath.v = v;
                 }
+            }
+            int percentageComplete = math.asPercentage(++n, N) % 10;
+            if (percentageComplete > 0 && percentageComplete % 10 == 0) {
+                System.out.print(percentageComplete + "% (" + n + "/" + N + ")..");
             }
         }
         System.out.println();
