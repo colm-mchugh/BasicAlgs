@@ -16,6 +16,7 @@ public class NSatTest {
     public void testSatSolveTrue() {
         int[][] unsat = {{1,2,3},{1,-2,3},{1,2,-3},{1,-2,-3}};
         assert this.solve(unsat, NSatSolver.strategy.byIndex);
+        assert this.solve(unsat, NSatSolver.strategy.byCard);
         assert this.solve(unsat, NSatSolver.strategy.byClsSize);
     }
     

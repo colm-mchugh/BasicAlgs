@@ -137,7 +137,10 @@ public class NSat {
     }   
 
     /**
-     * Determine if the 
+     * Determine if the formula is satisfiable, using backtracking.
+     * If the current evaluation is neither true nor false, take the 
+     * next unassigned variable and re-evaluate the formula with the 
+     * variable alternately assigned false and true. 
      * @param varHeap
      * @return 
      */
