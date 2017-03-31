@@ -1,12 +1,46 @@
 package dp;
 
+import heap.Heap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class NSat {
     
+    /**
+     * TriState is used to indicate if a formula is satisfiable, not satisfiable,
+     * or not possible to know. It enables evaluation of partially assigned 
+     * formulas during a backtracking solver.
+     */
     public enum TriState {
         False, True, DontKnow;
+    }
+    
+    /**
+     * pvar is a prioritized variable; when performing a backtracking solve,
+     * the next variable to try is determined by picking a pvar off a priority
+     * queue. 
+     */
+    public static class pvar implements Comparable<pvar> {
+        int var;
+        float score;
+
+        public pvar(int var, float score) {
+            this.var = var;
+            this.score = score;
+        }
+
+        @Override
+        public int compareTo(pvar o) {
+            if (this.score < o.score) {
+                return -1;
+            }
+            if (this.score > o.score) {
+                return 1;
+            }
+            return 0;
+        }
+        
     }
     
     public static class clause {
@@ -18,12 +52,13 @@ public class NSat {
         }
 
         /**
-         * A clause evaluates to false if all of its variables are false.
-         * It evaluates to true if one or more of its variables are true
-         * and all the others are false.
-         * It evaluates to DontKnow if at least one of its variables is unassigned.
-         * This means its variables still need an assignment to know if it can
-         * be true or false.
+         * A clause - a disjunction of boolean variables - 
+         * evaluates to false if all of its variables are false.
+         * It evaluates to true if one or more of its variables 
+         * are true and all the others are false.
+         * It evaluates to DontKnow if at least one of its variables 
+         * is unassigned. This means its variables still need an 
+         * assignment to know if it can be true or false.
          * 
          * @param ctxt
          * @return 
@@ -31,7 +66,7 @@ public class NSat {
         public TriState eval(Map<Integer, Boolean> ctxt) {
             TriState val = TriState.False;
             for (Integer var : vars) {
-                if (!(ctxt.containsKey(var))) {
+                if (!(ctxt.containsKey(Math.abs(var)))) {
                     return TriState.DontKnow;
                 }
                 if (this.lookup(var, ctxt)) {
@@ -55,14 +90,37 @@ public class NSat {
         }
     }
     
+    /**
+     * The actual boolean formula being solved
+     */
+    protected List<clause> formula;
+
+    /**
+     * holds the current variable assignment
+     */
     protected Map<Integer, Boolean> variables;
-    protected long N;
-    protected List<clause> equation;
     
+    /**
+     * Initialize NSat with a formula and empty (no variables assigned) assignment.
+     * @param equation 
+     */
+    public NSat(List<clause> equation) {
+        this.formula = equation;
+        this.variables = new HashMap<>();
+    }   
+    
+    /**
+     * A conjunction of clauses evaluates to false if any one 
+     * of them is false, evaluates to true if they are all true,
+     * evaluates to DontKnow otherwise.
+     * 
+     * 
+     * @return 
+     */
     public TriState eval() {
-        Boolean allTrue = true;
+        Boolean allTrue = !this.formula.isEmpty();
         TriState val = TriState.True;
-        for (clause c : equation) {
+        for (clause c : formula) {
             val = c.eval(variables);
             if (val == TriState.False) {
                 break;
@@ -78,28 +136,30 @@ public class NSat {
         return TriState.DontKnow;
     }   
 
-    public boolean SatSolve(List<clause> formula, int var) {
-        TriState satVal = eval();
+    /**
+     * Determine if the 
+     * @param varHeap
+     * @return 
+     */
+    public boolean SatSolve(Heap<pvar> varHeap) {
+        // Evaluate th formula with the curent variable assignment.
+        TriState satVal = this.eval();
         if (satVal.equals(TriState.False)) {
             return false;
         }
         if (satVal.equals(TriState.True)) {
             return true;
         }
-        variables.put(var, Boolean.FALSE);
-        if (variables.containsKey(-var)) {
-            variables.put(-var, Boolean.TRUE);
-        }
-        if (SatSolve(formula, var + 1)) {
+        // The satVal is DontKnow; try setting the next var to try to false,
+        // and recursively solving the formula with that setting.
+        pvar var = varHeap.Delete();
+        variables.put(var.var, Boolean.FALSE);
+        if (SatSolve(varHeap)) {
             return true;
         }
-        variables.put(var, Boolean.TRUE);
-        if (variables.containsKey(-var)) {
-            variables.put(-var, Boolean.FALSE);
-        }
-        if (SatSolve(formula, var + 1)) {
-            return true;
-        }
-        return false;
+        // Setting var to false didn't work; try true.
+        varHeap.Insert(var);
+        variables.put(var.var, Boolean.TRUE);
+        return SatSolve(varHeap);
     }
 }
