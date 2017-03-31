@@ -3,6 +3,7 @@ package dp;
 import heap.Heap;
 import heap.MinHeap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class NSatSolver {
     };
 
     private final NSat instance;
-    private Heap<NSat.pvar> varQueue;
+    private List<NSat.pvar> varQueue;
     private boolean isSat;
 
     /**
@@ -52,7 +53,7 @@ public class NSatSolver {
      */
     public boolean run(strategy s) {
         makeHeap(s);
-        isSat = instance.SatSolve(varQueue);
+        isSat = instance.SatSolve(varQueue, 0);
         return isSat;
     }
 
@@ -71,7 +72,6 @@ public class NSatSolver {
      */
     private void makeHeap(strategy s) {
         List<NSat.clause> formula = instance.formula;
-        varQueue = new MinHeap<>();
         Map<Integer, Integer> varVals = new HashMap<>();
         for (NSat.clause cl : formula) {
             for (int v : cl.vars) {
@@ -102,9 +102,11 @@ public class NSatSolver {
                 }
             }
         }
+        varQueue = new ArrayList<>(varVals.size());
         for (Integer var : varVals.keySet()) {
-            varQueue.Insert(new NSat.pvar(var, varVals.get(var)));
+            varQueue.add(new NSat.pvar(var, varVals.get(var)));
         } 
+        Collections.sort(varQueue);
     }
 
 

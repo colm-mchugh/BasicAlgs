@@ -6,22 +6,24 @@ import java.util.List;
 import java.util.Map;
 
 public class NSat {
-    
+
     /**
-     * TriState is used to indicate if a formula is satisfiable, not satisfiable,
-     * or not possible to know. It enables evaluation of partially assigned 
-     * formulas during a backtracking solver.
+     * TriState is used to indicate if a formula is satisfiable, not
+     * satisfiable, or not possible to know. It enables evaluation of partially
+     * assigned formulas during a backtracking solver.
      */
     public enum TriState {
+
         False, True, DontKnow;
     }
-    
+
     /**
-     * pvar is a prioritized variable; when performing a backtracking solve,
-     * the next variable to try is determined by picking a pvar off a priority
-     * queue. 
+     * pvar is a prioritized variable; when performing a backtracking solve, the
+     * next variable to try is determined by picking a pvar off a priority
+     * queue.
      */
     public static class pvar implements Comparable<pvar> {
+
         int var;
         float score;
 
@@ -40,9 +42,9 @@ public class NSat {
             }
             return 0;
         }
-        
+
     }
-    
+
     public static class clause {
 
         public final List<Integer> vars;
@@ -52,16 +54,15 @@ public class NSat {
         }
 
         /**
-         * A clause - a disjunction of boolean variables - 
-         * evaluates to false if all of its variables are false.
-         * It evaluates to true if one or more of its variables 
-         * are true and all the others are false.
-         * It evaluates to DontKnow if at least one of its variables 
-         * is unassigned. This means its variables still need an 
-         * assignment to know if it can be true or false.
-         * 
+         * A clause - a disjunction of boolean variables - evaluates to false if
+         * all of its variables are false. It evaluates to true if one or more
+         * of its variables are true and all the others are false. It evaluates
+         * to DontKnow if at least one of its variables is unassigned. This
+         * means its variables still need an assignment to know if it can be
+         * true or false.
+         *
          * @param ctxt
-         * @return 
+         * @return
          */
         public TriState eval(Map<Integer, Boolean> ctxt) {
             TriState val = TriState.False;
@@ -89,7 +90,7 @@ public class NSat {
             return "(" + this.vars + ')';
         }
     }
-    
+
     /**
      * The actual boolean formula being solved
      */
@@ -99,23 +100,24 @@ public class NSat {
      * holds the current variable assignment
      */
     protected Map<Integer, Boolean> variables;
-    
+
     /**
-     * Initialize NSat with a formula and empty (no variables assigned) assignment.
-     * @param equation 
+     * Initialize NSat with a formula and empty (no variables assigned)
+     * assignment.
+     *
+     * @param equation
      */
     public NSat(List<clause> equation) {
         this.formula = equation;
         this.variables = new HashMap<>();
-    }   
-    
+    }
+
     /**
-     * A conjunction of clauses evaluates to false if any one 
-     * of them is false, evaluates to true if they are all true,
-     * evaluates to DontKnow otherwise.
-     * 
-     * 
-     * @return 
+     * A conjunction of clauses evaluates to false if any one of them is false,
+     * evaluates to true if they are all true, evaluates to DontKnow otherwise.
+     *
+     *
+     * @return
      */
     public TriState eval() {
         Boolean allTrue = !this.formula.isEmpty();
@@ -134,17 +136,18 @@ public class NSat {
             return TriState.True;
         }
         return TriState.DontKnow;
-    }   
+    }
 
     /**
-     * Determine if the formula is satisfiable, using backtracking.
-     * If the current evaluation is neither true nor false, take the 
-     * next unassigned variable and re-evaluate the formula with the 
-     * variable alternately assigned false and true. 
-     * @param varHeap
-     * @return 
+     * Determine if the formula is satisfiable, using backtracking. If the
+     * current evaluation is neither true nor false, take the next unassigned
+     * variable and re-evaluate the formula with the variable alternately
+     * assigned false and true.
+     *
+     * @param varQueue, int qIndex
+     * @return
      */
-    public boolean SatSolve(Heap<pvar> varHeap) {
+    public boolean SatSolve(List<pvar> varQueue, int qIndex) {
         // Evaluate th formula with the curent variable assignment.
         TriState satVal = this.eval();
         if (satVal.equals(TriState.False)) {
@@ -155,14 +158,13 @@ public class NSat {
         }
         // The satVal is DontKnow; try setting the next var to try to false,
         // and recursively solving the formula with that setting.
-        pvar var = varHeap.Delete();
+        pvar var = varQueue.get(qIndex);
         variables.put(var.var, Boolean.FALSE);
-        if (SatSolve(varHeap)) {
+        if (SatSolve(varQueue, qIndex + 1)) {
             return true;
         }
         // Setting var to false didn't work; try true.
-        varHeap.Insert(var);
         variables.put(var.var, Boolean.TRUE);
-        return SatSolve(varHeap);
+        return SatSolve(varQueue, qIndex + 1);
     }
 }
