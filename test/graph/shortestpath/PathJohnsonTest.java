@@ -51,8 +51,8 @@ public class PathJohnsonTest {
 
     @Test
     public void testReallyBiginquotesGraph() {
-        String[] files = {"resources/g1.txt", "resources/g2.txt", "resources/g3.txt"};
-        int[] expected = {Integer.MAX_VALUE, Integer.MAX_VALUE, -19};   
+        String[] files = {"resources/g3.txt", "resources/g1.txt", "resources/g2.txt", };
+        int[] expected = {-19, Integer.MAX_VALUE, Integer.MAX_VALUE};   
         Johnson<Integer> sper = new Johnson<>();
         for (int i = 0; i < files.length; i++) {
             assert sper.sp(GraphIO.readWeightedGraphDirected(files[i])).d == expected[i];
