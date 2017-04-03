@@ -1,7 +1,5 @@
 package dp;
 
-import heap.Heap;
-import heap.MinHeap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,13 +9,13 @@ import java.util.Map;
 public class NSatSolver {
 
     /**
-     * How to select the next variable for assignment when performing 
-     * a backtracking solve.
+     * strategy - how to select the next variable for assignment when solving 
+     * a formula.
      */
     public enum strategy {
         byIndex, // variables are selected in order of index, e.g. x1, x2, x3, x4, etc
-        byCard,  // vars are selected in order of most frequently used
-        byClsSize // vars are selected in order of smallest clause (#vars in a clause)
+        byCard,  // variables are selected in order of most frequently used
+        byClsSize // " are selected in order of smallest clause (#vars in a clause)
     };
 
     private final NSat instance;

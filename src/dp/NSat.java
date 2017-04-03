@@ -1,6 +1,5 @@
 package dp;
 
-import heap.Heap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +8,10 @@ public class NSat {
 
     /**
      * TriState is used to indicate if a formula is satisfiable, not
-     * satisfiable, or not possible to know. It enables evaluation of partially
-     * assigned formulas during a backtracking solver.
+     * satisfiable, or not possible to know. It enables evaluation of 
+     * partially assigned formulas during a solve.
      */
     public enum TriState {
-
         False, True, DontKnow;
     }
 
@@ -23,7 +21,6 @@ public class NSat {
      * queue.
      */
     public static class pvar implements Comparable<pvar> {
-
         int var;
         float score;
 
@@ -97,7 +94,7 @@ public class NSat {
     protected List<clause> formula;
 
     /**
-     * holds the current variable assignment
+     * The current variable assignment
      */
     protected Map<Integer, Boolean> variables;
 
@@ -105,17 +102,16 @@ public class NSat {
      * Initialize NSat with a formula and empty (no variables assigned)
      * assignment.
      *
-     * @param equation
+     * @param formula
      */
-    public NSat(List<clause> equation) {
-        this.formula = equation;
+    public NSat(List<clause> formula) {
+        this.formula = formula;
         this.variables = new HashMap<>();
     }
 
     /**
-     * A conjunction of clauses evaluates to false if any one of them is false,
-     * evaluates to true if they are all true, evaluates to DontKnow otherwise.
-     *
+     * A conjunction of clauses evaluates to false if any is false,
+     * true if all are true, DontKnow otherwise.
      *
      * @return
      */
@@ -144,11 +140,12 @@ public class NSat {
      * variable and re-evaluate the formula with the variable alternately
      * assigned false and true.
      *
-     * @param varQueue, int qIndex
+     * @param varQueue
+     * @param varIndex
      * @return
      */
-    public boolean SatSolve(List<pvar> varQueue, int qIndex) {
-        // Evaluate th formula with the curent variable assignment.
+    public boolean SatSolve(List<pvar> varQueue, int varIndex) {
+        // Evaluate the formula with the curent variable assignment.
         TriState satVal = this.eval();
         if (satVal.equals(TriState.False)) {
             return false;
@@ -156,15 +153,15 @@ public class NSat {
         if (satVal.equals(TriState.True)) {
             return true;
         }
-        // The satVal is DontKnow; try setting the next var to try to false,
-        // and recursively solving the formula with that setting.
-        pvar var = varQueue.get(qIndex);
+        // The satVal is DontKnow; try setting the next var to false,
+        // and recursively solving the formula.
+        pvar var = varQueue.get(varIndex);
         variables.put(var.var, Boolean.FALSE);
-        if (SatSolve(varQueue, qIndex + 1)) {
+        if (SatSolve(varQueue, varIndex + 1)) {
             return true;
         }
         // Setting var to false didn't work; try true.
         variables.put(var.var, Boolean.TRUE);
-        return SatSolve(varQueue, qIndex + 1);
+        return SatSolve(varQueue, varIndex + 1);
     }
 }

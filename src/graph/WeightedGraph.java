@@ -107,10 +107,14 @@ public interface WeightedGraph<T> {
                 return false;
             }
             final Edge<?> other = (Edge<?>) obj;
-            if (!Objects.equals(this.v, other.v)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.v, other.v);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 29 * hash + Objects.hashCode(this.v);
+            return hash;
         }
 
         @Override
