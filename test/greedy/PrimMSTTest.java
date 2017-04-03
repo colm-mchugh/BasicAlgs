@@ -15,7 +15,18 @@ public class PrimMSTTest {
     public void testMstCost() {
         WeightedGraphUndirected<Integer> pish = this.readWeightedUndirectedGraph("resources/edges.txt");
         PrimMST p = new PrimMST(pish);
-        assert p.mstCost() == -3612829;
+        assert p.mstCost() == -3612829; 
+    }
+    
+    /**
+     * Test of mstCost method, of class PrimMST.
+     */
+    @Test
+    public void testHeapMstCost() {
+        WeightedGraphUndirected<Integer> pish = this.readWeightedUndirectedGraph("resources/edges.txt");
+        PrimMST p = new PrimMST(pish);
+        long minCost = p.heapMstCost();
+        assert minCost == -3612829; // mstCost is -3612173
     }
     
     WeightedGraphUndirected<Integer> readWeightedUndirectedGraph(String path) {

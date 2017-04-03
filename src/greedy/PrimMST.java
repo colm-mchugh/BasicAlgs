@@ -46,8 +46,8 @@ public class PrimMST<T> {
      * @return 
      */
     public long mstCost() {
-        //return this.computedCost;
-        return this.heapMstCost();
+        this.slowMst();
+        return this.computedCost;
     }
     
     /**
@@ -109,7 +109,7 @@ public class PrimMST<T> {
      * 
      * @return 
      */
-    private long heapMstCost() {
+    public long heapMstCost() {
         long runningCost = 0;
         Set<T> X = new HashSet<>();
         T seedVertex = g.V().iterator().next(); // put one vertex into X
