@@ -49,7 +49,6 @@ public class PathJohnsonTest {
         assert sper.sp(g).d == -10003;
     }
 
-    @Test
     public void testReallyBiginquotesGraph() {
         String[] files = {"resources/g3.txt", "resources/g1.txt", "resources/g2.txt", };
         int[] expected = {-19, Integer.MAX_VALUE, Integer.MAX_VALUE};   
@@ -57,6 +56,26 @@ public class PathJohnsonTest {
         for (int i = 0; i < files.length; i++) {
             assert sper.sp(GraphIO.readWeightedGraphDirected(files[i])).d == expected[i];
         }
+    }
+    
+    @Test 
+    public void testBigGraph1() {
+        testFile("resources/g1.txt", Integer.MAX_VALUE);
+    }
+    
+    @Test 
+    public void testBigGraph2() {
+        testFile("resources/g2.txt", Integer.MAX_VALUE);
+    }
+    
+    @Test 
+    public void testBigGraph3() {
+        testFile("resources/g3.txt", -19);
+    }
+    
+    private void testFile(String file, int expected) {
+        Johnson<Integer> sper = new Johnson<>();
+        assert sper.sp(GraphIO.readWeightedGraphDirected(file)).d == expected;
     }
     
 }
