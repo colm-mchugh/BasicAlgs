@@ -18,13 +18,13 @@ public abstract class Heap<Key extends Comparable<Key>> {
      * of items. All heap operations must maintain the following invariants:
      * 1) items[0] is the highest priority item in the heap
      * 2) for all items i in the heap, priority of items[i/2 - 1] > priority of items[i]
-     * 3) a map of key to item index is maintained to enable O(1) access of any item.
+     * 3) a map of item to item index is maintained to enable O(1) access of any item.
      *    Operations that mutate the heap (Insert, Delete, DeleteSpecificKey) check
-     *    that the following invariant holds on exit: #items in heap == #keys in key index
+     *    that the following invariant holds on exit: #items in heap == #items in item index
      */
     protected Key[] items; // the heap
     protected int N;    // #items in the heap
-    protected Map<Key, Integer> keyIndex; // key to heap position
+    protected Map<Key, Integer> itemIndex; // key to heap position
 
     /**
      * Create an empty heap
@@ -32,7 +32,7 @@ public abstract class Heap<Key extends Comparable<Key>> {
     public Heap() {
         N = 0;
         items = (Key[]) new Comparable[2];
-        keyIndex = new HashMap<>();
+        itemIndex = new HashMap<>();
     }
 
     /**
@@ -44,10 +44,10 @@ public abstract class Heap<Key extends Comparable<Key>> {
         if (N >= this.items.length) {
             this.resize(this.items.length * 2);
         }
-        this.keyIndex.put(k, N);
+        this.itemIndex.put(k, N);
         this.items[N++] = k;
         this.swim(N);
-        assert keyIndex.size() == N;
+        assert itemIndex.size() == N;
     }
 
     /**
@@ -61,8 +61,8 @@ public abstract class Heap<Key extends Comparable<Key>> {
         this.Exch(1, N--);
         this.sink(1);
         this.items[N] = null;
-        this.keyIndex.remove(rv);
-        assert keyIndex.size() == N;
+        this.itemIndex.remove(rv);
+        assert itemIndex.size() == N;
         return rv;
     }
 
@@ -86,21 +86,20 @@ public abstract class Heap<Key extends Comparable<Key>> {
 
     /**
      * Remove a specific item from the heap. Running time: O(log n)
-     * 
-     * The keyIndex is used to enable constant time access to the item in the heap.
-     * keyIndex must be updated as items are inserted into and deleted from the heap.
+     * The itemIndex is used to enable constant time access to the item in the heap.
+     * itemIndex must be updated as items are inserted into and deleted from the heap.
      *
      * @param k
      * @return
      */
     public Key DeleteSpecificKey(Key k) {
-        int i = keyIndex.get(k);
+        int i = itemIndex.get(k);
         Key rv = this.items[i];
         this.Exch(i + 1, N--);
         this.sink(i + 1);
         this.items[N] = null;
-        this.keyIndex.remove(k);
-        assert keyIndex.size() == N;
+        this.itemIndex.remove(k);
+        assert itemIndex.size() == N;
         return rv;
     }
 
@@ -140,9 +139,9 @@ public abstract class Heap<Key extends Comparable<Key>> {
     private void Exch(int i, int j) {
         Key tmp = items[i - 1];
         items[i - 1] = items[j - 1];
-        keyIndex.put(items[j - 1], i - 1);
+        itemIndex.put(items[j - 1], i - 1);
         items[j - 1] = tmp;
-        keyIndex.put(tmp, j - 1);
+        itemIndex.put(tmp, j - 1);
     }
 
     /**

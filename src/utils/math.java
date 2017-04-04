@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -786,5 +788,56 @@ public class math {
     // Return n/N as a percentage
     public static int asPercentage(int n, int N) {
         return (int) Math.round((100.0 * n) / N);
+    }
+    
+    public static int majority(List<Integer> a) {
+        int occurrences = Math.floorDiv(a.size(), 2);
+        Map<Integer, Integer> freqs = new HashMap<>();
+        for (int i : a) {
+            if (!freqs.containsKey(i)) {
+                freqs.put(i, 1);
+            } else {
+                freqs.put(i, freqs.get(i) + 1);
+            }
+            if (freqs.get(i) > occurrences) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    public static void pascalIt(int N) {
+        List<Integer> curr = new ArrayList<>();
+        List<Integer> prev = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (j == 0 || j == i) {
+                    curr.add(1);
+                } else {
+                    curr.add(prev.get(j - 1) + prev.get(j));
+                }
+            }
+            System.out.println(curr);
+            prev.clear();
+            prev.addAll(curr);
+            curr.clear();
+        }
+    }
+    
+    public static void pascal(int N) {
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print(pascalNum(i, j));
+            }
+            System.out.println();
+        }
+    }
+    
+    private static int pascalNum(int N, int j) {
+        if ( j== 1 || j == N) {
+            return 1;
+        }
+        // naive recursion: memosizing required to reduce time to O(N*N)
+        return pascalNum(N - 1, j - 1) + pascalNum(N - 1, j);
     }
 }
