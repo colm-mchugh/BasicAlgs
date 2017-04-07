@@ -8,10 +8,11 @@ public class NSat {
 
     /**
      * TriState is used to indicate if a formula is satisfiable, not
-     * satisfiable, or not possible to know. It enables evaluation of 
-     * partially assigned formulas during a solve.
+     * satisfiable, or not possible to know. It enables evaluation of partially
+     * assigned formulas during a solve.
      */
     public enum TriState {
+
         False, True, DontKnow;
     }
 
@@ -21,6 +22,7 @@ public class NSat {
      * queue.
      */
     public static class pvar implements Comparable<pvar> {
+
         int var;
         float score;
 
@@ -62,16 +64,17 @@ public class NSat {
          * @return
          */
         public TriState eval(Map<Integer, Boolean> ctxt) {
-            TriState val = TriState.False;
+            boolean unitializedVar = false;
             for (Integer var : vars) {
-                if (!(ctxt.containsKey(Math.abs(var)))) {
-                    return TriState.DontKnow;
-                }
-                if (this.lookup(var, ctxt)) {
-                    val = TriState.True;
+                if (ctxt.containsKey(Math.abs(var))) {
+                    if (this.lookup(var, ctxt)) {
+                        return TriState.True;
+                    }
+                } else {
+                    unitializedVar = true;
                 }
             }
-            return val;
+            return (unitializedVar ? TriState.DontKnow : TriState.False);
         }
 
         public boolean lookup(Integer k, Map<Integer, Boolean> ctxt) {
@@ -110,8 +113,8 @@ public class NSat {
     }
 
     /**
-     * A conjunction of clauses evaluates to false if any is false,
-     * true if all are true, DontKnow otherwise.
+     * A conjunction of clauses evaluates to false if any is false, true if all
+     * are true, DontKnow otherwise.
      *
      * @return
      */
@@ -162,6 +165,12 @@ public class NSat {
         }
         // Setting var to false didn't work; try true.
         variables.put(var.var, Boolean.TRUE);
-        return SatSolve(varQueue, varIndex + 1);
+        if (SatSolve(varQueue, varIndex + 1)) {
+            return true;
+        }
+        // Setting var to true and false didn't work, remove it from
+        // variable assignment and backtrack.
+        variables.remove(var.var);
+        return false;
     }
 }
