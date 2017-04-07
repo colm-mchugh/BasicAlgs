@@ -18,9 +18,17 @@ public class SimpleCaesar {
     private final int shift;
     private final Map<Character, Integer> index;
     
+    /**
+     * Create an encipherer with the given alphabet and shift factor.
+     * Shift must be in the range 0..(alphabet length - 1). It is adjusted
+     * to ensure this.
+     * 
+     * @param alphabet
+     * @param shift 
+     */
     public SimpleCaesar(char[] alphabet, int shift) {
         this.alphabet = alphabet;
-        this.shift = shift;
+        this.shift = shift % alphabet.length;
         this.index = new HashMap<>(alphabet.length);
         for (int i = 0; i < alphabet.length; i++) {
             this.index.put(alphabet[i], i);
