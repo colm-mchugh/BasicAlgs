@@ -840,4 +840,14 @@ public class math {
         // naive recursion: memosizing required to reduce time to O(N*N)
         return pascalNum(N - 1, j - 1) + pascalNum(N - 1, j);
     }
+    
+    public static int trailingZerosInFactorialOf(int N) {
+        int numZeros = 0;
+        int fiveMultiple = 5;
+        while (N / fiveMultiple >= 1) {
+            numZeros += N / fiveMultiple;
+            fiveMultiple *= 5;
+        }
+        return numZeros;
+    }
 }

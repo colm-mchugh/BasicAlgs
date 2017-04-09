@@ -221,4 +221,11 @@ public class mathTest {
         return rv;
     }
 
+    @Test
+    public void testFactorial() {
+        assert math.trailingZerosInFactorialOf(5) == 1;
+        assert math.trailingZerosInFactorialOf(4) == 0;
+        assert math.trailingZerosInFactorialOf(101) == 24;
+        assert math.trailingZerosInFactorialOf(4617) == 1151;
+    }
 }

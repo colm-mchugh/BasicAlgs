@@ -6,7 +6,7 @@ public class CircularBufferTest {
     
     @Test
     public void testRW() throws IllegalAccessException {
-        CircularBuffer<Integer> cb = new CircularBuffer<>(3, false);
+        CircularBuffer<Integer> cb = new CircularBuffer<>(3, !CircularBuffer.NO_OVERFLOW);
         cb.append(4);
         cb.append(3);
         assert cb.size() == 2;
@@ -22,7 +22,7 @@ public class CircularBufferTest {
     
     @Test(expected = IllegalAccessException.class)
     public void testOFlow() throws IllegalAccessException {
-        CircularBuffer<Integer> cb = new CircularBuffer<>(3, true);
+        CircularBuffer<Integer> cb = new CircularBuffer<>(3, CircularBuffer.NO_OVERFLOW);
         cb.append(4);
         cb.append(3);
         cb.append(5);
@@ -32,7 +32,7 @@ public class CircularBufferTest {
     
     @Test(expected = IllegalAccessException.class)
     public void testUFlow() throws IllegalAccessException {
-        CircularBuffer<Integer> cb = new CircularBuffer<>(3, true);
+        CircularBuffer<Integer> cb = new CircularBuffer<>(3, CircularBuffer.NO_OVERFLOW);
         cb.append(4);
         cb.append(3);
         cb.append(5);
@@ -45,7 +45,7 @@ public class CircularBufferTest {
     
     @Test
     public void testIRead() throws IllegalAccessException {
-        CircularBuffer<Integer> cb = new CircularBuffer<>(3, false);
+        CircularBuffer<Integer> cb = new CircularBuffer<>(3, !CircularBuffer.NO_OVERFLOW);
         cb.append(1);
         cb.append(2);
         cb.append(3);

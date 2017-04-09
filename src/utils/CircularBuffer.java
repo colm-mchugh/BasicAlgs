@@ -11,6 +11,7 @@ public class CircularBuffer<T> {
     private int w;
     private int nelems;
 
+    public final static boolean NO_OVERFLOW = true;
     /**
      * Create a circular buffer that can hold N elements.
      * If noOverflow is true, appending will result in an exception.

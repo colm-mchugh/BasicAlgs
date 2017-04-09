@@ -50,7 +50,7 @@ public class NSatSolver {
      * @return 
      */
     public boolean run(strategy s) {
-        makeHeap(s);
+        makeVarQueue(s);
         isSat = instance.SatSolve(varQueue, 0);
         return isSat;
     }
@@ -68,7 +68,7 @@ public class NSatSolver {
      * 
      * @param s 
      */
-    private void makeHeap(strategy s) {
+    private void makeVarQueue(strategy s) {
         List<NSat.clause> formula = instance.formula;
         Map<Integer, Integer> varVals = new HashMap<>();
         for (NSat.clause cl : formula) {
