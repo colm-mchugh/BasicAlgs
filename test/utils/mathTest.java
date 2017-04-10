@@ -228,4 +228,40 @@ public class mathTest {
         assert math.trailingZerosInFactorialOf(101) == 24;
         assert math.trailingZerosInFactorialOf(4617) == 1151;
     }
+    
+    @Test
+    public void testExcel() {
+        assert math.excel2(3).equals("C");
+        assert math.excel2(26).equals("Z");
+        assert math.excel2(27).equals("AA");
+        assert math.excel2(28).equals("AB");
+    }
+    
+    @Test
+    public void testRevint() {
+        assert math.revint(1146467285) == 0;
+        assert math.revint(1170064042) == 0;
+        assert math.revint(123) == 321;
+        assert math.revint(-123) == -321;
+    }
+    
+    @Test
+    public void testPlus1() {
+        ArrayList<Integer> a = new ArrayList<>();
+        a.add(1);
+        a.add(9);
+        List<Integer> aPlus1 = math.plus1(a);   
+    }
+    
+    @Test
+    public void testPositive() {
+        int[] a1 = {1,2,0};
+        int[] a2 = {3,4,-1,1};
+        int[] a3 = {-8,-7,-6};
+        
+        assert math.positive(makeList(a1)) == 3;
+        assert math.positive(makeList(a2)) == 2;
+        assert math.positive(makeList(a3)) == 1;
+        
+    }
 }

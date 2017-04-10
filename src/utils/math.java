@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Stack;
 
 public class math {
 
@@ -850,4 +851,159 @@ public class math {
         }
         return numZeros;
     }
+    
+    int getNext(int i, int j, List<Integer> p) {
+        if (i - 1 == 0 || i >= p.size()) {
+            return 1;
+        }
+        return p.get(i - 2) + p.get(i - 1);
+    }
+    
+    
+    public static int excel1(String a) {
+        int sum = 0;
+        for (int i = a.length() - 1; i >=0; i--) {
+            int n = (a.charAt(i) - 'A') + math.pow(26, a.length() - 1 - i);
+            sum += n;
+        }
+        return sum;
+    }
+
+    public static String excel2(int a) {
+        StringBuilder sb = new StringBuilder();
+        while (a > 0) {
+            sb.append((char)('A' + (a - 1) % 26));
+            a = (a - 1)/ 26;
+        }
+        return sb.reverse().toString();
+    }
+    
+    /**
+     * Reverse the digits of the given number.
+     * 
+     * revint(123) = 321
+     * revint(-123) = -321
+     * 
+     * return 0 if revint(n) > Integer.MAX_VALUE
+     * 
+     * @param a
+     * @return 
+     */
+    public static int revint(int a) {
+        Stack<Integer> digits = new Stack<>();
+        for (int n = Math.abs(a); n > 0; n = n / 10) {
+            digits.push(n % 10);
+        }
+        int tenMultiple = 1;
+        int rev = 0;
+        while (!digits.isEmpty()) {
+            int nextDigit = digits.pop();
+            if (((long)(nextDigit) * tenMultiple) + rev > Integer.MAX_VALUE) {
+                return 0;
+            }
+            rev = rev + nextDigit * tenMultiple;
+            tenMultiple = tenMultiple * 10;
+        }
+        return (a < 0 ? -rev : rev);
+    }
+    
+    public static ArrayList<Integer> plus1(ArrayList<Integer> a) {
+        int lsb = a.size() - 1;
+        int msb = 0;
+        while (msb < a.size() && a.get(msb) == 0) {
+            msb++;
+        }
+        ArrayList<Integer> aPlus1 = new ArrayList<>();
+        int i = lsb;
+        int c = 1;
+        while ((c != 0) && i >= msb) {
+            int n = a.get(i) + c;
+            if (n < 10) {
+                c = 0;
+                aPlus1.add(n);
+            } else {
+                aPlus1.add(n % 10);
+            }
+            i--;
+        }
+        if (c == 1) {
+            aPlus1.add(1);
+        } else {
+            while (i >= msb) {
+                aPlus1.add(a.get(i--));
+            }
+        }
+        for (int k = 0, j = aPlus1.size() - 1; j > k; k++, j--) {
+            int tmp = aPlus1.get(k);
+            aPlus1.set(k, aPlus1.get(j));
+            aPlus1.set(j, tmp);
+        }
+        return aPlus1;
+    }
+    
+    public static int positive(List<Integer> a) {
+        int sum = 0;
+        int num = 0;
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < a.size(); i++) {
+            int n = a.get(i);
+            if (n > 0) {
+                num++;
+                sum += n;
+                if (n < min) {
+                    min = n;
+                }
+                if (n > max) {
+                    max = n;
+                }
+            }
+        }
+        if (num >= 2) {
+            if (min != 1) {
+                return 1;
+            }
+            int numSum = (max + 1)*max/2;
+            if (numSum == sum) {
+                return max + 1;
+            } else {
+                return numSum - sum;
+            }
+        }
+        if (num == 1) {
+            if (min == 1) {
+                return min + 1;
+            }
+        }
+        return 1;
+    }
+    
+    static class Node {
+        int val;
+        Node next;
+
+        public Node(int val, Node next) {
+            this.val = val;
+            this.next = next;
+        }
+        
+    }
+    
+    private void remDups(Node list) {
+        Node current = list;
+        while (current != null) {
+            if (current.next != null) {
+                if (current.val < current.next.val) {
+                    current = current.next;
+                } else {
+                    Node tmp = current.next;
+                    current.next = current.next.next;
+                    tmp.next = null;
+                }
+            } else {
+                current = current.next; // current is null
+            }
+        }
+    }
+    
 }
