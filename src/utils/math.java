@@ -447,6 +447,13 @@ public class math {
         return mid;
     }
 
+    /**
+     * Determine the maximum sum that can be produced by alternately selecting
+     * from the start or end of the given list of numbers.
+     *
+     * @param a list of integers
+     * @return
+     */
     public static int maxcoin(List<Integer> a) {
         if (a.isEmpty()) {
             return 0;
@@ -455,20 +462,43 @@ public class math {
         return max(a, 0, a.size() - 1, mem);
     }
 
-    private static int max(List<Integer> coins, int i, int j, int[][] mem) {
-        if (i > j) {
+    /**
+     * Determine the maximum possible sum that can be made from the segment
+     * [start,end] of the coins array. The recurrence relation is as follows:
+     * Empty coins => 0 One coin => that coin value Otherwise, determine the
+     * maximum of taking from the start or end of the coins. Both (start, end),
+     * need to include the minimum of their next choice, assuming that their
+     * opponent will choose the next best possible coin. Record the maximum in
+     * the memo.
+     *
+     * @param coins list of numbers
+     * @param start start index
+     * @param end end index
+     * @param mem memo, to avoid re-computing
+     * @return
+     */
+    private static int max(List<Integer> coins, int start, int end, int[][] mem) {
+        if (start > end) {
             return 0;
-        } else if (i == j) {
-            return coins.get(i);
+        } else if (start == end) {
+            return coins.get(start);
         }
-        if (mem[i][j] == 0) {
-            int vi = coins.get(i) + Math.min(max(coins, i + 2, j, mem), max(coins, i + 1, j - 1, mem));
-            int vj = coins.get(j) + Math.min(max(coins, i + 1, j - 1, mem), max(coins, i, j - 2, mem));
-            mem[i][j] = Math.max(vi, vj);
+        if (mem[start][end] == 0) {
+            int vi = coins.get(start) + Math.min(max(coins, start + 2, end, mem), max(coins, start + 1, end - 1, mem));
+            int vj = coins.get(end) + Math.min(max(coins, start + 1, end - 1, mem), max(coins, start, end - 2, mem));
+            mem[start][end] = Math.max(vi, vj);
         }
-        return mem[i][j];
+        return mem[start][end];
     }
 
+    /**
+     * Reverse the bits of a 32 bit, unsigned integer.
+     *
+     * Note: java doesn't have 32 bit unsigned ints, so long is used.
+     *
+     * @param a
+     * @return
+     */
     public static long revBits(long a) {
         long lower = 0x1;
         long upper = lower << 31;
@@ -487,6 +517,23 @@ public class math {
         return aRev;
     }
 
+    /**
+     * Given 3 sorted arrays A, B, C, return the minimum of: Max(|A[i] - B[j]|
+     * |B[j] - C[k]|, |C[k] - A[i]|)
+     *
+     * Start with the minimum elements as: A[0], B[0], C[0] and i,j,k = 0.
+     *
+     * Determine the min and max of A[i], B[j], C[k] on each loop iteration,
+     * only incrementing the index that contains the min of A[i], B[j], C[k]. If
+     * a |max - min| is found that is smaller than the current overall minium,
+     * record the current indices in the minimum indices; i.e. minimum elements
+     * = A[i], B[j], C[k] whenever a smaller |max - min| is found.
+     *
+     * @param a
+     * @param b
+     * @param c
+     * @return
+     */
     public static int sumClosestElements(List<Integer> a, List<Integer> b, List<Integer> c) {
         int minSoFar = Integer.MAX_VALUE;
         int i = 0, j = 0, k = 0;
@@ -519,6 +566,39 @@ public class math {
         return Integer.max(Math.abs(a - b), Integer.max(Math.abs(b - c), Math.abs(c - a)));
     }
 
+    /**
+     * Given a list of positive numbers [n0, n1, ... nN], where each ni
+     * represents a coordinate (i, Ni), return the maximum possible area made by
+     * any two of the numbers in the list.
+     *
+     * Works by assuming the largest possible container is with n0, nN and
+     * working from both ends of the list to seek larger possible container
+     * areas.
+     *
+     * @param a
+     * @return
+     */
+    public static int maxContainer(List<Integer> a) {
+        int N = a.size();
+        Container max = new Container(0, a.get(0), N - 1, a.get(N - 1));
+        int i = 0, j = N - 1;
+        while (i < j) {
+            if (a.get(i) > a.get(j)) {
+                j--;
+            } else {
+                i++;
+            }
+            Container next = new Container(i, a.get(i), j, a.get(j));
+            if (next.compareTo(max) > 0) {
+                max = next;
+            }
+        }
+        return max.area();
+    }
+
+    /**
+     * Utility class that represents a rectangle with given coordinates
+     */
     public static class Container implements Comparable<Container> {
 
         int x0, y0;
@@ -553,49 +633,33 @@ public class math {
 
     }
 
-    public static int maxContainer(List<Integer> a) {
-        int N = a.size();
-        Container max = new Container(0, a.get(0), N - 1, a.get(N - 1));
-        int i = 0, j = N - 1;
-        while (i < j) {
-            if (a.get(i) > a.get(j)) {
-                j--;
-            } else {
-                i++;
-            }
-            Container next = new Container(i, a.get(i), j, a.get(j));
-            if (next.compareTo(max) > 0) {
-                max = next;
-            }
-        }
-        return max.area();
-    }
-
-    private static boolean notDup(int l, List<Integer> a) {
-        return !(l > 0 && Objects.equals(a.get(l), a.get(l - 1)));
-    }
-
+    /**
+     * Remove duplicates from a sorted list by overwriting duplicate entries with
+     * the next non duplicate. Return the length of the list with all duplicates
+     * removed.
+     *
+     * @param a
+     * @return
+     */
     public static int remDups(List<Integer> a) {
         int l = 1;
-        int prev = a.get(0);
         for (int i = 1; i < a.size(); i++) {
-            int next = a.get(i);
-            a.set(l, next);
-            l += (next == prev ? 0 : 1);
-            prev = next;
+            a.set(l, a.get(i));
+            // Don't increment l if a[l] == previous element. 
+            // The duplicate will get overwritten by a[i]/
+            l = l + (Objects.equals(a.get(l), a.get(l - 1))? 0 : 1);
         }
         return l;
     }
 
     /**
      * Given a list N and an element that may be in that list 0 or more times,
-     * remove all occurrences of the element from the list.
-     * Return the logical size of the list after all occurrences have been 
-     * removed.
-     * 
+     * remove all occurrences of the element from the list. Return the logical
+     * size of the list after all occurrences have been removed.
+     *
      * @param N
      * @param el
-     * @return 
+     * @return
      */
     public int filterElement(List<Integer> N, int el) {
         int sz = 0;
@@ -609,12 +673,15 @@ public class math {
     }
 
     /**
-     * Given a sorted list of numbers and a target number, find if there are 
-     * two elements of the list i, j such that: a[i] - a[j] = target (i!=j)
-     * 
+     * Given a sorted list of numbers and a target number, find if there are two
+     * elements of the list i, j such that: a[i] - a[j] = target (i!=j)
+     *
+     * Proceeds by taking each element a[i], and then seeking, via binary
+     * search, for an element with value a[i] + target.
+     *
      * @param a
      * @param target
-     * @return 
+     * @return
      */
     public static int diffK(List<Integer> a, int target) {
         int N = a.size();
@@ -639,6 +706,15 @@ public class math {
         return 0;
     }
 
+    /**
+     * Given positive numbers n, k return an ordered list of the possible
+     * combinations of k numbers from the range [1,n], i.e. all the possible
+     * combinations of n choose k.
+     *
+     * @param n
+     * @param k
+     * @return
+     */
     public static List<List<Integer>> combinations(int n, int k) {
         List<List<Integer>> combs = new ArrayList<>();
         List<Integer> prefix = new ArrayList<>();
@@ -646,6 +722,19 @@ public class math {
         return combs;
     }
 
+    /**
+     * Maintain a prefix of the current possible combination. Works by
+     * successively adding the next possible number to the prefix, (an increment
+     * of the last number in the prefix, or 1 if the prefix is empty), and then
+     * either adding it to the current list of combinations, or, if there are
+     * still more numbers to add to the prefix, passing it on to the next (k -
+     * 1) level.
+     *
+     * @param combs
+     * @param prefix
+     * @param k
+     * @param n
+     */
     private static void buildCombinations(List<List<Integer>> combs, List<Integer> prefix, int k, int n) {
         int pN = prefix.size();
         if (k == 1) {
@@ -686,29 +775,34 @@ public class math {
         return subsets;
     }
 
-    private static List<List<Integer>> makeSubsets(List<Integer> prefix, int i, List<Integer> n, List<List<Integer>> ssets) {
+    private static List<List<Integer>> makeSubsets(List<Integer> prefix, int i,
+            List<Integer> n, List<List<Integer>> ssets) {
         if (i == n.size() - 1) {
+            ssets.add(new ArrayList<>(prefix)); // generate a set without N[i]
             List<Integer> withI = new ArrayList<>(prefix);
-            List<Integer> withoutI = new ArrayList<>(prefix);
             withI.add(n.get(i));
-            ssets.add(withoutI);
-            ssets.add(withI);
+            ssets.add(withI); // generate a set with N[i]
         } else {
-            prefix.add(n.get(i));
-            int ii = prefix.size() - 1;
+            prefix.add(n.get(i)); // include element N[i] in the prefix
             makeSubsets(prefix, i + 1, n, ssets);
-            prefix.remove(ii);
+            prefix.remove(prefix.size() - 1); // don't include element N[i] in the prefix
             makeSubsets(prefix, i + 1, n, ssets);
         }
         return ssets;
     }
 
-    public static List<Integer> grayCode(int a) {
-        int N = 1 << a;
+    /**
+     * Given a number of bits n, return a gray code sequence of length 2^n
+     * @param n
+     * @return 
+     */
+    public static List<Integer> grayCode(int n) {
+        int N = 1 << n;
         List<Integer> numbers = new ArrayList<>(N);
         List<BitSet> codes = new ArrayList<>(N);
         List<BitSet> tmp = new ArrayList<>();
-        makeGrayCodes(a, codes, tmp);
+        makeGrayCodes(n, codes, tmp);
+        // Convert each bit set to its corresponding integer.
         for (BitSet code : codes) {
             int nextNum = 0;
             for (int i = 0; i < 32; i++) {
@@ -721,6 +815,16 @@ public class math {
         return numbers;
     }
 
+    /**
+     * Use the following recurrence relation to generate a gray code sequence:
+     * Given a gray code sequence codes of length N, produce the next N codes
+     * by reversing the given codes and prepending a one bit to each code.
+     * 
+     * @param n number of bits; => sequence will be 2^n in length
+     * @param codes currently generated gray codes
+     * @param tmps for temporary processing, used in generating the second half of each sequence.
+     * 
+     */
     private static void makeGrayCodes(int n, List<BitSet> codes, List<BitSet> tmps) {
         if (n == 0) {
             BitSet zeroCode = new BitSet(n);
@@ -738,10 +842,31 @@ public class math {
         }
     }
 
+    /**
+     * Given a list of distinct numbers, return all possible permutations of 
+     * these numbers.
+     * 
+     * @param a
+     * @return 
+     */
     public static List<List<Integer>> permutations(List<Integer> a) {
         return buildPermutations(a, 0, new ArrayList<>());
     }
 
+    /**
+     * Build all possible permutations of the given list of numbers.
+     * 
+     * Works by ascending levels k from 0 to N - 1, and at each level swapping
+     * an element of the list and building the next permutation from this.
+     * 
+     * The element must be swapped back to enable subsequent permutation to be
+     * generated.
+     * 
+     * @param a
+     * @param k
+     * @param perms
+     * @return 
+     */
     private static List<List<Integer>> buildPermutations(List<Integer> a, int k, List<List<Integer>> perms) {
         if (k >= a.size()) {
             return perms;
@@ -757,17 +882,26 @@ public class math {
         return perms;
     }
 
-    public static List<List<Integer>> combinations(List<Integer> a, int b) {
+    /** 
+     * Given a list of numbers N and a target number, find all sub-lists of N
+     * such that each sub-list sums to the target. A number may be selected from
+     * N any number of times.
+     * 
+     * @param N
+     * @param target
+     * @return 
+     */
+    public static List<List<Integer>> combinations(List<Integer> N, int target) {
         List<List<Integer>> combos = new ArrayList<>();
-        if (a == null || a.isEmpty()) {
+        if (N == null || N.isEmpty()) {
             return combos;
         }
-        Collections.sort(a);
-        int nr = a.size() - remDups(a);
+        Collections.sort(N);
+        int nr = N.size() - remDups(N);
         for (int i = 0; i < nr; i++) {
-            a.remove(a.size() - 1);
+            N.remove(N.size() - 1);
         }
-        genCombos(combos, a, b, 0, new ArrayList<>());
+        genCombos(combos, N, target, 0, new ArrayList<>());
         return combos;
     }
 
@@ -786,12 +920,19 @@ public class math {
             prefix.remove(prefix.size() - 1);
         }
     }
-    
+
     // Return n/N as a percentage
     public static int asPercentage(int n, int N) {
         return (int) Math.round((100.0 * n) / N);
     }
-    
+
+    /**
+     * Given a list of N numbers, find the majority number.
+     * 
+     * A majority number is one that appears more than floor(N/2) times.
+     * @param a
+     * @return 
+     */
     public static int majority(List<Integer> a) {
         int occurrences = Math.floorDiv(a.size(), 2);
         Map<Integer, Integer> freqs = new HashMap<>();
@@ -807,7 +948,7 @@ public class math {
         }
         return -1;
     }
-    
+
     public static void pascalIt(int N) {
         List<Integer> curr = new ArrayList<>();
         List<Integer> prev = new ArrayList<>();
@@ -825,7 +966,7 @@ public class math {
             curr.clear();
         }
     }
-    
+
     public static void pascal(int N) {
         for (int i = 1; i <= N; i++) {
             for (int j = 1; j <= i; j++) {
@@ -848,13 +989,13 @@ public class math {
     }
     
     private static int pascalNum(int N, int j) {
-        if ( j== 1 || j == N) {
+        if (j == 1 || j == N) {
             return 1;
         }
         // naive recursion: memosizing required to reduce time to O(N*N)
         return pascalNum(N - 1, j - 1) + pascalNum(N - 1, j);
     }
-    
+
     public static int trailingZerosInFactorialOf(int N) {
         int numZeros = 0;
         int fiveMultiple = 5;
@@ -864,18 +1005,17 @@ public class math {
         }
         return numZeros;
     }
-    
+
     int getNext(int i, int j, List<Integer> p) {
         if (i - 1 == 0 || i >= p.size()) {
             return 1;
         }
         return p.get(i - 2) + p.get(i - 1);
     }
-    
-    
+
     public static int excel1(String a) {
         int sum = 0;
-        for (int i = a.length() - 1; i >=0; i--) {
+        for (int i = a.length() - 1; i >= 0; i--) {
             int n = (a.charAt(i) - 'A') + math.pow(26, a.length() - 1 - i);
             sum += n;
         }
@@ -885,22 +1025,21 @@ public class math {
     public static String excel2(int a) {
         StringBuilder sb = new StringBuilder();
         while (a > 0) {
-            sb.append((char)('A' + (a - 1) % 26));
-            a = (a - 1)/ 26;
+            sb.append((char) ('A' + (a - 1) % 26));
+            a = (a - 1) / 26;
         }
         return sb.reverse().toString();
     }
-    
+
     /**
      * Reverse the digits of the given number.
-     * 
-     * revint(123) = 321
-     * revint(-123) = -321
-     * 
+     *
+     * revint(123) = 321 revint(-123) = -321
+     *
      * return 0 if revint(n) > Integer.MAX_VALUE
-     * 
+     *
      * @param a
-     * @return 
+     * @return
      */
     public static int revint(int a) {
         Stack<Integer> digits = new Stack<>();
@@ -911,7 +1050,7 @@ public class math {
         int rev = 0;
         while (!digits.isEmpty()) {
             int nextDigit = digits.pop();
-            if (((long)(nextDigit) * tenMultiple) + rev > Integer.MAX_VALUE) {
+            if (((long) (nextDigit) * tenMultiple) + rev > Integer.MAX_VALUE) {
                 return 0;
             }
             rev = rev + nextDigit * tenMultiple;
@@ -919,7 +1058,7 @@ public class math {
         }
         return (a < 0 ? -rev : rev);
     }
-    
+
     public static ArrayList<Integer> plus1(ArrayList<Integer> a) {
         int lsb = a.size() - 1;
         int msb = 0;
@@ -953,7 +1092,7 @@ public class math {
         }
         return aPlus1;
     }
-    
+
     public static int positive(List<Integer> a) {
         int j = 0;
         int N = a.size();
@@ -1007,8 +1146,9 @@ public class math {
         dupMissing.add(missing);
         return dupMissing;
     }
-    
+
     static class Node {
+
         int val;
         Node next;
 
@@ -1016,9 +1156,9 @@ public class math {
             this.val = val;
             this.next = next;
         }
-        
+
     }
-    
+
     private void remDups(Node list) {
         Node current = list;
         while (current != null) {
@@ -1035,5 +1175,5 @@ public class math {
             }
         }
     }
-    
+
 }

@@ -130,6 +130,14 @@ public class mathTest {
         int x = math.remDups(test);
         assert x == 2;
 
+        test = makeList(a1);
+        x = math.remDups(test);
+        assert x == 4;
+
+        test = makeList(a3);
+        x = math.remDups(test);
+        assert x == 14;
+
         test = makeList(a3);
         assert math.diffK(test, 1) == 1;
 
