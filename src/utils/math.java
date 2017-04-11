@@ -1147,7 +1147,7 @@ public class math {
         return dupMissing;
     }
 
-    static class Node {
+    public static class Node {
 
         int val;
         Node next;
@@ -1176,4 +1176,63 @@ public class math {
         }
     }
 
+    public static void partitionL(Node list, int x) {
+        int i = 0;
+        int iB = -1;
+        Node l = list;
+        Node p = list;
+        Node lB = null, pB = null;
+        while (l != null) {
+            if (l.val >= x && iB == -1) {
+                lB = l;
+                pB = p;
+                iB = i;
+                p = l;
+                l = l.next;
+            } else {
+                if (l.val < x && iB > -1 && i > iB) {
+                    Node tmp = l;
+                    p.next = l.next;
+                    l = l.next;
+                    if (pB == null) {
+                        pB = tmp;
+                        tmp.next = lB;
+                    } else {
+                        pB.next = tmp;
+                        tmp.next = lB;
+                        pB = tmp;
+                    }
+                } else {
+                    p = l;
+                    l = l.next;
+                }
+            }
+            i++;
+        }
+    }
+    
+    public static Node nthEnd(Node list, int n) {
+        int N = 0;
+        for (Node l = list; l != null; l = l.next) {
+            N++;
+        }
+        if (n > N || n == 1) {
+            Node r = list;
+            list = r.next;
+            r.next = null;
+        } else {
+            int np = 0;
+            Node p = list;
+            Node l = list;
+            while (np != N - n) {
+                np++;
+                p = l;
+                l = l.next;
+            }
+            Node r = p.next;
+            p.next = r.next;
+            r.next = null;   
+        }
+        return list;
+    }
 }

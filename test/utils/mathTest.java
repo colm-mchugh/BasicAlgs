@@ -298,4 +298,27 @@ public class mathTest {
         assert math.positive(makeList(a5)) == 4;
         assert math.positive(makeList(a6)) == 2;
     }
+    
+    @Test
+    public void testPartition() {
+        math.Node l = new math.Node(1, new math.Node(7, new math.Node(4, new math.Node(3, new math.Node(2, new math.Node(9, new math.Node(11, new math.Node(2, null))))))));
+        math.partitionL(l, 3);
+        for (math.Node t = l; t != null; t = t.next) {
+            System.out.println(t.val);
+        }
+        l = new math.Node(1, new math.Node(4, new math.Node(3, new math.Node(2, new math.Node(5, new math.Node(2, null))))));
+        math.partitionL(l, 3);
+        for (math.Node t = l; t != null; t = t.next) {
+            System.out.println(t.val);
+        }
+    }
+    
+    @Test
+    public void testNthEnd() {
+        math.Node l = new math.Node(1, new math.Node(2, new math.Node(3, new math.Node(4, new math.Node(5, new math.Node(6, null))))));
+        l = math.nthEnd(l, 1);
+        for (math.Node t = l; t != null; t = t.next) {
+            System.out.println(t.val);
+        }
+    }
 }
