@@ -58,9 +58,9 @@ public class NSatSimple {
                 return false;
             }
         }
-        // The formula cannot yet be determined satisfiable or not.
-        // Take the next unassigned variable, and evaluate the formula 
-        // with the variable alternately set to false and true 
+        // The formula cannot be determined satisfiable or not.
+        // Take the next unassigned variable, evaluate the formula 
+        // with that variable set to false, and true 
         int x = varQueue.get(i);// next unassigned variable
         if (SatSolve(applyVariable(formula, x, false), i + 1)) {
             return true;

@@ -576,12 +576,13 @@ public class math {
     }
 
     public static int remDups(List<Integer> a) {
-        int l = 0;
-        for (int i = 0; i < a.size(); i++) {
-            a.set(l, a.get(i));
-            if (notDup(l, a)) {
-                l++;
-            }
+        int l = 1;
+        int prev = a.get(0);
+        for (int i = 1; i < a.size(); i++) {
+            int next = a.get(i);
+            a.set(l, next);
+            l += (next == prev ? 0 : 1);
+            prev = next;
         }
         return l;
     }
@@ -810,7 +811,7 @@ public class math {
     public static void pascalIt(int N) {
         List<Integer> curr = new ArrayList<>();
         List<Integer> prev = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i <= N; i++) {
             for (int j = 0; j <= i; j++) {
                 if (j == 0 || j == i) {
                     curr.add(1);
@@ -832,6 +833,18 @@ public class math {
             }
             System.out.println();
         }
+    }
+    
+    public static List<Integer> pascalK(int k) {
+        List<Integer> kthRow = new ArrayList<>();
+        for (int i = 1; i <= k; i++) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print(pascalNum(i, j));
+            }
+            System.out.println();
+        }
+        
+        return kthRow;
     }
     
     private static int pascalNum(int N, int j) {
@@ -942,40 +955,57 @@ public class math {
     }
     
     public static int positive(List<Integer> a) {
-        int sum = 0;
-        int num = 0;
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        for (int i = 0; i < a.size(); i++) {
-            int n = a.get(i);
-            if (n > 0) {
-                num++;
-                sum += n;
-                if (n < min) {
-                    min = n;
-                }
-                if (n > max) {
-                    max = n;
-                }
+        int j = 0;
+        int N = a.size();
+        for (int i = 0; i < N; i++) {
+            if (a.get(i) <= 0) {
+                int tmp = a.get(i);
+                a.set(i, a.get(j));
+                a.set(j, tmp);
+                j++;
             }
         }
-        if (num >= 2) {
-            if (min != 1) {
-                return 1;
-            }
-            int numSum = (max + 1)*max/2;
-            if (numSum == sum) {
-                return max + 1;
-            } else {
-                return numSum - sum;
+        if (j == N) {
+            return 1;
+        }
+        List<Integer> positives = a.subList(j, N);
+        int pN = positives.size();
+         for (int i = 0; i < pN; i++) {
+            int next = Math.abs(positives.get(i)) - 1;
+            if (next < pN && positives.get(next) > 0) {
+                positives.set(next, -positives.get(next));
             }
         }
-        if (num == 1) {
-            if (min == 1) {
-                return min + 1;
+        for (int i = 0; i < pN; i++) {
+            if (positives.get(i) > 0) {
+                return i + 1;
             }
         }
-        return 1;
+        return N + (j == 0? 1 : 0);
+    }
+    
+    
+    public static  List<Integer> repeatedNumber(final List<Integer> a)  {
+        int dup = -1;
+        int missing = -1;
+        int N = a.size();
+        Set<Integer> s = new HashSet<>(N);
+        for (int x : a) {
+            if (s.contains(x)) {
+                dup = x;
+            }
+            s.add(x);
+        }
+        for (int i = 1; i <= N; i++) {
+            if (!s.contains(i)) {
+                missing = i;
+                break;
+            }
+        }
+        List<Integer> dupMissing = new ArrayList<>(2);
+        dupMissing.add(dup);
+        dupMissing.add(missing);
+        return dupMissing;
     }
     
     static class Node {

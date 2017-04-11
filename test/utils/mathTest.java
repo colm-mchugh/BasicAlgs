@@ -254,14 +254,40 @@ public class mathTest {
     }
     
     @Test
+    public void testRepeatedNumber() {
+        int[] a = {3,1,2,5,3};
+        int dup = -1;
+        for (int i = 0; i < a.length; i++) {
+            int j = Math.abs(a[i]) - 1;
+            if (a[j] > 0) {
+                a[j] = -a[j];
+            } else {
+                dup = Math.abs(a[j]);
+                break;
+            }
+            
+        }
+        System.out.println(math.pascalK(3));
+        
+        math.pascalIt(3);
+    }
+    
+    @Test
     public void testPositive() {
+        int[] a0 = {1,};
         int[] a1 = {1,2,0};
         int[] a2 = {3,4,-1,1};
         int[] a3 = {-8,-7,-6};
+        int[] a4 = {2, 3, 7, 6, 8, -1, -10, 15};
+        int[] a5 = { 2, 3, -7, 6, 8, 1, -10, 15 };
+        int[] a6 = {1, 1, 0, -1, -2};
         
         assert math.positive(makeList(a1)) == 3;
+        assert math.positive(makeList(a0)) == 2;
         assert math.positive(makeList(a2)) == 2;
         assert math.positive(makeList(a3)) == 1;
-        
+        assert math.positive(makeList(a4)) == 1;
+        assert math.positive(makeList(a5)) == 4;
+        assert math.positive(makeList(a6)) == 2;
     }
 }
