@@ -1235,4 +1235,39 @@ public class math {
         }
         return list;
     }
+    
+    public static List<String> toIPStrings(String s) {
+        return genIps(s, 3);
+    }
+    
+    private static List<String> genIps(String s, int dots) {
+        List<String> ipAddrs = new ArrayList<>();
+        if (s == null || s.length() == 0) {
+            return ipAddrs;
+        }
+        if ((dots == 0) && isValidIPOctet(s)) {
+            ipAddrs.add(s);
+        }
+        if (dots > 0) {
+            for (int l = 1; l <= Integer.min(3, s.length()); l++) {
+                String N = s.substring(0, l);
+                if (isValidIPOctet(N)) {
+                    for (String suffix : genIps(s.substring(l), dots - 1)) {
+                        ipAddrs.add(N + "." + suffix);
+                    }
+                }
+            }
+        }
+        return ipAddrs;
+    }
+    
+    private static boolean isValidIPOctet(String s) {
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        if (s.charAt(0) == '0' && s.length() != 1) {
+            return false;
+        }
+        return Integer.parseInt(s) < 256;
+    }
 }

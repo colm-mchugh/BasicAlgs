@@ -321,4 +321,12 @@ public class mathTest {
             System.out.println(t.val);
         }
     }
+    
+    @Test
+    public void testIPs() {
+        List<String> ips = math.toIPStrings("127001");
+        for (String ip : ips) {
+            System.out.println(ip);
+        }
+    }
 }
