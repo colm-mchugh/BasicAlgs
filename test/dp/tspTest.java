@@ -57,6 +57,7 @@ public class tspTest {
         df.setRoundingMode(RoundingMode.CEILING);
         String foo = df.format(ans);
         assert foo.equals("7.89");
+        assert t.computeTsp() == ans;
     }
     
     @Test
