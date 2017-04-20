@@ -22,7 +22,7 @@ public class TSPer {
     private final int originSetOpt = 1;
     private List<Integer> shortestPath;
     private boolean pruneIntermediateSets;
-    
+
     TSPer(Float[] data, boolean pruneIntermediateSets) {
         this.N = data.length / 2;
         this.points = new HashMap<>(N);
@@ -65,7 +65,7 @@ public class TSPer {
         this.pruneIntermediateSets = prune;
         originSet.set(origin);
     }
-    
+
     private float calcDistance(Point from, Point to) {
         float d1 = from.xCoord - to.xCoord;
         float d2 = from.yCoord - to.yCoord;
@@ -176,14 +176,18 @@ public class TSPer {
                     nextSet = this.addEl(nextSet, element);
                 }
             }
-            Map<Short, Float> nextDistance = new HashMap<>();
-            if (nextSet == (originSetOpt)) {
-                nextDistance.put(origin, 0f);
-            } else {
-                nextDistance.put(origin, Float.MAX_VALUE);
+            if (!rv.containsKey(nextSet)) {
+                Map<Short, Float> nextDistance = new HashMap<>();
+                if (nextSet == (originSetOpt)) {
+                    nextDistance.put(origin, 0f);
+                } else {
+                    nextDistance.put(origin, Float.MAX_VALUE);
+                }
+                rv.put(nextSet, nextDistance);
             }
-            rv.put(nextSet, nextDistance);
-            s.add(nextSet);
+            if (!s.contains(nextSet)) {
+                s.add(nextSet);
+            }
         }
         return s;
     }
@@ -234,14 +238,18 @@ public class TSPer {
                     nextSet.set(element);
                 }
             }
-            Map<Short, Float> nextDistance = new HashMap<>();
-            if (nextSet.equals(originSet)) {
-                nextDistance.put(origin, 0f);
-            } else {
-                nextDistance.put(origin, Float.MAX_VALUE);
+            if (!rv.containsKey(nextSet)) {
+                Map<Short, Float> nextDistance = new HashMap<>();
+                if (nextSet.equals(originSet)) {
+                    nextDistance.put(origin, 0f);
+                } else {
+                    nextDistance.put(origin, Float.MAX_VALUE);
+                }
+                rv.put(nextSet, nextDistance);
             }
-            rv.put(nextSet, nextDistance);
-            s.add(nextSet);
+            if (!s.contains(nextSet)) {
+                s.add(nextSet);
+            }
         }
         return s;
     }
@@ -258,6 +266,31 @@ public class TSPer {
         }
     }
 
+    /**
+     * A TSP path is a path that starts from an origin and visits every other
+     * node exactly once, returning to the origin at the finish. This function
+     * calculates the shortest such path using the following algorithm:
+     * 
+     * Given each possible destination j in { origin, 1, 2, ..., N - 1 }
+     * For each possible subset S of { origin, 1, 2, ..., N - 1 } that contains 
+     * the origin and j, calculate the minimum path from the origin to j that
+     * visits only the nodes in S exactly once each. (note: |S| >= 2)
+     * 
+     * In any set S, if the last hop of the shortest path is (k, j) then the
+     * shortest path - (k, j) is a shortest path from 1 to k that visits every
+     * node of S - {j} exactly once. 
+     * I.e. SP(S,j) = MIN( SP(S-{j},k) + (k,j) ) for all k in S, k != j
+     * 
+     * The algorithm starts with |S| = 2, i.e. where each S contains the origin and
+     * every other node, and calculates the minimum path for each possible S.
+     * Subsequent iterations (|S| = 2, 3, ... N) use the recurrence above to 
+     * determine the minimum path from the origin to each node in S.
+     * 
+     * Finally, at the end, we need to calculate the minimum path back to the
+     * origin by determining MIN( SP({origin, 1, 2, ..., N - 1}, j) + (k, origin)) for all j in 1..N -1
+     * 
+     * @return 
+     */
     public float computeTsp() {
         Map<BitSet, Map<Short, Float>> A = new HashMap<>();
         BitSet finalSet = null;
@@ -313,10 +346,10 @@ public class TSPer {
     private List<Integer> constructPath(BitSet finalSet, Map<BitSet, Map<Short, Float>> A) {
         BitSet currSet = finalSet;
         this.shortestPath = new ArrayList<>(N);
-        
+
         Short j = origin;
         Short nextHop = -1;
-        List<Short> remainingPoints = new ArrayList<>(N-1);
+        List<Short> remainingPoints = new ArrayList<>(N - 1);
         for (Short i = 1; i < this.N; i++) {
             remainingPoints.add(i);
         }
@@ -331,7 +364,7 @@ public class TSPer {
             }
             currSet.clear(nextHop);
             remainingPoints.remove(nextHop);
-            shortestPath.add((int)nextHop + 1);
+            shortestPath.add((int) nextHop + 1);
             j = nextHop;
         }
         shortestPath.add(origin + 1);
@@ -371,7 +404,7 @@ public class TSPer {
                 }
             }
             if (pruneIntermediateSets) {
-                this.removeOptSets(A, m - 2); 
+                this.removeOptSets(A, m - 2);
             }
             long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
             System.out.println("Finished iteration " + m + " of " + N + "(" + elapsedTime + " seconds)");
@@ -395,7 +428,7 @@ public class TSPer {
         this.shortestPath = new ArrayList<>(N);
         Short j = origin;
         Short nextHop = -1;
-        List<Short> remainingPoints = new ArrayList<>(N-1);
+        List<Short> remainingPoints = new ArrayList<>(N - 1);
         for (Short i = 1; i < this.N; i++) {
             remainingPoints.add(i);
         }
@@ -410,13 +443,13 @@ public class TSPer {
             }
             currSet = this.remEl(currSet, nextHop);
             remainingPoints.remove(nextHop);
-            shortestPath.add((int)nextHop + 1);
+            shortestPath.add((int) nextHop + 1);
             j = nextHop;
         }
         shortestPath.add(origin + 1);
         return reverse(shortestPath);
     }
-    
+
     private List<Integer> reverse(List<Integer> l) {
         for (int i = 0, j = l.size() - 1; i < j; i++, j--) {
             Integer tmp = l.get(i);
@@ -429,5 +462,5 @@ public class TSPer {
     public List<Integer> getShortestPath() {
         return shortestPath;
     }
-    
+
 }
