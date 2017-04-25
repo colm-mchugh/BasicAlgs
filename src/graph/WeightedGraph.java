@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Weighted Graph API
+ * Weighted Graph API <br>
  * 
  * A Weighted Graph is a graph where each edge has a weight. 
  */ 

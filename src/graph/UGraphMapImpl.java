@@ -3,7 +3,6 @@ package graph;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import utils.RandGen;
@@ -23,11 +22,9 @@ public class UGraphMapImpl<T> implements Graph<T> {
     final protected Map<T, Set<T>> rep;
     // constant for representing the empty set
     final private Set<T> emptySet = new HashSet<>();
-    final private Map<T, Set<T>> fusions;
-
+    
     public UGraphMapImpl() {
         rep = new HashMap<>();
-        fusions = new HashMap<>();
     }
 
     @Override
@@ -84,12 +81,14 @@ public class UGraphMapImpl<T> implements Graph<T> {
         // into a single vertex, removing self-loops and edge(s) between them.
         // The edges of the fused vertex are the union of the randomly two vertices edges.
         Map<T, Set<T>> clone = this.cloneRep(); // Use a copy of the graph - don't mutate self
+        Map<T, Set<T>> fusions = new HashMap<>();
+
         while (clone.keySet().size() > 2) {
             T v1 = this.chooseRandom(clone.keySet());
             T v2 = this.chooseRandom(clone.get(v1));
             // note that if (v1, v2) happens to be a crossing edge of the graph's minimum cut,
             // then the cut created by this invocation cannot be a minimum cut.
-            this.fuse(v1, v2, clone);
+            this.fuse(v1, v2, clone, fusions);
         }
         // Done fusing, now put the vertices on either side of the cut into sets
         Set<T> setA = new HashSet<>();
@@ -102,7 +101,7 @@ public class UGraphMapImpl<T> implements Graph<T> {
                 tmp = setB;
             }
             tmp.add(v);
-            if (this.fusions.containsKey(v)) {
+            if (fusions.containsKey(v)) {
                 tmp.addAll(fusions.get(v));
                 fusions.remove(v);
             }
@@ -146,7 +145,7 @@ public class UGraphMapImpl<T> implements Graph<T> {
      * @param v
      * @param clone 
      */
-    private void fuse(T u, T v, Map<T, Set<T>> clone) {
+    private void fuse(T u, T v, Map<T, Set<T>> clone, Map<T, Set<T>> fusions) {
         Set<T> uSet = clone.get(u);
         Set<T> vSet = clone.get(v);
         T merger = u; 
