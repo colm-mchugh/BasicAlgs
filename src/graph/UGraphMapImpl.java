@@ -1,5 +1,7 @@
 package graph;
 
+import heap.Heap;
+import heap.MaxHeap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -206,22 +208,100 @@ public class UGraphMapImpl<T> implements Graph<T> {
         }
     }
 
+        
+        
+    /**
+     * Return a vertex cover of the graph using the approximation algorithm
+     * based on the heuristic of selecting independent (non touching) edges
+     * to add to the vertex cover, from Algorithms by Papadimitriou et al.
+     * 
+     * Edges = all edges E(u,v) of the graph
+     * Vertex Cover = {}
+     * while (Edges are not empty)
+     *      Select an edge E at random from Edges
+     *      Add E.u, E.v to the Vertex Cover.
+     *      From Edges, remove all edges touched by E
+     *      i.e. All edges E where E.u in {u, v} or E.v in {u, v}
+     * 
+     * Return Vertex Cover
+     * 
+     * Note: a MaxHeap is used to keep the edges, with priority based on biggest
+     * degree. This makes the algorithm O(E*log(E)). Using a set for the edges 
+     * will reduce to O(E). 
+     * 
+     * @return 
+     */
     @Override
     public Set<T> vertexCover() {
-        throw new UnsupportedOperationException("Not supported yet."); 
         // TODO: Add support for accessing the edges of the graph randomly.
         //       Also: given a vertex, access its inbound and outbound edges.
         // Given this, the following algorithm can be used to implement 
         // approximate vertex cover in O(E), where E is the number of edges.
         //
-        // Edges = all edges E(u,v) of the graph
-        // Vertex Cover = {}
-        // while (Edges are not empty)
-        //      Select an edge E at random from Edges
-        //      Add E.u, E.v to the Vertex Cover.
-        //      From Edges, remove all edges touched by E
-        //      i.e. All edges Er where Er.u = E.u or Er.v = E.u or Er.u = E.v or Er.v = E.v
-        // Return Vertex Cover
+        Heap<Edge<T>> edges = new MaxHeap<>();
+        Map<T, Set<Edge<T>>> edgeIdx = new HashMap<>();
+        for (T u : rep.keySet()) {
+            for (T v : rep.get(u)) {
+                Edge<T> e = new Edge<>(u, v, rep.get(u).size() + rep.get(v).size());
+                addEdgeEndpoint(u, e, edgeIdx);
+                addEdgeEndpoint(v, e, edgeIdx);
+                edges.Insert(e);
+            }
+        }
+        Set<T> vertexCover = new HashSet<>(this.numVertices()/2);
+        while (!edges.isEmpty()) {
+            Edge<T> e = edges.Delete();
+            vertexCover.add(e.u);
+            vertexCover.add(e.v);
+            removeEdgeEndpoint(e.u, edgeIdx, edges);
+            removeEdgeEndpoint(e.v, edgeIdx, edges);
+        }
+        return vertexCover;
+    }
+    
+    private void addEdgeEndpoint(T u, Edge<T> e, Map<T, Set<Edge<T>>> edgeIdx) {
+        if (!edgeIdx.containsKey(u)) {
+            edgeIdx.put(u, new HashSet<>());
+        }
+        Set<Edge<T>> itsEdges = edgeIdx.get(u);
+        itsEdges.add(e);
+    }
+
+    private void removeEdgeEndpoint(T u, Map<T, Set<Edge<T>>> edgeIdx, Heap<Edge<T>> edges) {
+        for (Edge<T> d : edgeIdx.get(u)) {
+            if (edges.Contains(d)) {
+                edges.DeleteSpecificKey(d);
+            }
+        }
+        edgeIdx.remove(u);
+    }
+    
+    /**
+     * Data structure for helping with vertex cover calculation.
+     * @param <T> 
+     */
+    private static class Edge<T> implements Comparable<Edge<T>> {
+        int degree;
+        T u;
+        T v;
+
+        public Edge(T u, T v, int degree) {
+            this.degree = degree;
+            this.u = u;
+            this.v = v;
+        }
+        
+        @Override
+        public int compareTo(Edge<T> o) {
+            if (this.degree > o.degree) {
+                return 1;
+            }
+            if (this.degree == o.degree) {
+                return 0;
+            }
+            return -1;
+        }
+        
     }
     
         

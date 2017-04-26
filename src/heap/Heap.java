@@ -76,6 +76,16 @@ public abstract class Heap<Key extends Comparable<Key>> {
     }
 
     /**
+     * Say whether or not a given key is in the heap.
+     *
+     * @param k
+     * @return item with highest priority
+     */
+    public Boolean Contains(Key k) {
+        return this.itemIndex.containsKey(k);
+    }
+    
+    /**
      * Gives the number of items in the heap
      *
      * @return
@@ -158,5 +168,9 @@ public abstract class Heap<Key extends Comparable<Key>> {
         Key[] newItems = (Key[]) new Comparable[capacity];
         System.arraycopy(this.items, 0, newItems, 0, N);
         this.items = newItems;
+    }
+
+    public boolean isEmpty() {
+        return this.N == 0;
     }
 }
