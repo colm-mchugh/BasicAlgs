@@ -45,10 +45,10 @@ public class math {
     /**
      * Given a number, return 1 if it is colorful, 0 otherwise.
      *
-     * A number is colorful if all the contiguous subsequences of it's digits
-     * produce a different product. If a number has N digits, then it has SUM(N)
-     * - 1 subsequences, from 1 digit length to N - 1 digit length. If all of
-     * them yield a different product, the number is colorful.
+     * A number is colorful if all contiguous subsequences of it's digits
+     * produce a different product. If a number has N digits, then it has 
+     * SUM(N) - 1 subsequences, from 1 digits in length to N - 1 digits. 
+     * If they all yield a different product, the number is colorful.
      *
      * @param a
      * @return
@@ -122,10 +122,12 @@ public class math {
     }
 
     /**
-     * Return the greatest common divisor of two numbers. Uses Euclid's
-     * algorithm: successively reduce the bigger by the smaller until one of: at
-     * least one of them is zero; they're both the same; the smaller wholly
-     * divides the bigger.
+     * Return the greatest common divisor of two numbers. 
+     * Uses Euclid's algorithm: 
+     * Successively reduce the bigger number by the smaller one until one of: 
+     *      - at least one of them is zero
+     *      - they're both the same
+     *      - the smaller wholly divides the bigger
      *
      * @param a
      * @param b
@@ -150,9 +152,10 @@ public class math {
     }
 
     /**
-     * Return all prime numbers less than the given number. Uses Erathothenes
-     * algorithm: create a list of all numbers up to and including the number,
-     * then, for each prime p, remove all its multiples.
+     * Return all prime numbers less than the given number. 
+     * Uses Erathothenes algorithm: 
+     * Create a list of all numbers up to and including the number.
+     * Then, for each prime p, remove all its multiples from the list.
      *
      * @param n
      * @return
@@ -175,8 +178,8 @@ public class math {
 
     /**
      * Return true if the given number can be expressed as an exponent x^y.
-     * Proceed by brute force: for each possible exponent y in 2..sqrt(N), check
-     * if N can be successively divided by y without any remainders.
+     * Proceed by brute force: for each y in 2..sqrt(N), 
+     * check if N can be successively divided by y without any remainders.
      *
      * @param n
      * @return
@@ -387,7 +390,7 @@ public class math {
     }
 
     /**
-     * Given a list of numbers and a number n, return the range {s,t} of that
+     * Given a list of numbers and a number n, return the index range [s,t] of that
      * number in the list, where s is the index of the first occurrence of n and
      * t is the index of the last occurrence of n. If s and t are -1, n is not
      * in the list.
@@ -408,10 +411,13 @@ public class math {
     }
 
     /**
-     * Locate the number n in numbers using binary search. The flag 'lowEnd'
-     * means locate the first occurrence of n; if false, the index returned is
-     * that of the last occurrence of n. In the case where n appears exactly
-     * once in numbers, lowEnd and !lowEnd will return the same index.
+     * Locate the number n in numbers using binary search. 
+     * 
+     * The flag 'lowEnd' means locate the first occurrence of n; if false, 
+     * the index returned is that of the last occurrence of n. 
+     * 
+     * In the case where n appears exactly once in numbers, lowEnd and !lowEnd 
+     * will return the same index.
      *
      * @param numbers
      * @param n
@@ -464,12 +470,16 @@ public class math {
 
     /**
      * Determine the maximum possible sum that can be made from the segment
-     * [start,end] of the coins array. The recurrence relation is as follows:
-     * Empty coins => 0 One coin => that coin value Otherwise, determine the
-     * maximum of taking from the start or end of the coins. Both (start, end),
-     * need to include the minimum of their next choice, assuming that their
-     * opponent will choose the next best possible coin. Record the maximum in
-     * the memo.
+     * [start,end] of the coins array. 
+     * 
+     * The recurrence relation is as follows:
+     *      Empty coins => 0 
+     *      One coin => that coin value 
+     *      Otherwise, determine the maximum of taking from the start or end of the coins. 
+     * 
+     * Both (start, end), need to include the minimum of their next choice, 
+     * assuming that their opponent will choose the next best possible coin. 
+     * Record the maximum in the memo.
      *
      * @param coins list of numbers
      * @param start start index
@@ -518,16 +528,17 @@ public class math {
     }
 
     /**
-     * Given 3 sorted arrays A, B, C, return the minimum of: Max(|A[i] - B[j]|
-     * |B[j] - C[k]|, |C[k] - A[i]|)
+     * Given 3 sorted arrays A, B, C, return the minimum of: 
+     * Max(|A[i] - B[j]|, |B[j] - C[k]|, |C[k] - A[i]|)
      *
      * Start with the minimum elements as: A[0], B[0], C[0] and i,j,k = 0.
      *
      * Determine the min and max of A[i], B[j], C[k] on each loop iteration,
-     * only incrementing the index that contains the min of A[i], B[j], C[k]. If
-     * a |max - min| is found that is smaller than the current overall minium,
-     * record the current indices in the minimum indices; i.e. minimum elements
-     * = A[i], B[j], C[k] whenever a smaller |max - min| is found.
+     * only incrementing the index that contains the min of A[i], B[j], C[k]. 
+     * 
+     * If a |max - min| is found that is smaller than the current minimum, 
+     * record the current indices in the minimum indices; 
+     * i.e. minimum elements = A[i], B[j], C[k] whenever a smaller |max - min| is found.
      *
      * @param a
      * @param b

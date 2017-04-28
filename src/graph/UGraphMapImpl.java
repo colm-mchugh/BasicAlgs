@@ -233,11 +233,6 @@ public class UGraphMapImpl<T> implements Graph<T> {
      */
     @Override
     public Set<T> vertexCover() {
-        // TODO: Add support for accessing the edges of the graph randomly.
-        //       Also: given a vertex, access its inbound and outbound edges.
-        // Given this, the following algorithm can be used to implement 
-        // approximate vertex cover in O(E), where E is the number of edges.
-        //
         Heap<Edge<T>> edges = new MaxHeap<>();
         Map<T, Set<Edge<T>>> edgeIdx = new HashMap<>();
         for (T u : rep.keySet()) {

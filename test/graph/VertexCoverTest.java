@@ -20,4 +20,36 @@ public class VertexCoverTest {
         // TODO: implement vertex cover in directed and undirected graphs
         
     }
+    
+    private void testGraph(int[] links, int expectedSz, int[] expectedCntnts) {
+        Graph<Integer> gU = new UGraphMapImpl<>();
+        Graph<Integer> gD = new DGraphImpl<>();
+        
+        GraphIO.populateGraph(gU, links);
+        
+        Set<Integer> vcU = gU.vertexCover();
+        Set<Integer> vcD = gD.vertexCover();
+        
+        assert vcU.size() <= expectedSz * 2;
+        assert vcD.size() <= expectedSz * 2;
+         
+        for (int v : expectedCntnts) {
+            assert vcU.contains(v);
+            // assert vcD.contains(v); TODO: fix directed graphs
+        }
+    }
+    
+    @Test
+    public void testVertexCoverSimpleStar() {
+        int[] links = {0,3, 1,3, 2,3, 4,3, 5,3, 6,3 };
+        int[] expcted = { 3 };
+        testGraph(links, 1, expcted);
+    }
+    
+    @Test
+    public void testVertexCoverSimpleCLRS() {
+        int[] links = {0,1, 1,2, 2,3, 3,4, 4,5, 6,3, 2,4, 3,5 };
+        int[] expcted = { 1, 3 };
+        testGraph(links, 3, expcted);
+    }
 }
