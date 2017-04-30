@@ -2,7 +2,6 @@ package graph;
 
 import java.util.Set;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class VertexCoverTest {
     
@@ -15,10 +14,7 @@ public class VertexCoverTest {
         GraphIO.populateGraph(gU, links);
         
         Set<Integer> vcU = gU.vertexCover();
-        Set<Integer> vcD = gD.vertexCover();
-        
-        // TODO: implement vertex cover in directed and undirected graphs
-        
+        Set<Integer> vcD = gD.vertexCover();     
     }
     
     private void testGraph(int[] links, int expectedSz, int[] expectedCntnts) {
@@ -26,6 +22,7 @@ public class VertexCoverTest {
         Graph<Integer> gD = new DGraphImpl<>();
         
         GraphIO.populateGraph(gU, links);
+        GraphIO.populateGraph(gD, links);
         
         Set<Integer> vcU = gU.vertexCover();
         Set<Integer> vcD = gD.vertexCover();
@@ -35,7 +32,7 @@ public class VertexCoverTest {
          
         for (int v : expectedCntnts) {
             assert vcU.contains(v);
-            // assert vcD.contains(v); TODO: fix directed graphs
+            assert vcD.contains(v); 
         }
     }
     
