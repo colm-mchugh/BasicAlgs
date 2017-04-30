@@ -233,6 +233,10 @@ public class UGraphMapImpl<T> implements Graph<T> {
      */
     @Override
     public Set<T> vertexCover() {
+        return setVertexCover();
+    }
+    
+    private Set<T> pqVertexCover() {
         Heap<Edge<T>> edges = new MaxHeap<>();
         Map<T, Set<Edge<T>>> edgeIdx = new HashMap<>();
         for (T u : rep.keySet()) {
@@ -250,6 +254,32 @@ public class UGraphMapImpl<T> implements Graph<T> {
             vertexCover.add(e.v);
             removeEdgeEndpoint(e.u, edgeIdx, edges);
             removeEdgeEndpoint(e.v, edgeIdx, edges);
+        }
+        return vertexCover;
+    }
+    
+    private Set<T> setVertexCover() {
+        Set<Edge<T>> edges = new HashSet<>();
+        Map<T, Set<Edge<T>>> edgeIdx = new HashMap<>();
+        for (T u : rep.keySet()) {
+            for (T v : rep.get(u)) {
+                Edge<T> e = new Edge<>(u, v, rep.get(u).size() + rep.get(v).size());
+                addEdgeEndpoint(u, e, edgeIdx);
+                addEdgeEndpoint(v, e, edgeIdx);
+                edges.add(e);
+            }
+        }
+        Set<T> vertexCover = new HashSet<>(this.numVertices()/2);
+        while (!edges.isEmpty()) {
+            Edge<T> e = edges.iterator().next();
+            vertexCover.add(e.u);
+            vertexCover.add(e.v);
+            for (Edge<T> eu : edgeIdx.get(e.u)) {
+                edges.remove(eu);
+            }
+            for (Edge<T> ev : edgeIdx.get(e.v)) {
+                edges.remove(ev);
+            }
         }
         return vertexCover;
     }

@@ -29,7 +29,7 @@ public interface Graph<T> {
      * @return an iterable over all the vertices that from has edges with.
      *
      * If the graph does not contain a vertex 'from', or if it does and 'from
-     * has zero edges, then connections returns an empty iterable.
+     * has zero edges, then connections returns an empty collection.
      */
     Collection<T> connections(T from);
 

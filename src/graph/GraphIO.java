@@ -15,6 +15,13 @@ public class GraphIO {
         return readWeightedGraph(file, new WeightedGraphUndirected<>());
     }
     
+    public static Graph<Integer> readGraphDirected(String file) {
+        return readGraph(file, new DGraphImpl<>());
+    }
+
+    public static Graph<Integer> readGraphUndirected(String file) {
+        return readGraph(file, new UGraphMapImpl<>());
+    }
     public static void populateWeightedGraph(WeightedGraph<Integer> graph, int[] links) {
         for (int i = 0; i < links.length; i += 3) {
             graph.link(links[i], links[i+1], links[i+2]);
@@ -46,4 +53,21 @@ public class GraphIO {
         return graph;
     }
 
+    private static Graph<Integer> readGraph(String file, Graph<Integer> graph) {
+        FileReader fr;
+        try {
+            fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] split = line.trim().split("(\\s)+");
+                int uVertex = Integer.parseInt(split[0]);
+                int vVertex = Integer.parseInt(split[1]);
+                graph.add(uVertex, vVertex);
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return graph;
+    }
 }

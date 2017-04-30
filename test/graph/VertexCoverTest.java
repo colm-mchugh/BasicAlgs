@@ -49,4 +49,26 @@ public class VertexCoverTest {
         int[] expcted = { 1, 3 };
         testGraph(links, 3, expcted);
     }
+    
+    @Test
+    public void testVertexCoverBig() {
+        String file = "resources/graph500-04.txt";
+        Graph<Integer> gU = GraphIO.readGraphUndirected(file);
+        Graph<Integer> gD = GraphIO.readGraphDirected(file);
+        
+        long nowU = System.currentTimeMillis();
+        Set<Integer> vcU = gU.vertexCover();
+        long timeU = System.currentTimeMillis() - nowU;
+        
+        long nowD = System.currentTimeMillis();
+        Set<Integer> vcD = gD.vertexCover();
+        long timeD = System.currentTimeMillis() - nowD;
+        
+        System.out.println("Undirected: size=" + vcU.size() + " millis=" + timeU);
+        System.out.println("Directed: size=" + vcD.size() + " millis=" + timeD);
+    }
+    
+    private void verifyVertexCover(Set<Integer> vc, Graph<Integer> g) {
+        // TODO: create an edge set of the graph
+    }
 }
