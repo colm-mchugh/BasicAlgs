@@ -46,9 +46,9 @@ public class math {
      * Given a number, return 1 if it is colorful, 0 otherwise.
      *
      * A number is colorful if all contiguous subsequences of it's digits
-     * produce a different product. If a number has N digits, then it has 
-     * SUM(N) - 1 subsequences, from 1 digits in length to N - 1 digits. 
-     * If they all yield a different product, the number is colorful.
+     * produce a different product. If a number has N digits, then it has SUM(N)
+     * - 1 subsequences, from 1 digits in length to N - 1 digits. If they all
+     * yield a different product, the number is colorful.
      *
      * @param a
      * @return
@@ -122,12 +122,10 @@ public class math {
     }
 
     /**
-     * Return the greatest common divisor of two numbers. 
-     * Uses Euclid's algorithm: 
-     * Successively reduce the bigger number by the smaller one until one of: 
-     *      - at least one of them is zero
-     *      - they're both the same
-     *      - the smaller wholly divides the bigger
+     * Return the greatest common divisor of two numbers. Uses Euclid's
+     * algorithm: Successively reduce the bigger number by the smaller one until
+     * one of: - at least one of them is zero - they're both the same - the
+     * smaller wholly divides the bigger
      *
      * @param a
      * @param b
@@ -152,9 +150,8 @@ public class math {
     }
 
     /**
-     * Return all prime numbers less than the given number. 
-     * Uses Erathothenes algorithm: 
-     * Create a list of all numbers up to and including the number.
+     * Return all prime numbers less than the given number. Uses Erathothenes
+     * algorithm: Create a list of all numbers up to and including the number.
      * Then, for each prime p, remove all its multiples from the list.
      *
      * @param n
@@ -178,8 +175,8 @@ public class math {
 
     /**
      * Return true if the given number can be expressed as an exponent x^y.
-     * Proceed by brute force: for each y in 2..sqrt(N), 
-     * check if N can be successively divided by y without any remainders.
+     * Proceed by brute force: for each y in 2..sqrt(N), check if N can be
+     * successively divided by y without any remainders.
      *
      * @param n
      * @return
@@ -390,10 +387,10 @@ public class math {
     }
 
     /**
-     * Given a list of numbers and a number n, return the index range [s,t] of that
-     * number in the list, where s is the index of the first occurrence of n and
-     * t is the index of the last occurrence of n. If s and t are -1, n is not
-     * in the list.
+     * Given a list of numbers and a number n, return the index range [s,t] of
+     * that number in the list, where s is the index of the first occurrence of
+     * n and t is the index of the last occurrence of n. If s and t are -1, n is
+     * not in the list.
      *
      * @param numbers
      * @param n
@@ -411,12 +408,12 @@ public class math {
     }
 
     /**
-     * Locate the number n in numbers using binary search. 
-     * 
-     * The flag 'lowEnd' means locate the first occurrence of n; if false, 
-     * the index returned is that of the last occurrence of n. 
-     * 
-     * In the case where n appears exactly once in numbers, lowEnd and !lowEnd 
+     * Locate the number n in numbers using binary search.
+     *
+     * The flag 'lowEnd' means locate the first occurrence of n; if false, the
+     * index returned is that of the last occurrence of n.
+     *
+     * In the case where n appears exactly once in numbers, lowEnd and !lowEnd
      * will return the same index.
      *
      * @param numbers
@@ -470,15 +467,14 @@ public class math {
 
     /**
      * Determine the maximum possible sum that can be made from the segment
-     * [start,end] of the coins array. 
-     * 
-     * The recurrence relation is as follows:
-     *      Empty coins => 0 
-     *      One coin => that coin value 
-     *      Otherwise, determine the maximum of taking from the start or end of the coins. 
-     * 
-     * Both (start, end), need to include the minimum of their next choice, 
-     * assuming that their opponent will choose the next best possible coin. 
+     * [start,end] of the coins array.
+     *
+     * The recurrence relation is as follows: Empty coins => 0 One coin => that
+     * coin value Otherwise, determine the maximum of taking from the start or
+     * end of the coins.
+     *
+     * Both (start, end), need to include the minimum of their next choice,
+     * assuming that their opponent will choose the next best possible coin.
      * Record the maximum in the memo.
      *
      * @param coins list of numbers
@@ -528,17 +524,17 @@ public class math {
     }
 
     /**
-     * Given 3 sorted arrays A, B, C, return the minimum of: 
-     * Max(|A[i] - B[j]|, |B[j] - C[k]|, |C[k] - A[i]|)
+     * Given 3 sorted arrays A, B, C, return the minimum of: Max(|A[i] - B[j]|,
+     * |B[j] - C[k]|, |C[k] - A[i]|)
      *
      * Start with the minimum elements as: A[0], B[0], C[0] and i,j,k = 0.
      *
      * Determine the min and max of A[i], B[j], C[k] on each loop iteration,
-     * only incrementing the index that contains the min of A[i], B[j], C[k]. 
-     * 
-     * If a |max - min| is found that is smaller than the current minimum, 
-     * record the current indices in the minimum indices; 
-     * i.e. minimum elements = A[i], B[j], C[k] whenever a smaller |max - min| is found.
+     * only incrementing the index that contains the min of A[i], B[j], C[k].
+     *
+     * If a |max - min| is found that is smaller than the current minimum,
+     * record the current indices in the minimum indices; i.e. minimum elements
+     * = A[i], B[j], C[k] whenever a smaller |max - min| is found.
      *
      * @param a
      * @param b
@@ -645,9 +641,9 @@ public class math {
     }
 
     /**
-     * Remove duplicates from a sorted list by overwriting duplicate entries with
-     * the next non duplicate. Return the length of the list with all duplicates
-     * removed.
+     * Remove duplicates from a sorted list by overwriting duplicate entries
+     * with the next non duplicate. Return the length of the list with all
+     * duplicates removed.
      *
      * @param a
      * @return
@@ -658,7 +654,7 @@ public class math {
             a.set(l, a.get(i));
             // Don't increment l if a[l] == previous element. 
             // The duplicate will get overwritten by a[i]/
-            l = l + (Objects.equals(a.get(l), a.get(l - 1))? 0 : 1);
+            l = l + (Objects.equals(a.get(l), a.get(l - 1)) ? 0 : 1);
         }
         return l;
     }
@@ -804,8 +800,9 @@ public class math {
 
     /**
      * Given a number of bits n, return a gray code sequence of length 2^n
+     *
      * @param n
-     * @return 
+     * @return
      */
     public static List<Integer> grayCode(int n) {
         int N = 1 << n;
@@ -828,13 +825,14 @@ public class math {
 
     /**
      * Use the following recurrence relation to generate a gray code sequence:
-     * Given a gray code sequence codes of length N, produce the next N codes
-     * by reversing the given codes and prepending a one bit to each code.
-     * 
+     * Given a gray code sequence codes of length N, produce the next N codes by
+     * reversing the given codes and prepending a one bit to each code.
+     *
      * @param n number of bits; => sequence will be 2^n in length
      * @param codes currently generated gray codes
-     * @param tmps for temporary processing, used in generating the second half of each sequence.
-     * 
+     * @param tmps for temporary processing, used in generating the second half
+     * of each sequence.
+     *
      */
     private static void makeGrayCodes(int n, List<BitSet> codes, List<BitSet> tmps) {
         if (n == 0) {
@@ -854,11 +852,11 @@ public class math {
     }
 
     /**
-     * Given a list of distinct numbers, return all possible permutations of 
+     * Given a list of distinct numbers, return all possible permutations of
      * these numbers.
-     * 
+     *
      * @param a
-     * @return 
+     * @return
      */
     public static List<List<Integer>> permutations(List<Integer> a) {
         return buildPermutations(a, 0, new ArrayList<>());
@@ -866,17 +864,17 @@ public class math {
 
     /**
      * Build all possible permutations of the given list of numbers.
-     * 
+     *
      * Works by ascending levels k from 0 to N - 1, and at each level swapping
      * an element of the list and building the next permutation from this.
-     * 
+     *
      * The element must be swapped back to enable subsequent permutation to be
      * generated.
-     * 
+     *
      * @param a
      * @param k
      * @param perms
-     * @return 
+     * @return
      */
     private static List<List<Integer>> buildPermutations(List<Integer> a, int k, List<List<Integer>> perms) {
         if (k >= a.size()) {
@@ -893,14 +891,14 @@ public class math {
         return perms;
     }
 
-    /** 
+    /**
      * Given a list of numbers N and a target number, find all sub-lists of N
      * such that each sub-list sums to the target. A number may be selected from
      * N any number of times.
-     * 
+     *
      * @param N
      * @param target
-     * @return 
+     * @return
      */
     public static List<List<Integer>> combinations(List<Integer> N, int target) {
         List<List<Integer>> combos = new ArrayList<>();
@@ -939,10 +937,11 @@ public class math {
 
     /**
      * Given a list of N numbers, find the majority number.
-     * 
+     *
      * A majority number is one that appears more than floor(N/2) times.
+     *
      * @param a
-     * @return 
+     * @return
      */
     public static int majority(List<Integer> a) {
         int occurrences = Math.floorDiv(a.size(), 2);
@@ -986,7 +985,7 @@ public class math {
             System.out.println();
         }
     }
-    
+
     public static List<Integer> pascalK(int k) {
         List<Integer> kthRow = new ArrayList<>();
         for (int i = 1; i <= k; i++) {
@@ -995,10 +994,10 @@ public class math {
             }
             System.out.println();
         }
-        
+
         return kthRow;
     }
-    
+
     private static int pascalNum(int N, int j) {
         if (j == 1 || j == N) {
             return 1;
@@ -1120,7 +1119,7 @@ public class math {
         }
         List<Integer> positives = a.subList(j, N);
         int pN = positives.size();
-         for (int i = 0; i < pN; i++) {
+        for (int i = 0; i < pN; i++) {
             int next = Math.abs(positives.get(i)) - 1;
             if (next < pN && positives.get(next) > 0) {
                 positives.set(next, -positives.get(next));
@@ -1131,11 +1130,10 @@ public class math {
                 return i + 1;
             }
         }
-        return N + (j == 0? 1 : 0);
+        return N + (j == 0 ? 1 : 0);
     }
-    
-    
-    public static  List<Integer> repeatedNumber(final List<Integer> a)  {
+
+    public static List<Integer> repeatedNumber(final List<Integer> a) {
         int dup = -1;
         int missing = -1;
         int N = a.size();
@@ -1187,42 +1185,42 @@ public class math {
         }
     }
 
-    public static void partitionL(ListNode list, int x) {
-        int i = 0;
-        int iB = -1;
-        ListNode l = list;
-        ListNode p = list;
-        ListNode lB = null;
-        ListNode pB = null;
-        while (l != null) {
-            if (l.val >= x && iB == -1) {
-                lB = l;
-                pB = p;
-                iB = i;
-                p = l;
-                l = l.next;
-            } else {
-                if (l.val < x && iB > -1 && i > iB) {
-                    ListNode tmp = l;
-                    p.next = l.next;
-                    l = l.next;
-                    if (pB == null) {
-                        pB = tmp;
-                        tmp.next = lB;
-                    } else {
-                        pB.next = tmp;
-                        tmp.next = lB;
-                        pB = tmp;
-                    }
+    public static ListNode partitionL(ListNode list, int x) {
+        ListNode newL = null, endL = null;
+        ListNode curr = list, prev = list;
+        while (curr != null) {
+            if (curr.val < x) {
+                if (newL == null) {
+                    newL = curr;
+                    endL = newL;
                 } else {
-                    p = l;
-                    l = l.next;
+                    endL.next = curr;
+                    endL = curr;
                 }
+                if (curr == list) {
+                    prev = curr.next;
+                    curr = curr.next;
+                    list = curr;
+                } else {
+                    prev.next = curr.next;
+                    curr = curr.next;
+                }
+                endL.next = null;
+            } else {
+                prev = curr;
+                curr = curr.next;
             }
-            i++;
         }
+        if (endL != null) {
+            endL.next = list;
+        } else {
+            if (list != null) { 
+                newL = list;
+            }
+        }
+        return newL;
     }
-    
+
     public static ListNode nthEnd(ListNode list, int n) {
         int N = 0;
         for (ListNode l = list; l != null; l = l.next) {
@@ -1243,15 +1241,15 @@ public class math {
             }
             ListNode r = p.next;
             p.next = r.next;
-            r.next = null;   
+            r.next = null;
         }
         return list;
     }
-    
+
     public static List<String> toIPStrings(String s) {
         return genIps(s, 3);
     }
-    
+
     private static List<String> genIps(String s, int dots) {
         List<String> ipAddrs = new ArrayList<>();
         if (s == null || s.length() == 0) {
@@ -1272,7 +1270,7 @@ public class math {
         }
         return ipAddrs;
     }
-    
+
     private static boolean isValidIPOctet(String s) {
         if (s == null || s.length() == 0) {
             return false;

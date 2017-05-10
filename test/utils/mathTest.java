@@ -301,24 +301,53 @@ public class mathTest {
     
     @Test
     public void testPartition() {
-        math.ListNode l = new math.ListNode(1, new math.ListNode(7, new math.ListNode(4, new math.ListNode(3, new math.ListNode(2, new math.ListNode(9, new math.ListNode(11, new math.ListNode(2, null))))))));
-        math.partitionL(l, 3);
-        for (math.ListNode t = l; t != null; t = t.next) {
-            System.out.println(t.val);
+        // partition([1, 7, 4, 3, 2, 9, 11, 2], 3) => [1, 2, 2, 7, 4, 3, 9, 11]
+        int[] data = {1, 7, 4, 3, 2, 9, 11, 2};
+        int[] xpctd = {1, 2, 2, 7, 4, 3, 9, 11};
+        validateParition(math.partitionL(makeL(data), 3), xpctd);
+        
+        // partition([1, 4, 3, 2, 5, 2], 3) => [1, 2, 2, 4, 3, 5]
+        int[] data2 = {1, 4, 3, 2, 5, 2};
+        int[] xpctd2 = {1, 2, 2, 4, 3, 5};
+        validateParition(math.partitionL(makeL(data2), 3), xpctd2);
+        
+        // partition([10, 5, 8, 2], 3) => [2, 10, 5, 8]
+        int[] data3 = {10, 5, 8, 2};
+        int[] xpctd3 = {2, 10, 5, 8};
+        validateParition(math.partitionL(makeL(data3), 3), xpctd3);
+        
+        // partition([2, 3, 4, 2, 1, 1, 2], 5) => [2, 3, 4, 2, 1, 1, 2]
+        int[] data4 = {2, 3, 4, 2, 1, 1, 2};
+        int[] xpctd4 = data4;
+        validateParition(math.partitionL(makeL(data4), 5), xpctd4);
+        
+        // partition([], 10) => []
+        assert math.partitionL(null, 3) == null;
+        
+        // partition([10, 11, 9, 8, 14], 3) => [10, 11, 9, 8, 14]
+        int[] data5 = {10, 11, 9, 8, 14};
+        int[] xpctd5 = data5;
+        validateParition(math.partitionL(makeL(data5), 5), xpctd5);
+        
+        // partition([10, 7, 9, 3], 3) => [10, 7, 9, 3]
+        int[] data6 = {10, 7, 9, 3};
+        int[] xpctd6 = data6;
+        validateParition(math.partitionL(makeL(data6), 3), xpctd6);
+        
+    }
+    
+    private  math.ListNode makeL(int[] data) {
+        math.ListNode l = null;
+        for (int i = data.length - 1; i >= 0; i--) {
+            l = new math.ListNode(data[i], l);
         }
-        l = new math.ListNode(1, new math.ListNode(4, new math.ListNode(3, new math.ListNode(2, new math.ListNode(5, new math.ListNode(2, null))))));
-        math.partitionL(l, 3);
-        for (math.ListNode t = l; t != null; t = t.next) {
-            System.out.println(t.val);
+        return l;
+    }
+    
+    private void validateParition(math.ListNode l, int[] xpctd) {
+        for (int i = 0; i < xpctd.length; i++, l = l.next) {
+            assert l != null && l.val == xpctd[i];
         }
-        // [10, 5, 8, 2], 3
-        l = new math.ListNode(10, new math.ListNode(5, new math.ListNode(8, new math.ListNode(2, null))));
-        math.partitionL(l, 3);
-        //failing test
-        assert(l.val == 2);
-        assert(l.next.val == 10);
-        assert(l.next.next.val == 5);
-        assert(l.next.next.next.val == 8);
     }
     
     @Test
