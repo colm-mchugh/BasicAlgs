@@ -1158,26 +1158,26 @@ public class math {
         return dupMissing;
     }
 
-    public static class Node {
+    public static class ListNode {
 
         int val;
-        Node next;
+        ListNode next;
 
-        public Node(int val, Node next) {
+        public ListNode(int val, ListNode next) {
             this.val = val;
             this.next = next;
         }
 
     }
 
-    private void remDups(Node list) {
-        Node current = list;
+    private void remDups(ListNode list) {
+        ListNode current = list;
         while (current != null) {
             if (current.next != null) {
                 if (current.val < current.next.val) {
                     current = current.next;
                 } else {
-                    Node tmp = current.next;
+                    ListNode tmp = current.next;
                     current.next = current.next.next;
                     tmp.next = null;
                 }
@@ -1187,12 +1187,13 @@ public class math {
         }
     }
 
-    public static void partitionL(Node list, int x) {
+    public static void partitionL(ListNode list, int x) {
         int i = 0;
         int iB = -1;
-        Node l = list;
-        Node p = list;
-        Node lB = null, pB = null;
+        ListNode l = list;
+        ListNode p = list;
+        ListNode lB = null;
+        ListNode pB = null;
         while (l != null) {
             if (l.val >= x && iB == -1) {
                 lB = l;
@@ -1202,7 +1203,7 @@ public class math {
                 l = l.next;
             } else {
                 if (l.val < x && iB > -1 && i > iB) {
-                    Node tmp = l;
+                    ListNode tmp = l;
                     p.next = l.next;
                     l = l.next;
                     if (pB == null) {
@@ -1222,25 +1223,25 @@ public class math {
         }
     }
     
-    public static Node nthEnd(Node list, int n) {
+    public static ListNode nthEnd(ListNode list, int n) {
         int N = 0;
-        for (Node l = list; l != null; l = l.next) {
+        for (ListNode l = list; l != null; l = l.next) {
             N++;
         }
         if (n > N || n == 1) {
-            Node r = list;
+            ListNode r = list;
             list = r.next;
             r.next = null;
         } else {
             int np = 0;
-            Node p = list;
-            Node l = list;
+            ListNode p = list;
+            ListNode l = list;
             while (np != N - n) {
                 np++;
                 p = l;
                 l = l.next;
             }
-            Node r = p.next;
+            ListNode r = p.next;
             p.next = r.next;
             r.next = null;   
         }

@@ -14,8 +14,10 @@ public class CircularBuffer<T> {
     public final static boolean NO_OVERFLOW = true;
     /**
      * Create a circular buffer that can hold N elements.
-     * If noOverflow is true, appending will result in an exception.
-     * Otherwise, appending will overwrite existing data.
+     * If noOverflow, appending will result in an exception
+     * when there are N elements in the buffer. Otherwise,
+     * appending will overwrite existing elements, and the
+     * size will remain N.
      * 
      * @param N
      * @param noOverflow 

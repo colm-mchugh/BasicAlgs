@@ -301,23 +301,31 @@ public class mathTest {
     
     @Test
     public void testPartition() {
-        math.Node l = new math.Node(1, new math.Node(7, new math.Node(4, new math.Node(3, new math.Node(2, new math.Node(9, new math.Node(11, new math.Node(2, null))))))));
+        math.ListNode l = new math.ListNode(1, new math.ListNode(7, new math.ListNode(4, new math.ListNode(3, new math.ListNode(2, new math.ListNode(9, new math.ListNode(11, new math.ListNode(2, null))))))));
         math.partitionL(l, 3);
-        for (math.Node t = l; t != null; t = t.next) {
+        for (math.ListNode t = l; t != null; t = t.next) {
             System.out.println(t.val);
         }
-        l = new math.Node(1, new math.Node(4, new math.Node(3, new math.Node(2, new math.Node(5, new math.Node(2, null))))));
+        l = new math.ListNode(1, new math.ListNode(4, new math.ListNode(3, new math.ListNode(2, new math.ListNode(5, new math.ListNode(2, null))))));
         math.partitionL(l, 3);
-        for (math.Node t = l; t != null; t = t.next) {
+        for (math.ListNode t = l; t != null; t = t.next) {
             System.out.println(t.val);
         }
+        // [10, 5, 8, 2], 3
+        l = new math.ListNode(10, new math.ListNode(5, new math.ListNode(8, new math.ListNode(2, null))));
+        math.partitionL(l, 3);
+        //failing test
+        assert(l.val == 2);
+        assert(l.next.val == 10);
+        assert(l.next.next.val == 5);
+        assert(l.next.next.next.val == 8);
     }
     
     @Test
     public void testNthEnd() {
-        math.Node l = new math.Node(1, new math.Node(2, new math.Node(3, new math.Node(4, new math.Node(5, new math.Node(6, null))))));
+        math.ListNode l = new math.ListNode(1, new math.ListNode(2, new math.ListNode(3, new math.ListNode(4, new math.ListNode(5, new math.ListNode(6, null))))));
         l = math.nthEnd(l, 1);
-        for (math.Node t = l; t != null; t = t.next) {
+        for (math.ListNode t = l; t != null; t = t.next) {
             System.out.println(t.val);
         }
     }
