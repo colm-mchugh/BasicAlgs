@@ -1214,7 +1214,7 @@ public class math {
         if (endL != null) {
             endL.next = list;
         } else {
-            if (list != null) { 
+            if (list != null) {
                 newL = list;
             }
         }
@@ -1226,7 +1226,7 @@ public class math {
         for (ListNode l = list; l != null; l = l.next) {
             N++;
         }
-        if (n > N || n == 1) {
+        if (n > N || N == 1) {
             ListNode r = list;
             list = r.next;
             r.next = null;
@@ -1239,9 +1239,14 @@ public class math {
                 p = l;
                 l = l.next;
             }
-            ListNode r = p.next;
-            p.next = r.next;
-            r.next = null;
+            if (l == list) {
+                list = l.next;
+                l.next = null;
+            } else {
+                ListNode r = p.next;
+                p.next = r.next;
+                r.next = null;
+            }
         }
         return list;
     }

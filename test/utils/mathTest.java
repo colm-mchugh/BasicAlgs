@@ -357,6 +357,23 @@ public class mathTest {
         for (math.ListNode t = l; t != null; t = t.next) {
             System.out.println(t.val);
         }
+        
+        int[] data4 = {1, 2, 3, 4, 5};
+        int p = 1;
+        int[] xpctd = {1, 2, 3, 4};
+        l = math.nthEnd(makeL(data4), p);
+        validateParition(l, xpctd);
+        
+        int[] data5 = { 1 };
+        int[] xpctd5 = {};
+        l = math.nthEnd(makeL(data5), p);
+        assert l == null;
+        
+        int[] data6 = {1, 2, 3, 4, 5};
+        p = 5;
+        int[] xpctd6 = {2, 3, 4, 5};
+        l = math.nthEnd(makeL(data6), p);
+        validateParition(l, xpctd6);
     }
     
     @Test
