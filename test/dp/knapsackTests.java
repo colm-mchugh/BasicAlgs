@@ -1,7 +1,5 @@
 package dp;
 
-
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,6 +7,27 @@ import org.junit.Test;
 
 
 public class knapsackTests {
+    
+    @Test
+    public void testDecisionVecSmall() {
+        int data[] = {8, 4, 10, 5, 15, 8, 4, 3};
+        int xpctd[] = {0, 0, 1, 1};
+        int cap = 11;
+        KnapsackMemozd k = new KnapsackMemozd(cap, data);
+        int v = k.knapsack();
+        int[] dVec = k.decisionVector();
+        assert v == 19;
+        for (int i = 0; i < xpctd.length; i++) {
+            assert xpctd[i] == dVec[i];
+        }
+        
+        KnapsackRcrsv kR = new KnapsackRcrsv(cap, data);
+        assert kR.knapsack() == 19;
+        dVec = kR.decisionVector();
+        for (int i = 0; i < xpctd.length; i++) {
+            assert xpctd[i] == dVec[i];
+        }
+    }
     
     @Test
     public void knapsackGreedyAllItemsSameWeight() {
@@ -76,6 +95,60 @@ public class knapsackTests {
         assert resRec == expected;
     }
     
+    @Test
+    public void compareDecisionVecs() {
+        String[] ksSpecs = {"ks_100_0", "ks_40_0", "ks_45_0", "ks_200_1"};
+        
+        for (String spec : ksSpecs) {
+            testRecVMemo("resources/knapsack/" + spec);
+        }
+    }
+    
+    @Test
+    public void testDepthSearch() {
+        int[] data = {45,5,48,8,35,3};
+        int cap = 10;
+        Knapsack dfSrchr = new KnapsackBnB(cap, data, true);
+        int estimate = dfSrchr.knapsack();
+        assert estimate == 80;
+    }
+    
+    @Test 
+    public void timeRecursive() {
+        String[] ksSpecs = {"ks_100_0", "ks_40_0", "ks_45_0",  "ks_200_1", 
+            "ks_100_1", "ks_100_2", "ks_200_0", //"ks_300_0", 
+            "ks_400_0"
+        };
+        
+        for (String spec : ksSpecs) {
+            KnapsackData k = this.readData("resources/knapsack/" + spec);
+            Knapsack ks = new KnapsackMemozd(k.weight, k.data);
+            long now = System.currentTimeMillis();
+            int ksW =  ks.knapsack();
+            System.out.println(spec + " Recursive " + (System.currentTimeMillis() - now)); 
+        }
+    }
+    
+    private void testRecVMemo(String knapsackSpec) {
+        KnapsackData k = this.readData(knapsackSpec);
+        
+        Knapsack ks = new KnapsackRcrsv(k.weight, k.data);
+        Knapsack km = new KnapsackMemozd(k.weight, k.data);
+        long now = System.currentTimeMillis();
+        int ksW =  ks.knapsack();
+        System.out.println(knapsackSpec + " Recursive " + (System.currentTimeMillis() - now));
+        now = System.currentTimeMillis();
+        int kmW = km.knapsack();
+        System.out.println(knapsackSpec + " Memoized " + (System.currentTimeMillis() - now));      
+        int[] dvKs = ks.decisionVector();
+        int[] dvKm = km.decisionVector();
+        
+        assert ksW == kmW;
+        for (int i = 0; i < dvKm.length; i++) {
+            assert dvKm[i] == dvKs[i];
+        }
+    }
+    
     public static class KnapsackData {
         int weight;
         int[] data;
@@ -88,8 +161,8 @@ public class knapsackTests {
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
             String[] firstLine = line.trim().split("(\\s)+");
-            k.weight = Integer.parseInt(firstLine[0]);
-            int numItems = Integer.parseInt(firstLine[1]);
+            int numItems = Integer.parseInt(firstLine[0]);
+            k.weight = Integer.parseInt(firstLine[1]);
             k.data = new int[numItems * 2];
             for (int i = 0; (line = br.readLine()) != null; i += 2) {
                 String[] itemData = line.trim().split("(\\s)+");

@@ -1,18 +1,13 @@
 package dp;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 
 public class KnapsackMemozd extends Knapsack {
 
     private int[][] memo;
 
     public KnapsackMemozd(int knapSackWeight, int[] data) {
-        super(knapSackWeight);
-        items = new ArrayList<>(data.length / 2);
-        for (int i = 0; i < data.length; i += 2) {
-            items.add(new Item(data[i], data[i + 1]));
-        }
+        super(knapSackWeight, data);
     }
 
     protected void printItems(PrintStream pw) {
@@ -23,13 +18,13 @@ public class KnapsackMemozd extends Knapsack {
 
     @Override
     public int knapsack() {
-        memo = new int[knapSackWeight + 1][items.size() + 1];
-        for (int w = 0; w <= knapSackWeight; w++) {
+        memo = new int[knapSackCapacity + 1][items.size() + 1];
+        for (int w = 0; w <= knapSackCapacity; w++) {
             memo[w][0] = 0;
         }
         for (int i = 1; i <= items.size(); i++) {
             Item itemi = items.get(i - 1);
-            for (int w = 0; w <= knapSackWeight; w++) {
+            for (int w = 0; w <= knapSackCapacity; w++) {
                 int prevValue = memo[w][i - 1];
                 if (itemi.weight > w) {
                     // item i exceeds capacity w => retain previous value
@@ -42,10 +37,23 @@ public class KnapsackMemozd extends Knapsack {
                 }
             }
         }
-        int rv = memo[knapSackWeight][0];
+        int rv = memo[knapSackCapacity][0];
         for (int i = 1; i <= items.size(); i++) {
-            if (rv < memo[knapSackWeight][i]) {
-                rv = memo[knapSackWeight][i];
+            if (rv < memo[knapSackCapacity][i]) {
+                rv = memo[knapSackCapacity][i];
+            }
+        }
+        // Determine the items that go in the knapsack;
+        // For each item i, if its memoized value is the same as the value of
+        // item i - 1, it is not in the knapsack. Otherwise include it and 
+        // prune the weight.
+        int w = knapSackCapacity;
+        for (int n = items.size(); n > 0; n--) {
+            int Vn = memo[w][n];
+            if (memo[w][n-1] != Vn) {
+                Item item = items.get(n - 1);
+                item.decision = true;
+                w = w - item.weight;
             }
         }
         return rv;

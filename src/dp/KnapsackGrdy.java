@@ -1,39 +1,51 @@
 package dp;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class KnapsackGrdy extends Knapsack {
 
-    public KnapsackGrdy(int knapSackWeight, int[] data) {
-        super(knapSackWeight);
-        items = new ArrayList<>(data.length / 2);
-        for (int i = 0; i < data.length / 2; i++) {
-            items.add(new Knapsack.Item(data[2 * i], data[2 * i + 1]));
-        }
+    public KnapsackGrdy(int capacity, int[] data) {
+        super(capacity, data);
+    }
+
+    public static int fractionalEstimate(List<Item> items, int capacity) {
+        // Sort the items in descending order of value / weight ratio
         Collections.sort(items, new Comparator<Knapsack.Item>() {
             @Override
             public int compare(Knapsack.Item o1, Knapsack.Item o2) {
                 float myRatio = o1.value / (float) o1.weight;
                 float itsRatio = o2.value / (float) o2.weight;
+                // items are sorted in order of decreasing ratios.
                 if (myRatio > itsRatio) {
-                    return -11;
+                    // if my ratio is greater than my counterpart's, I 
+                    // am before my counterpart in the sorted order.              
+                    return -1;
                 } else if (myRatio < itsRatio) {
                     return 1;
                 }
                 return 0;
             }
         });
+        int v = 0, w = 0; 
+        for (Item item : items) {
+            if (w + item.weight < capacity) {
+                w += item.weight;
+                v += item.value;
+                item.decision = true;
+            } else {
+                // Item cannot fit in the knapsack. Include the fraction
+                // of the item value that fills up the capacity
+                return v + ((capacity - w) * item.value)/item.weight ; 
+            }
+        }
+        // items did not exhaust capacity
+        return v;
     }
-
+    
     @Override
     public int knapsack() {
-        int v = 0; 
-        for (int w = 0, i = 0;i < items.size() && w + items.get(i).weight < this.knapSackWeight; i++) {            
-                w += items.get(i).weight;
-                v += items.get(i).value;
-        }
-        return v;
+        return fractionalEstimate(this.items, this.knapSackCapacity);
     }
 }

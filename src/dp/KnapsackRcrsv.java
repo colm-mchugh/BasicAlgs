@@ -1,19 +1,15 @@
 package dp;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class KnapsackRcrsv extends Knapsack {
 
+    // wtf does this mean?? jesus. comments at time of inception *please*.
     private final Map<Integer, Map<Integer, Integer>> recMemo;
 
     public KnapsackRcrsv(int knapSackWeight, int[] data) {
-        super(knapSackWeight);
-        items = new ArrayList<>(data.length / 2);
-        for (int i = 0; i < data.length; i += 2) {
-            items.add(new Item(data[i], data[i + 1]));
-        }
+        super(knapSackWeight, data);
         recMemo = new HashMap<>();
         for (int i = -1; i < items.size(); i++) {
             recMemo.put(i, new HashMap<>());
@@ -49,7 +45,17 @@ public class KnapsackRcrsv extends Knapsack {
 
     @Override
     public int knapsack() {
-        return calcKnapsack(items.size() - 1, knapSackWeight);
+        int rv = calcKnapsack(items.size() - 1, knapSackCapacity);
+        int w = knapSackCapacity;
+        for (int n = items.size() - 1; n >= 0; n--) {
+            int Vn = recMemo.get(n).get(w);
+            if (recMemo.get(n - 1).get(w) != Vn) {
+                Item item = items.get(n);
+                item.decision = true;
+                w = w - item.weight;
+            }
+        }
+        return rv;
     }
     
 }
