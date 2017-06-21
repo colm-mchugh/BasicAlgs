@@ -89,4 +89,12 @@ public class KnapsackBnB extends Knapsack {
         depthSearch(n.right, level + 1);
     }
     
+    private void bestSearch(Node root) {
+        Queue<Node> unexpanded = new ArrayDeque<>();
+        unexpanded.add(root);
+        while (!unexpanded.isEmpty()) {
+            Node nxt = unexpanded.remove();
+            
+        }
+    }
 }
