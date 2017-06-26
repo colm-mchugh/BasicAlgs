@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  * Faithful transfer of Tarjan's algorithm for computing the strongly
@@ -17,7 +16,26 @@ import java.util.Stack;
 public class CCTarjan<T> extends CCer<T> {
     
     private int pathIndex;
-    private final Stack<T> stack;
+    private Stack<T> stack;
+    
+    private static class Stack<T> {
+        T data;
+        Stack<T> next;
+
+        public Stack(T data, Stack<T> s) {
+            this.data = data;
+            this.next = s;
+        }
+              
+    }
+    
+    private Stack<T> push(Stack<T> s, T data) {
+        if (s == null) {
+            return new Stack<>(data, null);
+        }
+        Stack<T> newS = new Stack<>(data, s);
+        return newS;
+    }
     
     public static class Node<T> {
         T v;
@@ -38,18 +56,14 @@ public class CCTarjan<T> extends CCer<T> {
         
     }
 
-    public CCTarjan() {
-        super();
-        this.stack = new Stack<>();
-    }
-       
+    @Override
     public Map<T, List<T>> getComponents(Graph<T> g) {
         if (this.g == g && !this.components.isEmpty()) {
             return this.components;
         }
         this.g = g;
         this.pathIndex = 0;
-        this.stack.clear();
+        this.stack = null;
         HashMap<T, Node<T>> vertices = new HashMap<>(g.numVertices());
         for (T v : g.V()) {
             vertices.put(v, new Node<>(v));
@@ -66,7 +80,7 @@ public class CCTarjan<T> extends CCer<T> {
         curr.index = pathIndex;
         curr.lowlink = pathIndex;
         pathIndex++;
-        stack.push(curr.v);
+        stack = this.push(stack, curr.v);
         curr.onStack = true;
         for (T w : g.connections(curr.v)) {
             Node<T> wNode = vertices.get(w);
@@ -80,7 +94,8 @@ public class CCTarjan<T> extends CCer<T> {
         if (curr.lowlink == curr.index) {
             List<T> scc = new ArrayList<>();
             for (T w = null; w != curr.v; ) {
-                w = stack.pop();
+                w = stack.data;
+                stack = stack.next;
                 vertices.get(w).onStack = false;
                 scc.add(w);
                 index.put(w, curr.v);
