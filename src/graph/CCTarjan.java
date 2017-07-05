@@ -19,22 +19,30 @@ public class CCTarjan<T> extends CCer<T> {
     private Stack<T> stack;
     
     private static class Stack<T> {
-        T data;
-        Stack<T> next;
+        T[] items;
+        int i = 0;
+        int numResizes = 0;
 
-        public Stack(T data, Stack<T> s) {
-            this.data = data;
-            this.next = s;
+        public Stack() {
+            items = (T[]) new Object[8];
+            i = 0;
+        }
+        
+        public void Push(T data) {
+            if (i == items.length) {
+                T[] newItems = (T[]) new Comparable[(items.length * 2)];
+                System.arraycopy(this.items, 0, newItems, 0, i);
+                this.items = newItems;
+                this.numResizes++;
+            }
+            items[i++] = data;
+        }
+        
+        public T Pop() {
+            T data = items[--i];
+            return data;
         }
               
-    }
-    
-    private Stack<T> push(Stack<T> s, T data) {
-        if (s == null) {
-            return new Stack<>(data, null);
-        }
-        Stack<T> newS = new Stack<>(data, s);
-        return newS;
     }
     
     public static class Node<T> {
@@ -63,7 +71,7 @@ public class CCTarjan<T> extends CCer<T> {
         }
         this.g = g;
         this.pathIndex = 0;
-        this.stack = null;
+        this.stack = new Stack<>();
         HashMap<T, Node<T>> vertices = new HashMap<>(g.numVertices());
         for (T v : g.V()) {
             vertices.put(v, new Node<>(v));
@@ -80,7 +88,7 @@ public class CCTarjan<T> extends CCer<T> {
         curr.index = pathIndex;
         curr.lowlink = pathIndex;
         pathIndex++;
-        stack = this.push(stack, curr.v);
+        stack.Push(curr.v);
         curr.onStack = true;
         for (T w : g.connections(curr.v)) {
             Node<T> wNode = vertices.get(w);
@@ -94,8 +102,7 @@ public class CCTarjan<T> extends CCer<T> {
         if (curr.lowlink == curr.index) {
             List<T> scc = new ArrayList<>();
             for (T w = null; w != curr.v; ) {
-                w = stack.data;
-                stack = stack.next;
+                w = stack.Pop();
                 vertices.get(w).onStack = false;
                 scc.add(w);
                 index.put(w, curr.v);
