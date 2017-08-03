@@ -86,7 +86,8 @@ public class math {
         if ((n < 2) || ((n % 2 == 0) && (n != 2))) {
             return false;
         }
-        for (int i = 3; i <= Math.sqrt(n); i++) {
+        double sqrt = Math.sqrt(n);
+        for (int i = 3; i <= sqrt; i +=2) {
             if (n % i == 0) {
                 return false;
             }
@@ -227,10 +228,7 @@ public class math {
         while (x.compareTo(BigInteger.ONE) > 0 && ((x.mod(two)).compareTo(BigInteger.ZERO) == 0)) {
             x = x.divide(two);
         }
-        if (x.compareTo(BigInteger.ONE) == 0) {
-            return true;
-        }
-        return false;
+        return x.compareTo(BigInteger.ONE) == 0;
     }
 
     /**
@@ -1185,6 +1183,43 @@ public class math {
         }
     }
 
+    public static ListNode remAllDups(ListNode list) {
+        ListNode current = list;
+        ListNode newList = list;
+        ListNode prev = null;
+        boolean deleteTrailingDup = false;
+        while (current != null) {
+            if (deleteTrailingDup) {
+                if (prev == null) {
+                    newList = current.next;
+                    current = current.next;
+                } else {
+                    prev.next = current.next;
+                    current.next = null;
+                    current = prev.next;
+                }
+                deleteTrailingDup = false;
+                continue;
+            }
+            if (current.next != null) {
+                if (current.val < current.next.val) {
+                    prev = current;
+                    current = current.next;
+                } else {
+                    while (current.next != null && current.val >= current.next.val) {
+                        ListNode tmp = current.next;
+                        current.next = current.next.next;
+                        tmp.next = null;
+                    }
+                    deleteTrailingDup = true;
+                }
+            } else {
+                current = current.next; // current is null
+            }
+        }
+        return newList;
+    }
+    
     public static ListNode partitionL(ListNode list, int x) {
         ListNode newL = null, endL = null;
         ListNode curr = list, prev = list;

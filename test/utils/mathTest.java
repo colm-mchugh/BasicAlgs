@@ -300,26 +300,36 @@ public class mathTest {
     }
     
     @Test
+    public void testRemDups() {
+        int[] data1 = {1,2,3,3,4,4,5};
+        int[] xpctd1 = {1,2,5};
+        
+        int[] data2 = {1,1,1,1,3,4,5};
+        int[] xpctd2 = {3,4,5};
+        
+        validateListContent(makeL(data1), xpctd1);
+    }
+    @Test
     public void testPartition() {
         // partition([1, 7, 4, 3, 2, 9, 11, 2], 3) => [1, 2, 2, 7, 4, 3, 9, 11]
         int[] data = {1, 7, 4, 3, 2, 9, 11, 2};
         int[] xpctd = {1, 2, 2, 7, 4, 3, 9, 11};
-        validateParition(math.partitionL(makeL(data), 3), xpctd);
+        validateListContent(math.partitionL(makeL(data), 3), xpctd);
         
         // partition([1, 4, 3, 2, 5, 2], 3) => [1, 2, 2, 4, 3, 5]
         int[] data2 = {1, 4, 3, 2, 5, 2};
         int[] xpctd2 = {1, 2, 2, 4, 3, 5};
-        validateParition(math.partitionL(makeL(data2), 3), xpctd2);
+        validateListContent(math.partitionL(makeL(data2), 3), xpctd2);
         
         // partition([10, 5, 8, 2], 3) => [2, 10, 5, 8]
         int[] data3 = {10, 5, 8, 2};
         int[] xpctd3 = {2, 10, 5, 8};
-        validateParition(math.partitionL(makeL(data3), 3), xpctd3);
+        validateListContent(math.partitionL(makeL(data3), 3), xpctd3);
         
         // partition([2, 3, 4, 2, 1, 1, 2], 5) => [2, 3, 4, 2, 1, 1, 2]
         int[] data4 = {2, 3, 4, 2, 1, 1, 2};
         int[] xpctd4 = data4;
-        validateParition(math.partitionL(makeL(data4), 5), xpctd4);
+        validateListContent(math.partitionL(makeL(data4), 5), xpctd4);
         
         // partition([], 10) => []
         assert math.partitionL(null, 3) == null;
@@ -327,12 +337,12 @@ public class mathTest {
         // partition([10, 11, 9, 8, 14], 3) => [10, 11, 9, 8, 14]
         int[] data5 = {10, 11, 9, 8, 14};
         int[] xpctd5 = data5;
-        validateParition(math.partitionL(makeL(data5), 5), xpctd5);
+        validateListContent(math.partitionL(makeL(data5), 5), xpctd5);
         
         // partition([10, 7, 9, 3], 3) => [10, 7, 9, 3]
         int[] data6 = {10, 7, 9, 3};
         int[] xpctd6 = data6;
-        validateParition(math.partitionL(makeL(data6), 3), xpctd6);
+        validateListContent(math.partitionL(makeL(data6), 3), xpctd6);
         
     }
     
@@ -344,7 +354,7 @@ public class mathTest {
         return l;
     }
     
-    private void validateParition(math.ListNode l, int[] xpctd) {
+    private void validateListContent(math.ListNode l, int[] xpctd) {
         for (int i = 0; i < xpctd.length; i++, l = l.next) {
             assert l != null && l.val == xpctd[i];
         }
@@ -362,7 +372,7 @@ public class mathTest {
         int p = 1;
         int[] xpctd = {1, 2, 3, 4};
         l = math.nthEnd(makeL(data4), p);
-        validateParition(l, xpctd);
+        validateListContent(l, xpctd);
         
         int[] data5 = { 1 };
         int[] xpctd5 = {};
@@ -373,7 +383,7 @@ public class mathTest {
         p = 5;
         int[] xpctd6 = {2, 3, 4, 5};
         l = math.nthEnd(makeL(data6), p);
-        validateParition(l, xpctd6);
+        validateListContent(l, xpctd6);
     }
     
     @Test
@@ -382,5 +392,15 @@ public class mathTest {
         for (String ip : ips) {
             System.out.println(ip);
         }
+    }
+    
+    @Test
+    public void makeMeAPrime() {
+        int n = 4763;
+        while (!math.isPrime(n)) {
+            n++;
+        }
+        System.out.println("Your prime is: " + n);
+        System.out.println("Happy now?");
     }
 }
