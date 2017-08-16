@@ -87,12 +87,10 @@ public class math {
             return false;
         }
         double sqrt = Math.sqrt(n);
-        for (int i = 3; i <= sqrt; i +=2) {
-            if (n % i == 0) {
-                return false;
-            }
+        int i = 3;
+        for (;i <= sqrt && (n % i != 0); i +=2) {
         }
-        return true;
+        return n % i == 0;
     }
 
     /**

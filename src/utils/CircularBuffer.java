@@ -46,7 +46,7 @@ public class CircularBuffer<T> {
      * @param data
      * @throws IllegalAccessException 
      */
-    public void append(T data) throws IllegalAccessException {
+    public void enqueue(T data) throws IllegalAccessException {
         if (w == r) {
             if (noOverflow) {
                 throw new IllegalAccessException("Write on full buffer");
@@ -68,7 +68,7 @@ public class CircularBuffer<T> {
      * @return
      * @throws IllegalAccessException 
      */
-    public T remove() throws IllegalAccessException {
+    public T dequeue() throws IllegalAccessException {
         if (r == -1) {
             throw new IllegalAccessException("Read on empty buffer");
         }
@@ -83,6 +83,9 @@ public class CircularBuffer<T> {
     
     /**
      * Return the item at the given index i. 
+     * 
+     * 
+     * 
      * Exception thrown if buffer is empty, or i does not satisfy 
      * 0 <= i < size().
      * 
