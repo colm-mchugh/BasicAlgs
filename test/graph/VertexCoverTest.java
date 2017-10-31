@@ -71,4 +71,45 @@ public class VertexCoverTest {
     private void verifyVertexCover(Set<Integer> vc, Graph<Integer> g) {
         // TODO: create an edge set of the graph
     }
+    
+    static class A {
+        int x;
+        public A() {
+            x = 3;
+        }
+        public int f() {
+            return x;
+        }
+        public int g() {
+            return x + f();
+        }
+    }
+    
+    static class B extends A {
+        int x;
+        public B() {
+            x = 30;
+        }
+        public int f() {
+            return x;
+        }
+    }
+    
+    static class C extends B {
+        int x;
+        public C() {
+            x = 300;
+        }
+        public int g() {
+            return x + f();
+        }
+    }
+    
+    @Test
+    public void testABC() {
+        A ainst = new C();
+        System.out.println(ainst.x);
+        System.out.println(ainst.f());
+        System.out.println(ainst.g());
+    }
 }

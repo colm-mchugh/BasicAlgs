@@ -5,11 +5,15 @@ import java.util.Map;
 
 public class KnapsackRcrsv extends Knapsack {
 
-    // wtf does this mean?? jesus. comments at time of inception *please*.
+    // For N items, j in 1..N, for each j, maintain the
+    // capacity to value pairs. Used to access previously
+    // computed knapsacks. For example, to get the value of
+    // the first 4 items at knapsack capacity 20:
+    // recMemo.get(4).get(20)
     private final Map<Integer, Map<Integer, Integer>> recMemo;
 
-    public KnapsackRcrsv(int knapSackWeight, int[] data) {
-        super(knapSackWeight, data);
+    public KnapsackRcrsv(int knapSackWeight, int[] valueWeightPairs) {
+        super(knapSackWeight, valueWeightPairs);
         recMemo = new HashMap<>();
         for (int i = -1; i < items.size(); i++) {
             recMemo.put(i, new HashMap<>());
@@ -51,7 +55,7 @@ public class KnapsackRcrsv extends Knapsack {
             int Vn = recMemo.get(n).get(w);
             if (recMemo.get(n - 1).get(w) != Vn) {
                 Item item = items.get(n);
-                item.decision = true;
+                item.isLive = true;
                 w = w - item.weight;
             }
         }

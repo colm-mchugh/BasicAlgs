@@ -6,11 +6,11 @@ import java.util.List;
 
 public class KnapsackGrdy extends Knapsack {
 
-    public KnapsackGrdy(int capacity, int[] data) {
-        super(capacity, data);
+    public KnapsackGrdy(int capacity, int[] valueWeightPairs) {
+        super(capacity, valueWeightPairs);
     }
 
-    public static int fractionalEstimate(List<Item> items, int capacity) {
+    public static void sortItems(List<Item> items) {
         // Sort the items in descending order of value / weight ratio
         Collections.sort(items, new Comparator<Knapsack.Item>() {
             @Override
@@ -28,24 +28,42 @@ public class KnapsackGrdy extends Knapsack {
                 return 0;
             }
         });
-        int v = 0, w = 0; 
         for (Item item : items) {
+            item.isLive = true;
+        }
+    }
+    
+    public static int sortedEstimate(List<Item> items, int capacity, boolean doFractionalEstimate) {
+        int v = 0, w = 0; 
+        int i;
+        boolean underCapacity = true;
+        for (i = 0; i < items.size() && underCapacity; i++) {
+            Item item = items.get(i);
+            if (!item.isLive) {
+                continue;
+            }
             if (w + item.weight < capacity) {
                 w += item.weight;
                 v += item.value;
-                item.decision = true;
+                item.isLive = true;
             } else {
                 // Item cannot fit in the knapsack. Include the fraction
                 // of the item value that fills up the capacity
-                return v + ((capacity - w) * item.value)/item.weight ; 
+                if (doFractionalEstimate) {
+                    v += ((capacity - w) * item.value)/item.weight ; 
+                }
+                underCapacity = false;
             }
         }
-        // items did not exhaust capacity
+        for (; i < items.size(); i++) {
+            items.get(i).isLive = false;
+        }
         return v;
     }
     
     @Override
     public int knapsack() {
-        return fractionalEstimate(this.items, this.knapSackCapacity);
+        sortItems(this.items);
+        return sortedEstimate(this.items, this.knapSackCapacity, false);
     }
 }

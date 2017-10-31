@@ -48,10 +48,10 @@ public class KnapsackBnB extends Knapsack {
         }
     }
     
-    public KnapsackBnB(int knapSackCapacity, int[] data, boolean fractional) {
-        super(knapSackCapacity, data);
+    public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean fractional) {
+        super(knapSackCapacity, valueWeightPairs);
         if (fractional) {
-            estimate = KnapsackGrdy.fractionalEstimate(items, knapSackCapacity);
+            estimate = KnapsackGrdy.sortedEstimate(items, knapSackCapacity, true);
         } else {
             estimate = 0;
             for (Item item : items) {

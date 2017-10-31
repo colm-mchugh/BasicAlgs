@@ -9,13 +9,13 @@ public abstract class Knapsack {
 
         public int value;
         public int weight;
-        public boolean decision;
+        public boolean isLive;
         public int id;
 
         public Item(int value, int weight, int id) {
             this.weight = weight;
             this.value = value;
-            this.decision = false;
+            this.isLive = false;
             this.id = id;
         }
 
@@ -39,11 +39,13 @@ public abstract class Knapsack {
     protected int knapSackCapacity;
     protected List<Item> items;
 
-    public Knapsack(int knapSackWeight, int[] data) {
+    public Knapsack(int knapSackWeight, int[] valueWeightPairs) {
         this.knapSackCapacity = knapSackWeight;
-        items = new ArrayList<>(data.length / 2);
-        for (int i = 0; i < data.length / 2; i++) {
-            items.add(new Knapsack.Item(data[2 * i], data[2 * i + 1], i + 1));
+        items = new ArrayList<>(valueWeightPairs.length / 2);
+        for (int i = 0; i < valueWeightPairs.length / 2; i++) {
+            int Vi = valueWeightPairs[2 * i];
+            int Wi = valueWeightPairs[2 * i + 1];
+            items.add(new Knapsack.Item(Vi, Wi, i + 1));
         }
     }
        
@@ -60,7 +62,7 @@ public abstract class Knapsack {
     public int[] decisionVector() {
         int[] decisionVec = new int[items.size()];
         for (Item item : items) {
-            decisionVec[item.id - 1] = (item.decision ? 1 : 0);                   
+            decisionVec[item.id - 1] = (item.isLive ? 1 : 0);                   
         }
         return decisionVec;
     }

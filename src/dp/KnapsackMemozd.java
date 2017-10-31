@@ -6,8 +6,8 @@ public class KnapsackMemozd extends Knapsack {
 
     private int[][] memo;
 
-    public KnapsackMemozd(int knapSackWeight, int[] data) {
-        super(knapSackWeight, data);
+    public KnapsackMemozd(int knapSackWeight, int[] valueWeightPairs) {
+        super(knapSackWeight, valueWeightPairs);
     }
 
     protected void printItems(PrintStream pw) {
@@ -47,13 +47,15 @@ public class KnapsackMemozd extends Knapsack {
         // For each item i, if its memoized value is the same as the value of
         // item i - 1, it is not in the knapsack. Otherwise include it and 
         // prune the weight.
-        int w = knapSackCapacity;
+        int remainingCapacity = knapSackCapacity;
         for (int n = items.size(); n > 0; n--) {
-            int Vn = memo[w][n];
-            if (memo[w][n-1] != Vn) {
-                Item item = items.get(n - 1);
-                item.decision = true;
-                w = w - item.weight;
+            int Vn = memo[remainingCapacity][n];
+            Item item = items.get(n - 1);
+            if (memo[remainingCapacity][n-1] != Vn) {
+                item.isLive = true;
+                remainingCapacity = remainingCapacity - item.weight;
+            } else {
+                item.isLive = false;
             }
         }
         return rv;
