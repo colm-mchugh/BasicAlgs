@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import utils.Stack;
 
 /**
  * Faithful transfer of Tarjan's algorithm for computing the strongly
@@ -17,34 +18,7 @@ public class CCTarjan<T> extends CCer<T> {
     
     private int pathIndex;
     private Stack<T> stack;
-    
-    private static class Stack<T> {
-        T[] items;
-        int i = 0;
-        int numResizes = 0;
-
-        public Stack() {
-            items = (T[]) new Object[8];
-            i = 0;
-        }
-        
-        public void Push(T data) {
-            if (i == items.length) {
-                T[] newItems = (T[]) new Comparable[(items.length * 2)];
-                System.arraycopy(this.items, 0, newItems, 0, i);
-                this.items = newItems;
-                this.numResizes++;
-            }
-            items[i++] = data;
-        }
-        
-        public T Pop() {
-            T data = items[--i];
-            return data;
-        }
-              
-    }
-    
+      
     public static class Node<T> {
         T v;
         int index;

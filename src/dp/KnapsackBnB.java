@@ -1,53 +1,36 @@
 package dp;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
+import utils.Stack;
 
 public class KnapsackBnB extends Knapsack {
 
     private Node best;
     private int estimate;
-    
+    private List<Item> sortedItems;
+
     // Branch and Bound knapsack - apply branch and bound strategy
     public static class Node {
+
         int value;
         int room;
         int estimate;
-        
-        Node left;
-        Node right;
 
         public Node(int value, int room, int estimate) {
             this.value = value;
             this.room = room;
             this.estimate = estimate;
-            this.left = null;
-            this.right = null;
-        }    
+        }
 
         @Override
         public String toString() {
             return "(" + value + ", " + room + ", " + estimate + ")";
         }
-        
-        
+
     }
-    
-    private void printSearchTree(Node root) {
-        Queue<Node> q = new ArrayDeque<>();
-        q.add(root);
-        while (!q.isEmpty()) {
-            Node nxt = q.remove();
-            if (nxt.left != null) {
-                q.add(nxt.left);
-            }
-            if (nxt.right != null) {
-                q.add(nxt.right);
-            }
-            System.out.println(nxt);
-        }
-    }
-    
+
     public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean fractional) {
         super(knapSackCapacity, valueWeightPairs);
         if (fractional) {
@@ -62,39 +45,58 @@ public class KnapsackBnB extends Knapsack {
 
     @Override
     public int knapsack() {
+        // Get initial estimate
+
         Node root = new Node(0, knapSackCapacity, estimate);
         best = root;
-        depthSearch(root, 0);
-        printSearchTree(root);
+        doDepthSearch(root);
         return best.value;
     }
-    
-    private void depthSearch(Node n, int level) {
-        if (n.room <= 0) {
-            return;
+
+    private void doDepthSearch(Node root) {
+        Stack<Node> searchSpace = new Stack<>();
+        int level = 0;
+
+        searchSpace.Push(root);
+
+        while (1 == 1) {
+            Item next = items.get(level);
+            Node top = searchSpace.Top();
+            Node nextNode = null;
+            if (top.room - next.weight < 0) {
+                // Cannot go further along this branch => exclude item from search
+                nextNode = new Node(top.value, top.room, estimateExcluding(next));
+                level++;
+            } else {
+                if (top.value + next.value < best.value) {
+                   // No point in going down this branch
+                } else {
+                    nextNode = new Node(top.value + next.value, top.room - next.weight, top.estimate);
+                    best = nextNode; 
+                    level++;
+                }
+            }
+            if (nextNode != null) {
+                searchSpace.Push(nextNode);
+            } else {
+                // what? 
+            }
+
         }
-        if (n.estimate < best.value) {
-            return;
-        }
-        if (n.value > best.value) {
-            best = n;
-        }
-        if (level >= items.size()) {
-            return;
-        }
-        Item item = items.get(level);
-        n.left = new Node(n.value + item.value, n.room - item.weight, n.estimate);
-        depthSearch(n.left, level + 1);
-        n.right = new Node(n.value, n.room, n.estimate - item.value);
-        depthSearch(n.right, level + 1);
     }
-    
+
+    private int estimateExcluding(Item excludedItem) {
+        // TODO: get the greedy estimate not considering the excluded item.
+        // Remove it from INs set and get the estimate.
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
     private void bestSearch(Node root) {
         Queue<Node> unexpanded = new ArrayDeque<>();
         unexpanded.add(root);
         while (!unexpanded.isEmpty()) {
             Node nxt = unexpanded.remove();
-            
+
         }
     }
 }
