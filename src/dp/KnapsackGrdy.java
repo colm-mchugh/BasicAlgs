@@ -28,35 +28,20 @@ public class KnapsackGrdy extends Knapsack {
                 return 0;
             }
         });
-        for (Item item : items) {
-            item.isLive = true;
-        }
     }
     
-    public static int sortedEstimate(List<Item> items, int capacity, boolean doFractionalEstimate) {
+    public static int sortedEstimate(List<Item> items, int capacity) {
         int v = 0, w = 0; 
         int i;
-        boolean underCapacity = true;
-        for (i = 0; i < items.size() && underCapacity; i++) {
+        for (i = 0; i < items.size(); i++) {
             Item item = items.get(i);
-            if (!item.isLive) {
-                continue;
-            }
             if (w + item.weight < capacity) {
                 w += item.weight;
                 v += item.value;
-                item.isLive = true;
             } else {
-                // Item cannot fit in the knapsack. Include the fraction
-                // of the item value that fills up the capacity
-                if (doFractionalEstimate) {
-                    v += ((capacity - w) * item.value)/item.weight ; 
-                }
-                underCapacity = false;
+                // Item, and subsequent items, cannot fit in the knapsack. Stop.
+                break;
             }
-        }
-        for (; i < items.size(); i++) {
-            items.get(i).isLive = false;
         }
         return v;
     }
@@ -64,6 +49,6 @@ public class KnapsackGrdy extends Knapsack {
     @Override
     public int knapsack() {
         sortItems(this.items);
-        return sortedEstimate(this.items, this.knapSackCapacity, false);
+        return sortedEstimate(this.items, this.knapSackCapacity);
     }
 }
