@@ -1,15 +1,18 @@
 package dp;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import utils.Stack;
 
 public class KnapsackBnB extends Knapsack {
 
     private Node best;
-    private List<Item> sortedItems;
+    private goal bestGoal;
     private Set<Item> OUTs;
     
     private static int numNodes = 0;
@@ -46,14 +49,75 @@ public class KnapsackBnB extends Knapsack {
     @Override
     public int knapsack() {
         // Get initial estimate
-        int estimate = getEstimate();
-        Node root = new Node(0, knapSackCapacity, estimate);
-        best = root;
-        doDepthSearch(root, 0);
-        System.out.println("Nodes allocated in search tree:" + numNodes);
-        return best.value;
+        //int estimate = getEstimate();
+        //Node root = new Node(0, knapSackCapacity, estimate);
+        //best = root;
+        //doDepthSearch(root, 0);
+        this.depthSearchItrtv();
+        System.out.print("nodes:" + numNodes);
+        return bestGoal.value;
     }
 
+    public static class goal implements Comparable<goal> {
+        final int value;
+        final int room;
+        final int estimate;
+        final int level;
+        final boolean live;
+        
+        public goal(int value, int room, int estimate, int level, boolean live) {
+            this.value = value;
+            this.room = room;
+            this.estimate = estimate;
+            this.level = level;
+            this.live = live;
+            numNodes++;
+        }
+
+        @Override
+        public int compareTo(goal o) {
+            if (this.value < o.value) {
+                return -1;
+            }
+            if (this.value == o.value) {
+                return 0;
+            }
+            return 1;
+        }
+    }
+    
+    private void depthSearchItrtv() {
+        goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
+        bestGoal = root;
+        int N = items.size();
+        BitSet bestSet;
+        BitSet live = new BitSet(N + 1);
+        Stack<goal> S = new Stack<>();
+        S.Push(root);
+        while (!S.isEmpty()) {
+            goal n = S.Pop();
+            if (n.room <= 0) {
+                continue;
+            }
+            if (n.estimate < bestGoal.value) {
+                continue;
+            }
+            if (n.value > bestGoal.value) {
+                bestGoal = n;
+                bestSet = live.get(0, live.size() - 1);
+            }
+            if (n.level >= N) {
+                continue;
+            }
+            live.set(n.level, n.live);
+            Item item = items.get(n.level);
+            S.Push(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true));
+            OUTs.remove(item);
+            S.Push(new goal(n.value, n.room, getEstimate(), n.level + 1, false));
+            OUTs.add(item);
+        }
+    }
+    
     private void doDepthSearch(Node n, int level) {
         if (n.room <= 0) {
             return;

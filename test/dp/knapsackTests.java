@@ -115,14 +115,13 @@ public class knapsackTests {
     @Test
     public void timeDepthSerach() {
         String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1", 
-            "ks_1000_0", "ks_10000_0", "ks_100_0", 
-            "ks_100_1", "ks_100_2", "ks_200_0", //"ks_300_0", 
-            "ks_400_0",
+            "ks_200_0", "ks_300_0", "ks_100_0", "ks_100_1", "ks_100_2",
+            "ks_400_0", "ks_1000_0", "ks_10000_0"
         };
         System.out.println("timeDepthSearch");
         for (String spec : ksSpecs) {
             KnapsackData k = this.readData("resources/knapsack/" + spec);
-            System.out.print(spec + ":");
+            System.out.print(spec + ": ");
             Knapsack ks = new KnapsackBnB(k.weight, k.data);
             long now = System.currentTimeMillis();
             int ksW = ks.knapsack();

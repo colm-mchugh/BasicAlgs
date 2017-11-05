@@ -30,4 +30,8 @@ public class Stack<T> {
         return items[i-1];
     }
 
+    public boolean isEmpty() {
+        return i == 0;
+    }
+
 }
