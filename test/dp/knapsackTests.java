@@ -107,31 +107,37 @@ public class knapsackTests {
     public void testDepthSearch() {
         int[] data = {45, 5, 48, 8, 35, 3};
         int cap = 10;
-        Knapsack dfSrchr = new KnapsackBnB(cap, data);
+        Knapsack dfSrchr = new KnapsackBnB(cap, data, KnapsackBnB.DEPTH_FIRST);
         int estimate = dfSrchr.knapsack();
         assert estimate == 80;
     }
 
     @Test
-    public void timeDepthSerach() {
-        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1", 
+    public void timeBBSerach() {
+        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1",
             "ks_200_0", "ks_300_0", "ks_100_0", "ks_100_1", "ks_100_2",
             "ks_400_0", "ks_1000_0", "ks_10000_0"
         };
-        System.out.println("timeDepthSearch");
-        for (String spec : ksSpecs) {
-            KnapsackData k = this.readData("resources/knapsack/" + spec);
-            System.out.print(spec + ": ");
-            Knapsack ks = new KnapsackBnB(k.weight, k.data);
-            long now = System.currentTimeMillis();
-            int ksW = ks.knapsack();
-            System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now));
+        boolean[] strategies = {
+            KnapsackBnB.DEPTH_FIRST, 
+            KnapsackBnB.BREADTH_FIRST
+        };
+        for (boolean strategy : strategies) {
+            System.out.println((strategy == KnapsackBnB.DEPTH_FIRST ? "DepthSearch" : "BreadthSearch"));
+            for (String spec : ksSpecs) {
+                KnapsackData k = this.readData("resources/knapsack/" + spec);
+                System.out.print(spec + ": ");
+                Knapsack ks = new KnapsackBnB(k.weight, k.data, strategy);
+                long now = System.currentTimeMillis();
+                int ksW = ks.knapsack();
+                System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now));
+            }
         }
     }
 
     @Test
     public void timeRecursive() {
-        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1", "ks_100_0", 
+        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1", "ks_100_0",
             "ks_100_1", "ks_100_2", "ks_200_0", //"ks_300_0", 
             "ks_400_0"
         };
