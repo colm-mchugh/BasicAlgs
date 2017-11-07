@@ -9,9 +9,8 @@ import utils.Stack;
 
 public class KnapsackBnB extends Knapsack {
 
-    private Node best;
     private goal bestGoal;
-    private Set<Item> OUTs;
+    private final Set<Item> OUTs;
     private final boolean searchStrategy;
     
     public final static boolean DEPTH_FIRST = true;
@@ -19,28 +18,6 @@ public class KnapsackBnB extends Knapsack {
     
     private static int numNodes = 0;
     // Branch and Bound knapsack - apply branch and bound strategy
-    public static class Node {
-
-        final int value;
-        final int room;
-        final int estimate;
-        Node left, right;
-
-        public Node(int value, int room, int estimate) {
-            this.value = value;
-            this.room = room;
-            this.estimate = estimate;
-            this.left = null;
-            this.right = null;
-            numNodes++;
-        }
-
-        @Override
-        public String toString() {
-            return "(" + value + ", " + room + ", " + estimate + ")";
-        }
-
-    }
 
     public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean searchStrategy) {
         super(knapSackCapacity, valueWeightPairs);
@@ -127,28 +104,6 @@ public class KnapsackBnB extends Knapsack {
         }
     }
     
-    private void depthSearchRcrsv(Node n, int level) {
-        if (n.room <= 0) {
-            return;
-        }
-        if (n.estimate < best.value) {
-            return;
-        }
-        if (n.value > best.value) {
-            best = n;
-        }
-        if (level >= items.size()) {
-            return;
-        }
-        Item item = items.get(level);
-        n.left = new Node(n.value + item.value, n.room - item.weight, n.estimate);
-        depthSearchRcrsv(n.left, level + 1);
-        OUTs.remove(item);
-        n.right = new Node(n.value, n.room, getEstimate());
-        depthSearchRcrsv(n.right, level + 1);
-        OUTs.add(item);      
-    }
-
     private int getEstimate() {
         int v = 0, w = 0; 
         boolean underCapacity = true;
@@ -199,8 +154,7 @@ public class KnapsackBnB extends Knapsack {
         goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
         bestGoal = root;
         int N = items.size();
-        BitSet bestSet;
-        BitSet live = new BitSet(N + 1);
+        BitSet bestSet = new BitSet(N + 1);
         
         unexpanded.add(root);
         while (!unexpanded.isEmpty()) {
@@ -213,7 +167,6 @@ public class KnapsackBnB extends Knapsack {
             }
             if (n.value > bestGoal.value) {
                 bestGoal = n;
-                bestSet = live.get(0, live.size() - 1);
             }
             if (n.level >= N) {
                 continue;
@@ -227,7 +180,6 @@ public class KnapsackBnB extends Knapsack {
                     levelIndex = prevLevelIndex + 1;
                 } 
             }
-            live.set(n.level, n.live);
             Item item = items.get(n.level);
             unexpanded.add(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true));
             unexpanded.peekLast().levelIndex = levelIndex;
@@ -236,9 +188,16 @@ public class KnapsackBnB extends Knapsack {
             unexpanded.peekLast().levelIndex = levelIndex;
             OUTs.add(item);
         }
-        // TODO: starting at bestGoal, compute the set of items that make up the knapsack.
+        // Starting at bestGoal, compute the set of items that make up the knapsack.
         // If levelIndex % 2 == 0 => include the item, else exclude it.
-        // The parent of a goal is: (levelIndex + 1 << level) / 
+        // The parent of a goal is: (levelIndex + 1 << level) / 2
+        for (int level = bestGoal.level, levelIndex = bestGoal.levelIndex; level > 0; level--) {
+            if (levelIndex % 2 == 0) {
+                bestSet.set(level);
+                this.items.get(level - 1).isLive = true;
+            }
+            levelIndex = (levelIndex + 1 << level) / 2 - (1 << (level - 1)) ; 
+        }
     }
     
     // TODO: Limited Discrepancy Search
