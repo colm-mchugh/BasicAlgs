@@ -28,17 +28,17 @@ public class KnapsackBnB extends Knapsack {
 
     @Override
     public int knapsack() {
-        // Get initial estimate
-        //int estimate = getEstimate();
-        //Node root = new Node(0, knapSackCapacity, estimate);
-        //best = root;
-        //doDepthSearch(root, 0);
         if (this.searchStrategy == DEPTH_FIRST) {
-            this.depthSearchItrtv();
+            this.depthSearch();
         }
         if (this.searchStrategy == BREADTH_FIRST) {
-            this.bestSearch();
+            this.breadthSearch();
         }
+        int checkValue = 0;
+        for (Item item : items) {
+            checkValue += (item.isLive? item.value : 0);
+        }
+        assert (checkValue != bestGoal.value);
         System.out.print("nodes:" + numNodes);
         return bestGoal.value;
     }
@@ -72,12 +72,12 @@ public class KnapsackBnB extends Knapsack {
         }
     }
     
-    private void depthSearchItrtv() {
+    private void depthSearch() {
         goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
         bestGoal = root;
         int N = items.size();
-        BitSet bestSet;
         BitSet live = new BitSet(N + 1);
+        BitSet bestSet = live;
         Stack<goal> S = new Stack<>();
         S.Push(root);
         while (!S.isEmpty()) {
@@ -101,6 +101,9 @@ public class KnapsackBnB extends Knapsack {
             OUTs.remove(item);
             S.Push(new goal(n.value, n.room, getEstimate(live, n.level + 1), n.level + 1, true));
             OUTs.add(item);
+        }
+        for (int i = 1; i <= N; i++) {
+            items.get(i - 1).isLive = bestSet.get(i);
         }
     }
     
@@ -149,7 +152,7 @@ public class KnapsackBnB extends Knapsack {
         return v;
     }
     
-    private void bestSearch() {
+    private void breadthSearch() {
         Deque<goal> unexpanded = new ArrayDeque<>();
         goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
         bestGoal = root;

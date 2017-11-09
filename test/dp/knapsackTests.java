@@ -131,6 +131,13 @@ public class knapsackTests {
                 long now = System.currentTimeMillis();
                 int ksW = ks.knapsack();
                 System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now));
+                int[] dvKs = ks.decisionVector();
+                System.out.print("Decision vector: [");
+                for (int d : dvKs) {
+                    System.out.print(d);
+                    System.out.print(", ");
+                }
+                System.out.println("]");
             }
         }
     }
