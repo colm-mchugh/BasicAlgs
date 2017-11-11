@@ -107,7 +107,7 @@ public class knapsackTests {
     public void testDepthSearch() {
         int[] data = {45, 5, 48, 8, 35, 3};
         int cap = 10;
-        Knapsack dfSrchr = new KnapsackBnB(cap, data, KnapsackBnB.DEPTH_FIRST);
+        Knapsack dfSrchr = new KnapsackBnB(cap, data, KnapsackBnB.DEPTH_FIRST, false);
         int estimate = dfSrchr.knapsack();
         assert estimate == 80;
     }
@@ -123,7 +123,7 @@ public class knapsackTests {
             for (String spec : ksSpecs) {
                 KnapsackData k = this.readData("resources/knapsack/" + spec);
                 System.out.print(spec + ": ");
-                Knapsack ks = new KnapsackBnB(k.weight, k.data, strategy);
+                Knapsack ks = new KnapsackBnB(k.weight, k.data, strategy, false);
                 long now = System.currentTimeMillis();
                 int ksW = ks.knapsack();
                 System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now));
@@ -170,7 +170,7 @@ public class knapsackTests {
             for (String spec : ksSpecs) {
                 KnapsackData k = this.readData("resources/knapsack/" + spec);
                 System.out.print(spec + ": ");
-                Knapsack ks = new KnapsackBnB(k.weight, k.data, strategy);
+                Knapsack ks = new KnapsackBnB(k.weight, k.data, strategy, false);
                 long now = System.currentTimeMillis();
                 int ksW = ks.knapsack();
                 System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now) + ", Sum_liveitems=" + ks.sumLiveItems());

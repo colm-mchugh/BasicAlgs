@@ -22,9 +22,13 @@ public class KnapsackBnB extends Knapsack {
     private static int numNodes = 0;
     // Branch and Bound knapsack - apply branch and bound strategy
 
-    public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean searchStrategy) {
+    public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean searchStrategy, boolean useSortedItems) {
         super(knapSackCapacity, valueWeightPairs);
-        sortedItems = new ArrayList<Item>(items);
+        if (useSortedItems) {
+            sortedItems = items;
+        } else {
+            sortedItems = new ArrayList<Item>(items);
+        }
         KnapsackGrdy.sortItems(sortedItems);
         this.OUTs = new HashSet<>(items.size());
         this.searchStrategy = searchStrategy;
