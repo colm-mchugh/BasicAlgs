@@ -66,4 +66,12 @@ public abstract class Knapsack {
         }
         return decisionVec;
     }
+    
+    public int sumLiveItems() {
+        int sum = 0;
+        for (Item item : items) {
+            sum += (item.isLive ? item.value : 0);
+        }
+        return sum;
+    }
 }

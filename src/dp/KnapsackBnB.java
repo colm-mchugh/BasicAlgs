@@ -1,9 +1,11 @@
 package dp;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import utils.Stack;
 
@@ -11,17 +13,19 @@ public class KnapsackBnB extends Knapsack {
 
     private goal bestGoal;
     private final Set<Item> OUTs;
+    private final List<Item> sortedItems;
     private final boolean searchStrategy;
-    
+
     public final static boolean DEPTH_FIRST = true;
     public final static boolean BREADTH_FIRST = false;
-    
+
     private static int numNodes = 0;
     // Branch and Bound knapsack - apply branch and bound strategy
 
     public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean searchStrategy) {
         super(knapSackCapacity, valueWeightPairs);
-        KnapsackGrdy.sortItems(items);
+        sortedItems = new ArrayList<Item>(items);
+        KnapsackGrdy.sortItems(sortedItems);
         this.OUTs = new HashSet<>(items.size());
         this.searchStrategy = searchStrategy;
     }
@@ -34,23 +38,18 @@ public class KnapsackBnB extends Knapsack {
         if (this.searchStrategy == BREADTH_FIRST) {
             this.breadthSearch();
         }
-        int checkValue = 0;
-        for (Item item : items) {
-            checkValue += (item.isLive? item.value : 0);
-        }
-        assert (checkValue != bestGoal.value);
-        System.out.print("nodes:" + numNodes);
         return bestGoal.value;
     }
 
     public static class goal implements Comparable<goal> {
+
         final int value;
         final int room;
         final int estimate;
         final int level;
         final boolean live;
         int levelIndex;
-        
+
         public goal(int value, int room, int estimate, int level, boolean live) {
             this.value = value;
             this.room = room;
@@ -71,7 +70,7 @@ public class KnapsackBnB extends Knapsack {
             return 1;
         }
     }
-    
+
     private void depthSearch() {
         goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
         bestGoal = root;
@@ -88,19 +87,19 @@ public class KnapsackBnB extends Knapsack {
             if (n.estimate < bestGoal.value) {
                 continue;
             }
-            if (n.value > bestGoal.value) {
-                bestGoal = n;
-                bestSet = live.get(0, live.size() - 1);
-            }
             if (n.level >= N) {
                 continue;
             }
             live.set(n.level, n.live);
+            if (n.value > bestGoal.value) {
+                bestGoal = n;
+                bestSet = live.get(0, live.size() - 1);
+            }
             Item item = items.get(n.level);
-            S.Push(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, false));
             OUTs.remove(item);
-            S.Push(new goal(n.value, n.room, getEstimate(live, n.level + 1), n.level + 1, true));
+            S.Push(new goal(n.value, n.room, getEstimate(live, n.level + 1), n.level + 1, false));
             OUTs.add(item);
+            S.Push(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true));
         }
         for (int i = 1; i <= N; i++) {
             items.get(i - 1).isLive = bestSet.get(i);
@@ -108,10 +107,10 @@ public class KnapsackBnB extends Knapsack {
     }
     
     private int getEstimate() {
-        int v = 0, w = 0; 
+        int v = 0, w = 0;
         boolean underCapacity = true;
-        for (int i = 0; i < items.size() && underCapacity; i++) {
-            Item item = items.get(i);
+        for (int i = 0; i < sortedItems.size() && underCapacity; i++) {
+            Item item = sortedItems.get(i);
             if (OUTs.contains(item)) {
                 continue;
             }
@@ -121,22 +120,22 @@ public class KnapsackBnB extends Knapsack {
             } else {
                 // Item cannot fit in the knapsack. Include the fraction
                 // of the item value that fills up the capacity
-                v += ((this.knapSackCapacity - w) * item.value)/item.weight ; 
+                v += ((this.knapSackCapacity - w) * item.value) / item.weight;
                 underCapacity = false;
             }
         }
         return v;
     }
-    
+
     private int getEstimate(BitSet live, int level) {
-        int v = 0, w = 0; 
+        int v = 0, w = 0;
         boolean underCapacity = true;
-        for (int i = 0; i < items.size() && underCapacity; i++) {
-            Item item = items.get(i);
+        for (int i = 0; i < sortedItems.size() && underCapacity; i++) {
+            Item item = sortedItems.get(i);
             if (OUTs.contains(item)) {
                 continue;
             }
-            if (i + 1 <= level && !live.get(i+1)) {
+            if (i + 1 <= level && !live.get(i + 1)) {
                 continue;
             }
             if (w + item.weight < this.knapSackCapacity) {
@@ -145,20 +144,20 @@ public class KnapsackBnB extends Knapsack {
             } else {
                 // Item cannot fit in the knapsack. Include the fraction
                 // of the item value that fills up the capacity
-                v += ((this.knapSackCapacity - w) * item.value)/item.weight ; 
+                v += ((this.knapSackCapacity - w) * item.value) / item.weight;
                 underCapacity = false;
             }
         }
         return v;
     }
-    
+
     private void breadthSearch() {
         Deque<goal> unexpanded = new ArrayDeque<>();
         goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
         bestGoal = root;
         int N = items.size();
         BitSet bestSet = new BitSet(N + 1);
-        
+
         unexpanded.add(root);
         while (!unexpanded.isEmpty()) {
             goal n = unexpanded.remove();
@@ -181,7 +180,7 @@ public class KnapsackBnB extends Knapsack {
                 int prevLevel = prevGoal.level;
                 if (prevLevelIndex < (1 << prevLevel) - 1) {
                     levelIndex = prevLevelIndex + 1;
-                } 
+                }
             }
             Item item = items.get(n.level);
             unexpanded.add(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true));
@@ -199,10 +198,10 @@ public class KnapsackBnB extends Knapsack {
                 bestSet.set(level);
                 this.items.get(level - 1).isLive = true;
             }
-            levelIndex = (levelIndex + 1 << level) / 2 - (1 << (level - 1)) ; 
+            levelIndex = (levelIndex + 1 << level) / 2 - (1 << (level - 1));
         }
     }
-    
+
     // TODO: Limited Discrepancy Search
     // For N items, generate all possible set permutatatios with k zeroes, (N - k) ones
     // for k in 0..N

@@ -113,14 +113,10 @@ public class knapsackTests {
     }
 
     @Test
-    public void timeBBSerach() {
-        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1",
-            "ks_200_0", "ks_300_0", "ks_100_0", "ks_100_1", "ks_100_2",
-            "ks_400_0", "ks_1000_0", "ks_10000_0"
-        };
+    public void debugDecisionVectors() {
+        String[] ksSpecs = {"ks_45_0",};
         boolean[] strategies = {
-            KnapsackBnB.DEPTH_FIRST, 
-            KnapsackBnB.BREADTH_FIRST
+            KnapsackBnB.DEPTH_FIRST, //KnapsackBnB.BREADTH_FIRST
         };
         for (boolean strategy : strategies) {
             System.out.println((strategy == KnapsackBnB.DEPTH_FIRST ? "DepthSearch" : "BreadthSearch"));
@@ -138,6 +134,53 @@ public class knapsackTests {
                     System.out.print(", ");
                 }
                 System.out.println("]");
+                System.out.println("Sum liveitems =" + ks.sumLiveItems());
+            }
+        }
+        for (String spec : ksSpecs) {
+            KnapsackData k = this.readData("resources/knapsack/" + spec);
+            System.out.print(spec + ": ");
+            Knapsack ks = new KnapsackMemozd(k.weight, k.data);
+            long now = System.currentTimeMillis();
+            int ksW = ks.knapsack();
+            System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now));
+            int[] dvKs = ks.decisionVector();
+            System.out.print("Decision vector: [");
+            for (int d : dvKs) {
+                System.out.print(d);
+                System.out.print(", ");
+            }
+            System.out.println("]");
+            System.out.println("Sum liveitems =" + ks.sumLiveItems());
+        }
+    }
+
+    @Test
+    public void timeBBSerach() {
+        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1",
+            "ks_200_0", "ks_300_0", "ks_100_0", "ks_100_1", "ks_100_2",
+            "ks_400_0", "ks_1000_0", "ks_10000_0"
+        };
+        boolean[] strategies = {
+            KnapsackBnB.DEPTH_FIRST,
+            KnapsackBnB.BREADTH_FIRST
+        };
+        for (boolean strategy : strategies) {
+            System.out.println((strategy == KnapsackBnB.DEPTH_FIRST ? "DepthSearch" : "BreadthSearch"));
+            for (String spec : ksSpecs) {
+                KnapsackData k = this.readData("resources/knapsack/" + spec);
+                System.out.print(spec + ": ");
+                Knapsack ks = new KnapsackBnB(k.weight, k.data, strategy);
+                long now = System.currentTimeMillis();
+                int ksW = ks.knapsack();
+                System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now) + ", Sum_liveitems=" + ks.sumLiveItems());
+                int[] dvKs = ks.decisionVector();
+                /*System.out.print("Decision vector: [");
+                for (int d : dvKs) {
+                    System.out.print(d);
+                    System.out.print(", ");
+                }
+                System.out.println("]");*/
             }
         }
     }
