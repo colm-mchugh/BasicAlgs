@@ -170,10 +170,10 @@ public class knapsackTests {
             for (String spec : ksSpecs) {
                 KnapsackData k = this.readData("resources/knapsack/" + spec);
                 System.out.print(spec + ": ");
-                Knapsack ks = new KnapsackBnB(k.weight, k.data, strategy, false);
+                KnapsackBnB ks = new KnapsackBnB(k.weight, k.data, strategy, true);
                 long now = System.currentTimeMillis();
                 int ksW = ks.knapsack();
-                System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now) + ", Sum_liveitems=" + ks.sumLiveItems());
+                System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now) + ", Sum_liveitems=" + ks.sumLiveItems() + ", numNodes=" + ks.numNodes);
                 int[] dvKs = ks.decisionVector();
                 /*System.out.print("Decision vector: [");
                 for (int d : dvKs) {

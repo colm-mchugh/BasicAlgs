@@ -19,7 +19,7 @@ public class KnapsackBnB extends Knapsack {
     public final static boolean DEPTH_FIRST = true;
     public final static boolean BREADTH_FIRST = false;
 
-    private static int numNodes = 0;
+    public static int numNodes = 0;
     // Branch and Bound knapsack - apply branch and bound strategy
 
     public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean searchStrategy, boolean useSortedItems) {
@@ -52,14 +52,15 @@ public class KnapsackBnB extends Knapsack {
         final int estimate;
         final int level;
         final boolean live;
-        int levelIndex;
+        final int levelIndex;
 
-        public goal(int value, int room, int estimate, int level, boolean live) {
+        public goal(int value, int room, int estimate, int level, boolean live, int levelIndex) {
             this.value = value;
             this.room = room;
             this.estimate = estimate;
             this.level = level;
             this.live = live;
+            this.levelIndex = levelIndex;
             numNodes++;
         }
 
@@ -76,7 +77,7 @@ public class KnapsackBnB extends Knapsack {
     }
 
     private void depthSearch() {
-        goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
+        goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false, 0);
         bestGoal = root;
         int N = items.size();
         BitSet live = new BitSet(N + 1);
@@ -101,15 +102,15 @@ public class KnapsackBnB extends Knapsack {
             }
             Item item = items.get(n.level);
             OUTs.remove(item);
-            S.Push(new goal(n.value, n.room, getEstimate(live, n.level + 1), n.level + 1, false));
+            S.Push(new goal(n.value, n.room, getEstimate(live, n.level + 1), n.level + 1, false, 0));
             OUTs.add(item);
-            S.Push(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true));
+            S.Push(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true, 0));
         }
         for (int i = 1; i <= N; i++) {
             items.get(i - 1).isLive = bestSet.get(i);
         }
     }
-    
+
     private int getEstimate() {
         int v = 0, w = 0;
         boolean underCapacity = true;
@@ -157,7 +158,7 @@ public class KnapsackBnB extends Knapsack {
 
     private void breadthSearch() {
         Deque<goal> unexpanded = new ArrayDeque<>();
-        goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false);
+        goal root = new goal(0, knapSackCapacity, getEstimate(), 0, false, 1);
         bestGoal = root;
         int N = items.size();
         BitSet bestSet = new BitSet(N + 1);
@@ -171,13 +172,13 @@ public class KnapsackBnB extends Knapsack {
             if (n.estimate < bestGoal.value) {
                 continue;
             }
-            if (n.value > bestGoal.value) {
-                bestGoal = n;
-            }
             if (n.level >= N) {
                 continue;
             }
-            int levelIndex = 0;
+            if (n.value > bestGoal.value) {
+                bestGoal = n;
+            }
+            int levelIndex = 1;
             if (!unexpanded.isEmpty()) {
                 goal prevGoal = unexpanded.peekLast();
                 int prevLevelIndex = prevGoal.levelIndex;
@@ -187,17 +188,16 @@ public class KnapsackBnB extends Knapsack {
                 }
             }
             Item item = items.get(n.level);
-            unexpanded.add(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true));
-            unexpanded.peekLast().levelIndex = levelIndex;
+            unexpanded.add(new goal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true, levelIndex));
             OUTs.remove(item);
-            unexpanded.add(new goal(n.value, n.room, getEstimate(), n.level + 1, false));
-            unexpanded.peekLast().levelIndex = levelIndex;
+            unexpanded.add(new goal(n.value, n.room, getEstimate(), n.level + 1, false, levelIndex));
             OUTs.add(item);
         }
         // Starting at bestGoal, compute the set of items that make up the knapsack.
         // If levelIndex % 2 == 0 => include the item, else exclude it.
         // The parent of a goal is: (levelIndex + 1 << level) / 2
         for (int level = bestGoal.level, levelIndex = bestGoal.levelIndex; level > 0; level--) {
+            System.out.println("level=" +level + ", levelindex=" + levelIndex);
             if (levelIndex % 2 == 0) {
                 bestSet.set(level);
                 this.items.get(level - 1).isLive = true;
