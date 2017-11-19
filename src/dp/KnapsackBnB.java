@@ -92,7 +92,7 @@ public class KnapsackBnB extends Knapsack {
             if (n.estimate < bestGoal.value) {
                 continue;
             }
-            if (n.level >= N) {
+            if (n.level > N) {
                 continue;
             }
             live.set(n.level, n.live);
@@ -197,7 +197,7 @@ public class KnapsackBnB extends Knapsack {
         // If levelIndex % 2 == 0 => include the item, else exclude it.
         // The parent of a goal is: (levelIndex + 1 << level) / 2
         for (int level = bestGoal.level, levelIndex = bestGoal.levelIndex; level > 0; level--) {
-            System.out.println("level=" +level + ", levelindex=" + levelIndex);
+            System.out.println("level=" + level + ", levelindex=" + levelIndex);
             if (levelIndex % 2 == 0) {
                 bestSet.set(level);
                 this.items.get(level - 1).isLive = true;
@@ -209,4 +209,15 @@ public class KnapsackBnB extends Knapsack {
     // TODO: Limited Discrepancy Search
     // For N items, generate all possible set permutatatios with k zeroes, (N - k) ones
     // for k in 0..N
+    public static class ldsGoal extends goal {
+        int d;
+        int t;
+
+        public ldsGoal(int value, int room, int estimate, int level, boolean live, int levelIndex, int t, int d) {
+            super(value, room, estimate, level, live, levelIndex);
+            this.d = d;
+            this.t = t;
+        }
+    }
+
 }

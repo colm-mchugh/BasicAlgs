@@ -22,16 +22,25 @@ public class Stack<T> {
     }
 
     public T Pop() {
-        T data = items[--i];
+        assert (!this.isEmpty());
+        T data = items[i - 1];
+        items[i - 1] = null;
+        i--;
         return data;
     }
-    
+
     public T Top() {
-        return items[i-1];
+        assert (!this.isEmpty());
+        return items[i - 1];
     }
 
     public boolean isEmpty() {
         return i == 0;
     }
 
+    public void Clear() {
+        while (i > 0) {
+            items[--i] = null;
+        }
+    }
 }
