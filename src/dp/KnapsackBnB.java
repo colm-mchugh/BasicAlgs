@@ -11,18 +11,21 @@ import utils.Stack;
 
 public class KnapsackBnB extends Knapsack {
 
+    public enum Strategy {
+        DEPTH_FIRST,
+        BREADTH_FIRST,
+        LDS
+    }
+
     private goal bestGoal;
     private final Set<Item> OUTs;
     private final List<Item> sortedItems;
-    private final boolean searchStrategy;
-
-    public final static boolean DEPTH_FIRST = true;
-    public final static boolean BREADTH_FIRST = false;
+    private final Strategy searchStrategy;
 
     public static int numNodes = 0;
     // Branch and Bound knapsack - apply branch and bound strategy
 
-    public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, boolean searchStrategy, boolean useSortedItems) {
+    public KnapsackBnB(int knapSackCapacity, int[] valueWeightPairs, Strategy searchStrategy, boolean useSortedItems) {
         super(knapSackCapacity, valueWeightPairs);
         if (useSortedItems) {
             sortedItems = items;
@@ -36,11 +39,16 @@ public class KnapsackBnB extends Knapsack {
 
     @Override
     public int knapsack() {
-        if (this.searchStrategy == DEPTH_FIRST) {
-            this.depthSearch();
-        }
-        if (this.searchStrategy == BREADTH_FIRST) {
-            this.breadthSearch();
+        switch (this.searchStrategy) {
+            case BREADTH_FIRST:
+                this.breadthSearch();
+                break;
+            case DEPTH_FIRST:
+                this.depthSearch();
+                break;
+            case LDS:
+                this.ldsSearch();
+                break;
         }
         return bestGoal.value;
     }
@@ -210,6 +218,7 @@ public class KnapsackBnB extends Knapsack {
     // For N items, generate all possible set permutatatios with k zeroes, (N - k) ones
     // for k in 0..N
     public static class ldsGoal extends goal {
+
         int d;
         int t;
 
@@ -217,6 +226,48 @@ public class KnapsackBnB extends Knapsack {
             super(value, room, estimate, level, live, levelIndex);
             this.d = d;
             this.t = t;
+        }
+    }
+
+    private void ldsSearch() {
+        int N = items.size();
+        BitSet live = new BitSet(N + 1);
+        BitSet bestSet = live;
+        int baseEstimate = getEstimate();
+        Stack<ldsGoal> S = new Stack<>();
+        for (int d = 0; d <= N; d++) {
+            ldsGoal root = new ldsGoal(0, knapSackCapacity, baseEstimate, 0, false, 0, d, N - d);
+            bestGoal = root;
+            S.Push(root);
+            while (!S.isEmpty()) {
+                ldsGoal n = S.Pop();
+                if (n.room <= 0) {
+                    continue;
+                }
+                if (n.estimate < bestGoal.value) {
+                    continue;
+                }
+                if (n.level > N) {
+                    continue;
+                }
+                live.set(n.level, n.live);
+                if (n.value > bestGoal.value) {
+                    bestGoal = n;
+                    bestSet = live.get(0, live.size() - 1);
+                }
+                Item item = items.get(n.level);
+                if (n.d > 0) {
+                    OUTs.remove(item);
+                    S.Push(new ldsGoal(n.value, n.room, getEstimate(live, n.level + 1), n.level + 1, false, 0, n.d - 1, n.t));
+                    OUTs.add(item);
+                }
+                if (n.t > 0) {
+                    S.Push(new ldsGoal(n.value + item.value, n.room - item.weight, n.estimate, n.level + 1, true, 0, n.d, n.t - 1));
+                }
+            }
+            for (int i = 1; i <= N; i++) {
+                items.get(i - 1).isLive = bestSet.get(i);
+            }
         }
     }
 

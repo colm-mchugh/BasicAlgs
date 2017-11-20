@@ -107,7 +107,7 @@ public class knapsackTests {
     public void testDepthSearch() {
         int[] data = {45, 5, 48, 8, 35, 3};
         int cap = 10;
-        Knapsack dfSrchr = new KnapsackBnB(cap, data, KnapsackBnB.DEPTH_FIRST, false);
+        Knapsack dfSrchr = new KnapsackBnB(cap, data, KnapsackBnB.Strategy.DEPTH_FIRST, false);
         int estimate = dfSrchr.knapsack();
         assert estimate == 80;
     }
@@ -115,11 +115,11 @@ public class knapsackTests {
     @Test
     public void debugDecisionVectors() {
         String[] ksSpecs = {"ks_45_0",};
-        boolean[] strategies = {
-            KnapsackBnB.DEPTH_FIRST, //KnapsackBnB.BREADTH_FIRST
+        KnapsackBnB.Strategy[] strategies = {
+            KnapsackBnB.Strategy.DEPTH_FIRST, 
         };
-        for (boolean strategy : strategies) {
-            System.out.println((strategy == KnapsackBnB.DEPTH_FIRST ? "DepthSearch" : "BreadthSearch"));
+        for (KnapsackBnB.Strategy strategy : strategies) {
+            System.out.println((strategy == KnapsackBnB.Strategy.DEPTH_FIRST ? "DepthSearch" : "BreadthSearch"));
             for (String spec : ksSpecs) {
                 KnapsackData k = this.readData("resources/knapsack/" + spec);
                 System.out.print(spec + ": ");
@@ -157,16 +157,17 @@ public class knapsackTests {
 
     @Test
     public void timeBBSerach() {
-        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1",
-            "ks_200_0", "ks_300_0", "ks_100_0", "ks_100_1", "ks_100_2",
-            "ks_400_0", "ks_1000_0", "ks_10000_0"
+        String[] ksSpecs = { "ks_40_0", "ks_45_0", "ks_100_0", 
+            "ks_100_1", "ks_100_2", "ks_200_0", "ks_200_1", 
+            "ks_300_0", "ks_400_0", "ks_1000_0", "ks_10000_0"
         };
-        boolean[] strategies = {
-            KnapsackBnB.DEPTH_FIRST,
-            KnapsackBnB.BREADTH_FIRST
+        KnapsackBnB.Strategy[] strategies = {
+            KnapsackBnB.Strategy.DEPTH_FIRST,
+            KnapsackBnB.Strategy.BREADTH_FIRST,
+            KnapsackBnB.Strategy.LDS
         };
-        for (boolean strategy : strategies) {
-            System.out.println((strategy == KnapsackBnB.DEPTH_FIRST ? "DepthSearch" : "BreadthSearch"));
+        for (KnapsackBnB.Strategy strategy : strategies) {
+            System.out.println(strategy);
             for (String spec : ksSpecs) {
                 KnapsackData k = this.readData("resources/knapsack/" + spec);
                 System.out.print(spec + ": ");
@@ -174,22 +175,14 @@ public class knapsackTests {
                 long now = System.currentTimeMillis();
                 int ksW = ks.knapsack();
                 System.out.println(" value:" + ksW + ", time:" + (System.currentTimeMillis() - now) + ", Sum_liveitems=" + ks.sumLiveItems() + ", numNodes=" + ks.numNodes);
-                int[] dvKs = ks.decisionVector();
-                /*System.out.print("Decision vector: [");
-                for (int d : dvKs) {
-                    System.out.print(d);
-                    System.out.print(", ");
-                }
-                System.out.println("]");*/
             }
         }
     }
 
     @Test
     public void timeRecursive() {
-        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_200_1", "ks_100_0",
-            "ks_100_1", "ks_100_2", "ks_200_0", //"ks_300_0", 
-            "ks_400_0"
+        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_100_0",
+            "ks_100_1", "ks_100_2", "ks_200_0", "ks_200_1",  
         };
         System.out.println("timeRecursive");
         for (String spec : ksSpecs) {
