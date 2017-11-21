@@ -10,7 +10,6 @@ import utils.Stack;
 public class SetGen {
 
     public static class item {
-
         int level;
         boolean live;
 
@@ -62,7 +61,6 @@ public class SetGen {
     }
 
     public static class itemDiscrepancy extends item {
-
         int d;
         int t;
         private itemDiscrepancy(int i, boolean b, int d, int t) {
