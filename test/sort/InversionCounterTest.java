@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
+import utils.math;
+import static utils.math.isSorted;
 
 public class InversionCounterTest {
 
@@ -52,7 +54,7 @@ public class InversionCounterTest {
             }
             long c = InversionCounter.countInversions(a);
             System.out.println("Number of inversions: " + c);
-            assert inOrder(a);
+            assert math.inOrder(a);
             assert c == EXPECTED; 
         } catch (FileNotFoundException ex) {
             Assert.fail("FileNotFoundException: " + ex.getLocalizedMessage());
@@ -67,25 +69,4 @@ public class InversionCounterTest {
         }
     }
 
-    // Return true if the array is sorted
-    public boolean isSorted(Comparable a[]) {
-        for (int i = 0; i < a.length; i++) {
-            for (int j = i + 1; j < a.length; j++) {
-                if (a[i].compareTo(a[j]) > 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    // Return true if each element is less than its sucessor
-    public boolean inOrder(Comparable a[]) {
-        for (int i = 0; i < a.length - 1; i++) {
-            if (a[i].compareTo(a[i + 1]) > 0) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

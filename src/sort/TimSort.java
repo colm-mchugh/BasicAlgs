@@ -1,24 +1,59 @@
 package sort;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class TimSort {
 
     private final static int MINRUN = 64;
 
-    private static void doTimSort(Comparable[] a, Comparable[] newa, List<Run> runs) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private static void mergeRuns(Comparable[] a, Queue<Run> runs, Comparable[] tmp) {
+        if (runs.size() <= 1) {
+            return;
+        }
+        Queue<Run> newRuns = new ArrayDeque<>(runs.size() / 2);
 
+        while (runs.size() >= 2) {
+            Run r1 = runs.remove();
+            Run r2 = runs.remove();
+
+            System.arraycopy(a, r1.i, tmp, r1.i, r2.j - r1.i + 1);
+
+            int li = r1.i;       // for indexing into the sorted lower half
+            int ui = r2.i;       // for indexing into the sorted upper half
+            int ia = r1.i;
+            while ((li <= r1.j) && (ui <= r2.j)) {
+                if (tmp[li].compareTo(tmp[ui]) <= 0) {
+                    a[ia++] = tmp[li++];    // take the next lower half element - its smaller (or equal)
+                } else {
+                    a[ia++] = tmp[ui++];    // take the next upper half element - its smaller
+                }
+            }
+            while (ui < r2.j + 1) {  // upper half not completely processed ?
+                a[ia++] = tmp[ui++]; // => copy over the remaining upper half
+            }
+            while (li < r1.j + 1) {    // lower half not completely processed ?
+                a[ia++] = tmp[li++]; // => copy over the remaining lower half
+            }
+            newRuns.add(new Run(r1.i, r2.j));
+        }
+        if (runs.size() == 1) {
+            newRuns.add(runs.remove());
+        }
+        mergeRuns(a, newRuns, tmp);
     }
 
     public static class Run {
+
         int i, j;
+
         Run(int i, int j) {
             this.i = i;
             this.j = j;
         }
-        
+
         int len() {
             return j - i + 1;
         }
@@ -68,6 +103,7 @@ public class TimSort {
             return;
         }
         Comparable[] newa = new Comparable[a.length];
-        doTimSort(a, newa, identifyRuns(a));
+        Queue<Run> runQueue = new ArrayDeque<>(identifyRuns(a));
+        mergeRuns(a, runQueue, newa);
     }
 }

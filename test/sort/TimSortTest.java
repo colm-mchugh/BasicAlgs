@@ -1,8 +1,15 @@
 package sort;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.Test;
+import utils.math;
+import static utils.math.inOrder;
 
 public class TimSortTest {
 
@@ -13,7 +20,7 @@ public class TimSortTest {
     Integer[] rnd1 = {23, 74, 30, 12, 45, 98, 53, 75, 23, 95, 17, 23, 89, 32, 54, 67, 48, 75};
     Integer[] aAsc1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1};
     Integer[] aAscDes = {1, 20, 2, 19, 3, 18, 4, 17, 5, 16};
-    
+
     @Test
     public void insertionSort() {
         testInsertionSort(a1element);
@@ -40,9 +47,21 @@ public class TimSortTest {
         testRun(aDsc, 1);
         testRun(aAsc1, 2);
         testRun(rnd1, 8);
-        testRun(aAscDes, aAscDes.length/2);
+        testRun(aAscDes, aAscDes.length / 2);
     }
-    
+
+    @Test
+    public void testSorted() {
+        long seed = 342943247;
+        float[] cardinalities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f };
+        
+        for (float card : cardinalities) {
+            Integer[] intArray = math.genRandomArray(seed, 10000, card);
+            TimSort.Sort(intArray);
+            assert inOrder(intArray);
+        }
+    }
+
     private void testRun(Comparable[] a, int expectedSz) {
         List<TimSort.Run> runs = TimSort.identifyRuns(a);
         assert runs.size() == expectedSz;
@@ -51,7 +70,7 @@ public class TimSortTest {
             assert run.len() == a.length;
         }
     }
-    
+
     private void testInsertionSort(Comparable[] a) {
         InsertionSort.Sort(a, 0, a.length - 1);
         assert isSorted(a);

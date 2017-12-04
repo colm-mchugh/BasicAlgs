@@ -39,9 +39,8 @@ public class InversionCounter {
         numInversions += mergeSort(a, i, m, tmp); // sort the lower half
         numInversions += mergeSort(a, m + 1, j, tmp);  // sort the upper half
 
-        for (int k = i; k <= j; k++) {
-            tmp[k] = a[k];
-        }
+        System.arraycopy(a, i, tmp, i, j - i + 1);
+
         int li = i;           // for indexing into the sorted lower half
         int ui = m + 1;       // for indexing into the sorted upper half
         int ia = i;

@@ -1318,4 +1318,36 @@ public class math {
         }
         return Integer.parseInt(s) < 256;
     }
+    
+    // Return true if the array is sorted
+    public static boolean isSorted(Comparable a[]) {
+        for (int i = 0; i < a.length; i++) {
+            for (int j = i + 1; j < a.length; j++) {
+                if (a[i].compareTo(a[j]) > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // Return true if each element is less than its sucessor
+    public static boolean inOrder(Comparable a[]) {
+        for (int i = 0; i < a.length - 1; i++) {
+            if (a[i].compareTo(a[i + 1]) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static Integer[] genRandomArray(long seed, int N, float cardinality) {
+        int uniques = (int) (N * cardinality);
+        Integer[] rv = new Integer[N];
+        RandGen.setSeed(seed);
+        for (int i = 0; i < N; i++) {
+            rv[i] = RandGen.uniform(1, uniques + 1);
+        }
+        return rv;
+    }
 }
