@@ -23,7 +23,9 @@ public class CCKosaraju<T> extends CCer<T> {
      * described in part 1 and part 2 below.
      * 
      * @param g the graph g
+     * @return 
      */
+    @Override
     public Map<T, List<T>> getComponents(Graph<T> g) {
         if (this.g == g && !this.components.isEmpty()) {
             return this.components;
@@ -56,7 +58,7 @@ public class CCKosaraju<T> extends CCer<T> {
             if (!visited.contains(v)) {  
                 this.components.put(v, new ArrayList<>());
                 // v will be leader of a new component, which will also include v
-                this.populateConnectedComponents(g, v, v, ordering, visited);
+                this.populateConnectedComponents(g, v, v, visited);
             }
         }
         return this.components;
@@ -75,7 +77,7 @@ public class CCKosaraju<T> extends CCer<T> {
      * @param ordering
      * @param visited 
      */
-    private void makeTopologicalOrdering(Graph<T> graph, T source, List<T> ordering, Set<T> visited) {
+    public void makeTopologicalOrdering(Graph<T> graph, T source, List<T> ordering, Set<T> visited) {
         visited.add(source);
         for (T v : graph.connections(source)) {
             if (!visited.contains(v)) {
@@ -94,13 +96,13 @@ public class CCKosaraju<T> extends CCer<T> {
      * @param ordering
      * @param visited 
      */
-    private void populateConnectedComponents(Graph<T> graph, T leader, T source, List<T> ordering, Set<T> visited) {
+    private void populateConnectedComponents(Graph<T> graph, T leader, T source, Set<T> visited) {
         this.components.get(leader).add(source);
         this.index.put(source, leader);
         visited.add(source);
         for (T v : graph.connections(source)) {
             if (!visited.contains(v)) {
-                populateConnectedComponents(graph, leader, v, ordering, visited);
+                populateConnectedComponents(graph, leader, v, visited);
             }
         }
     }

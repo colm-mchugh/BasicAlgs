@@ -24,12 +24,18 @@ public class TopSortTest {
             Character c = graphOrdering.get(i);
             System.out.print(c);
             System.out.print(' ');
-            if (c == 's') {
-                sIndex = i;
-            } else if (c == 't') {
-                tIndex = i;
-            } else if (c == 'w') {
-                wIndex = i;
+            if (null != c) switch (c) {
+                case 's':
+                    sIndex = i;
+                    break;
+                case 't':
+                    tIndex = i;
+                    break;
+                case 'w':
+                    wIndex = i;
+                    break;
+                default:
+                    break;
             }
         }  
         assert sIndex >tIndex && sIndex > wIndex;

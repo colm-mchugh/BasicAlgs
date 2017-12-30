@@ -7,7 +7,6 @@ import java.util.List;
  * KMP (Knuth-Morris-Pratt) algorithm for finding the occurrences of a pattern in
  * a text. 
  * 
- * @author administrator
  */
 public class KMP {
 

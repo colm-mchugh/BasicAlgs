@@ -3,9 +3,12 @@ package graph;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.Test;
 
 public class CCCerBigTest {
@@ -26,6 +29,7 @@ public class CCCerBigTest {
         int[] notsameCCs = {6, 9};
         this.runScctest(new CCTarjan<>(), graphData, sccSzs.length, sccSzs, sameCCs, notsameCCs);
         this.runScctest(new CCKosaraju<>(), graphData, sccSzs.length, sccSzs, sameCCs, notsameCCs);
+        this.runScctest(graphData, sccSzs.length, sccSzs, sameCCs, notsameCCs);
     }
 
     @Test
@@ -36,6 +40,7 @@ public class CCCerBigTest {
         int[] notsameCCs = {};
         this.runScctest(new CCTarjan<>(), graphData, sccSzs.length, sccSzs, sameCCs, notsameCCs);
         this.runScctest(new CCKosaraju<>(), graphData, sccSzs.length, sccSzs, sameCCs, notsameCCs);
+        this.runScctest(graphData, sccSzs.length, sccSzs, sameCCs, notsameCCs);
     }
 
     @Test
@@ -87,6 +92,7 @@ public class CCCerBigTest {
 
         runScctest(new CCKosaraju<>(), graphData, 3, sccSzs, samePairs, notSamePairs);
         runScctest(new CCTarjan<>(), graphData, 3, sccSzs, samePairs, notSamePairs);
+        this.runScctest(graphData, sccSzs.length, sccSzs, samePairs, notSamePairs);
     }
 
     @Test
@@ -98,6 +104,7 @@ public class CCCerBigTest {
 
         runScctest(new CCKosaraju<>(), graphData, 3, sccSzs, sameCC, notSame);
         runScctest(new CCTarjan<>(), graphData, 3, sccSzs, sameCC, notSame);
+        runScctest(graphData, 3, sccSzs, sameCC, notSame);
     }
 
     private void runScctest(CCer<Integer> sccer, int[] graphData, int sz, int[] sccSzs, int[] samePairs, int[] notSamePairs) {
@@ -105,6 +112,35 @@ public class CCCerBigTest {
         List<Integer> szs = sccer.ccSizes();
         assert sccs.size() == sz;
         for (List<Integer> scc : sccs.values()) {
+            System.out.println("scc sz:" + scc.size());
+            System.out.print("[ ");
+            for (Integer v : scc) {
+                System.out.print(v);
+                System.out.print(' ');
+            }
+            System.out.println("]");
+        }
+        for (int i = 0; i < sccSzs.length; i++) {
+            assert sccSzs[i] == szs.get(i);
+        }
+        for (int i = 0; i < samePairs.length; i += 2) {
+            assert sccer.sameCC(samePairs[i], samePairs[i + 1]);
+        }
+        for (int i = 0; i < notSamePairs.length; i += 2) {
+            assert !sccer.sameCC(notSamePairs[i], notSamePairs[i + 1]);
+        }
+    }
+
+    private void runScctest(int[] graphData, int sz, int[] sccSzs, int[] samePairs, int[] notSamePairs) {
+        CCKosarajuIterative<Integer> sccer = new CCKosarajuIterative<Integer>();
+        List<Integer> graphLinks = new ArrayList<>(graphData.length);
+        for (int i = 0; i < graphData.length; i++) {
+            graphLinks.add(graphData[i]);
+        }
+        Map<Integer, Set<Integer>> sccs = sccer.getComponents(graphLinks);
+        List<Integer> szs = sccer.ccSizes();
+        assert sccs.size() == sz;
+        for (Set<Integer> scc : sccs.values()) {
             System.out.println("scc sz:" + scc.size());
             System.out.print("[ ");
             for (Integer v : scc) {
@@ -138,14 +174,74 @@ public class CCCerBigTest {
 
     // This test may require setting JVM -Xss parameter.
     private void testBigGraph(CCer<Integer> ccer) {
+        long pish = System.currentTimeMillis();
         Graph<Integer> g = readGraph(FILE);
         Map<Integer, List<Integer>> components = ccer.getComponents(g);
         int[] expectedCCSizes = {434821, 968, 459, 313, 211};
         Iterator<Integer> ccSizes = ccer.ccSizes().iterator();
+        long timeTaken = System.currentTimeMillis() - pish;
+        System.out.println("Time taken:" + timeTaken);
         for (int sz : expectedCCSizes) {
             int nextSize = ccSizes.next();
             assert sz == nextSize;
         }
+    }
+
+    @Test
+    public void testSmallGraph() {
+        int[] graphData = {1, 4, 4, 7, 7, 1, 9, 7, 9, 3, 3, 6, 6, 9, 8, 6, 8, 5, 5, 2, 2, 8};
+        CCKosarajuIterative<Integer> gt = new CCKosarajuIterative<>();
+        List<Integer> graphLinks = new ArrayList<>(graphData.length);
+        for (int i = 0; i < graphData.length; i++) {
+            graphLinks.add(graphData[i]);
+        }
+        CCKosarajuIterative.Graph<Integer> g = gt.makeGraph(graphLinks);
+        CCKosarajuIterative.Graph<Integer> gRev = g.reverse();
+        CCKosarajuIterative.Vertex<Integer> startV = gRev.vertexMap.get(9);
+        List<CCKosarajuIterative.Vertex<Integer>> ordering = new ArrayList<>(graphData.length);
+
+        gt.topOrder(gRev, startV, ordering);
+        for (CCKosarajuIterative.Vertex<Integer> v : gRev.rep.keySet()) {
+            if (!v.explored) {
+                gt.topOrder(gRev, v, ordering);
+            }
+        }
+        assert (ordering.get(0).data == 3);
+        assert (ordering.get(6).data == 1);
+
+        for (int i = ordering.size() - 1; i >= 0; i--) {
+            CCKosarajuIterative.Vertex<Integer> v = ordering.get(i);
+            v = g.vertexMap.get(v.data);
+            if (!v.explored) {
+                gt.components.put(v.data, new HashSet<>());
+                gt.populateConnectedComponents(g, v, v);
+            }
+        }
+        assert (gt.components.size() == 3);
+        for (Integer c : gt.components.keySet()) {
+            assert (gt.components.get(c).size() == 3);
+        }
+    }
+
+    @Test
+    public void testIterativeKosaraju() {
+        long pish = System.currentTimeMillis();
+
+        List<Integer> data = readList(FILE);
+        CCKosarajuIterative<Integer> gt = new CCKosarajuIterative<>();
+
+        Map<Integer, Set<Integer>> components = gt.getComponents(data);
+        int[] expectedCCSizes = {434821, 968, 459, 313, 211};
+        List<Integer> rv = gt.ccSizes();
+        long timeTaken = System.currentTimeMillis() - pish;
+        System.out.println("Time taken:" + timeTaken);
+
+        Iterator<Integer> ccSizes = rv.iterator();
+        for (int sz : expectedCCSizes) {
+            int nextSize = ccSizes.next();
+            assert sz == nextSize;
+        }
+        
     }
 
     /**
@@ -154,8 +250,9 @@ public class CCCerBigTest {
      *
      * number number
      *
-     * Each line represents an edge in a directed graph. For example, the following
-     * line means two vertices, 6 and 7, with an edge connecting 6 to 7:
+     * Each line represents an edge in a directed graph. For example, the
+     * following line means two vertices, 6 and 7, with an edge connecting 6 to
+     * 7:
      *
      * 6 7
      *
@@ -181,4 +278,23 @@ public class CCCerBigTest {
         return graph;
     }
 
+    private List<Integer> readList(String path) {
+        List<Integer> list = new ArrayList<>();
+        FileReader fr;
+        try {
+            fr = new FileReader(path);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] split = line.trim().split("(\\s)+");
+                int u = Integer.parseInt(split[0]);
+                int v = Integer.parseInt(split[1]);
+                list.add(u);
+                list.add(v);
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
