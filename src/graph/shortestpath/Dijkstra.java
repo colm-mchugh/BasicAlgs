@@ -10,60 +10,94 @@ import java.util.Set;
 
 public class Dijkstra<T> {
     
-    private WeightedGraph<T> graph;
+    private WeightedGraph<T> G;
 
     public Dijkstra(WeightedGraph<T> graph) {
-        this.graph = graph;
+        this.G = graph;
     }
 
     public WeightedGraph<T> getGraph() {
-        return graph;
+        return G;
     }
 
     public void setGraph(WeightedGraph<T> graph) {
-        this.graph = graph;
+        this.G = graph;
     }
     
     /**
-     * The length of the shortest path between u and v
-     * @param u
-     * @param v
+     * The length of the shortest path between s and t using Dijkstra's algorithm.
+     * 
+     * Goal: find the shortest path from s to t in a directed graph G.
+     * Algorithm: X = { s }, D[s] = 0, D[w] = +Inf all w E G, w != s
+     *      X is the set of vertices that have been processed 
+     *      D gives the shortest distance from s to v when v E X, +Inf when v !E X
+     * While s != t
+     *      Find (v, w) with Min(D[v] + l(v, w)) for all (v, w) E G
+     *          where v E X AND w E G - X.
+     *      X = X + { w }
+     *      D[w] = D[v] + l(v, w)
+     * 
+     * @param s start vertex
+     * @param t end vertex
      * @return 
      */
-    public Path<T> sp(T u, T v) {
-        T s = u;
+    public Path<T> sp(T s, T t) {
+        // X is the set of vertices that have been processed; initialy empty
         Set<T> X = new HashSet<>();
-        Map<T, Integer> d = new HashMap<>();
-        Path<T> rv = new Path<>(u, v, Integer.MAX_VALUE);
-        rv.path = new ArrayList<>();
-        d.put(s, 0);
-        MinHeap<WeightedGraph.Edge<T>> heap = new MinHeap<>();
-        for (T t : graph.V()) {
-            if (!t.equals(u)) {
-                heap.Insert(new WeightedGraph.Edge<>(t, Integer.MAX_VALUE));
-            }
+        // shortest gives the shortest distance from s to a vertex v. 
+        Map<T, Integer> shortest = new HashMap<>();
+        // path gives the chain of vertices from s to t. 
+        Path<T> path = new Path<>(s, t, Integer.MAX_VALUE);
+        path.path = new ArrayList<>();
+        // gMinusX contains an entry for all vertices in G but not in X.
+        MinHeap<WeightedGraph.Edge<T>> gMinusX = new MinHeap<>();
+        for (T v : G.V()) {
+            int weight = (!v.equals(s) ? Integer.MAX_VALUE : 0);
+            gMinusX.Insert(new WeightedGraph.Edge<>(v, weight));
         }
-        X.add(u);
-        rv.path.add(u);
-        computeKeys(heap, X, u, d);
-        while (!s.equals(v)) {
-            WeightedGraph.Edge<T> w = heap.Delete();
+        // At this point gMinusX[s] == 0, gMinusX[v] = +Inf v E G and v != s
+        
+        while (!s.equals(t)) {
+            // Get the vertex s with the lowest value between X and gMinusX
+            WeightedGraph.Edge<T> w = gMinusX.Delete();
             if (w.d == Integer.MAX_VALUE) { // No path from u to v ?
-                return rv; // path length is Integer.MAX_VALUE, meaning +Infinity
+                return path; // path length is Integer.MAX_VALUE, meaning +Infinity
             }
-            d.put(w.v, w.d);
+            // The weigthing value gives the distance from source to the vertex
+            shortest.put(w.v, w.d);    
+            // Put the vertex on the shortest path
+            path.path.add(s);
+            // Move the vertex into X
+            moveFromHeapToX(gMinusX, X, w.v, shortest);
+            // Continue from this vertex
             s = w.v;
-            rv.path.add(s);
-            X.add(w.v);
-            computeKeys(heap, X, w.v, d);
         }
-        rv.path.add(v);
-        rv.d = d.get(s);
-        return rv;
+        // We arrived at a vertex that equals t, the target. 
+        // Add t as the final link in the path and set the 
+        // shortest path value
+        path.path.add(t);
+        path.d = shortest.get(s);
+        return path;
     }
     
-    private void computeKeys(MinHeap<WeightedGraph.Edge<T>> heap, Set<T> X, T w, Map<T, Integer> d) {
-        for (WeightedGraph.Edge<T> e : graph.edgesOf(w)) {
+    /**
+     * Put the vertex w in X and re-calculate the heap values for vertices that
+     * are not in X but share an edge with w
+     * 
+     * @param heap
+     * @param X
+     * @param w
+     * @param d 
+     */
+    private void moveFromHeapToX(MinHeap<WeightedGraph.Edge<T>> heap, Set<T> X, T w, Map<T, Integer> d) {
+        // X gets a new element, the vetex w
+        X.add(w);
+        // The frontier between X and G - X has changed. Because w is in X, all
+        // vertices v of edges (w,v), where v !E X, need to have their weighting
+        // recomputed. This is done by removing them from the heap, and re-entering 
+        // with a weigthing set to the minimum of: current weighting OR shortest 
+        // distance from s to w + l(w,v)
+        for (WeightedGraph.Edge<T> e : G.edgesOf(w)) {
             if (!X.contains(e.v)) {
                 WeightedGraph.Edge<T> heapV = heap.DeleteSpecificKey(e);
                 heapV.d = Integer.min(heapV.d, d.get(w) + e.d);
