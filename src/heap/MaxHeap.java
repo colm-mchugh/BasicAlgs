@@ -7,6 +7,12 @@ public class MaxHeap<Key extends Comparable<Key>> extends Heap<Key> {
         super();
     }
      
+    /**
+     * True if the parent of item i is greater than i, false otherwise.
+     * Also true if i has no parent.
+     * @param i
+     * @return 
+     */
     @Override
     protected boolean heapOrder(int i) {
         if ((i <= 1) || (i > N)) {
@@ -15,6 +21,16 @@ public class MaxHeap<Key extends Comparable<Key>> extends Heap<Key> {
         return parent(i).compareTo(this.items[i - 1]) > 0;
     }
     
+    /**
+     * Given two item i, j return i if items[i] >= items[j], 
+     * otherwise return j.
+     * 
+     * If items[i] is NULL return j, and vice versa.
+     * 
+     * @param i
+     * @param j
+     * @return 
+     */
     @Override
     protected int compare(int i, int j) {
         if (j > N) {
