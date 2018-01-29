@@ -37,25 +37,33 @@ public class Dijkstra<T> {
      *      X = X + { w }
      *      D[w] = D[v] + l(v, w)
      * 
+     * For a graph with N vertices and M edges, a naive implementation takes O(N*M)
+     * because for each vertex potentially all of the edges need to be explored 
+     * to determine the minimum distance edge between X and G - X.
+     * 
+     * This implementation uses a minimum priority queue and takes O(M + N*log(N)),
+     * because it is a graph traversal that performs a constant number of priority
+     * queue operations on each vertex. 
+     * 
      * @param s start vertex
      * @param t end vertex
      * @return 
      */
     public Path<T> sp(T s, T t) {
-        // X is the set of vertices that have been processed; initialy empty
+        // 'X' is the set of vertices that have been processed; initialy empty
         Set<T> X = new HashSet<>();
-        // shortest gives the shortest distance from s to a vertex v. 
+        // shortest[v] gives the shortest distance from s to a vertex v. 
         Map<T, Integer> shortest = new HashMap<>();
-        // path gives the chain of vertices from s to t. 
+        // 'path' is the chain of vertices from s to t that makes up the shortest path. 
         Path<T> path = new Path<>(s, t, Integer.MAX_VALUE);
         path.path = new ArrayList<>();
-        // gMinusX contains an entry for all vertices in G but not in X.
+        // 'gMinusX' contains an entry for all vertices in G but not in X.
         MinHeap<WeightedGraph.Edge<T>> gMinusX = new MinHeap<>();
         for (T v : G.V()) {
             int weight = (!v.equals(s) ? Integer.MAX_VALUE : 0);
             gMinusX.Insert(new WeightedGraph.Edge<>(v, weight));
         }
-        // At this point gMinusX[s] == 0, gMinusX[v] = +Inf v E G and v != s
+        // At this point gMinusX[s] == 0, gMinusX[v] = +Inf fora all v E G and v != s
         
         while (!s.equals(t)) {
             // Get the vertex s with the lowest value between X and gMinusX
@@ -63,7 +71,7 @@ public class Dijkstra<T> {
             if (w.d == Integer.MAX_VALUE) { // No path from u to v ?
                 return path; // path length is Integer.MAX_VALUE, meaning +Infinity
             }
-            // The weigthing value gives the distance from source to the vertex
+            // The weight value gives the distance from source to the vertex
             shortest.put(w.v, w.d);    
             // Put the vertex on the shortest path
             path.path.add(s);
@@ -81,8 +89,9 @@ public class Dijkstra<T> {
     }
     
     /**
-     * Put the vertex w in X and re-calculate the heap values for vertices that
-     * are not in X but share an edge with w
+     * moveFromHeapToX(): Put the vertex w in X and re-calculate  
+     * heap values for vertices that are not in X but share an 
+     * edge with w.
      * 
      * @param heap
      * @param X

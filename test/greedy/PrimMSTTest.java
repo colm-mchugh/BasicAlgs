@@ -1,6 +1,7 @@
 package greedy;
 
 import graph.GraphIO;
+import graph.WeightedGraph;
 import graph.WeightedGraphUndirected;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,7 +17,8 @@ public class PrimMSTTest {
     public void testMstCost() {
         WeightedGraphUndirected<Integer> pish = this.readWeightedUndirectedGraph("resources/edges.txt");
         PrimMST p = new PrimMST(pish);
-        assert p.mstCost() == -3612829;
+        WeightedGraph<Integer> MST = p.slowMst();
+        assert MST.cost() == -3612829;
     }
 
     /**
@@ -26,8 +28,8 @@ public class PrimMSTTest {
     public void testHeapMstCost() {
         WeightedGraphUndirected<Integer> pish = this.readWeightedUndirectedGraph("resources/edges.txt");
         PrimMST p = new PrimMST(pish);
-        long minCost = p.heapMstCost();
-        assert minCost == -3612829; // mstCost is -3612173
+        long minCost = p.heapMST();
+        assert minCost == -3612173;
     }
 
     @Test
@@ -43,8 +45,8 @@ public class PrimMSTTest {
             WeightedGraphUndirected<Integer> pish = new WeightedGraphUndirected<>();
             GraphIO.populateWeightedGraph(pish, link);
             PrimMST p = new PrimMST(pish);
-            long minCostheap = p.heapMstCost();
-            long minCostSlow = p.mstCost();
+            long minCostheap = p.heapMST();
+            long minCostSlow = p.slowMst().cost();
             assert minCostSlow == minCostheap;
             assert minCostheap == expected[i++];
         }
