@@ -2,7 +2,8 @@ package greedy;
 
 /**
  * Job Scheduling; given a set of jobs each with weight Wj and length Lj,
- * minimize the weighted sum of completion times, SUM of Cj*Wj.
+ * minimize the weighted sum of completion times, SUM of Cj*Wj. 
+ * Cj is the completion time of job j in schedule of the set of jobs.
  * 
  * Ordering jobs by using the ratio of Wj / Lj as a job's score gives an 
  * optimal scheduling; The job at index i has a higher score than it's
