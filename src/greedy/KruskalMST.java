@@ -12,22 +12,22 @@ public class KruskalMST<T> {
 
     static class Edge<T> implements Comparable<Edge<T>> {
 
-        public T p1;
-        public T p2;
-        public int distance;
+        public T u;
+        public T v;
+        public int weight;
 
         public Edge(T p1, T p2, int distance) {
-            this.p1 = p1;
-            this.p2 = p2;
-            this.distance = distance;
+            this.u = p1;
+            this.v = p2;
+            this.weight = distance;
         }
 
         @Override
         public int compareTo(Edge<T> o) {
-            if (distance < o.distance) {
+            if (weight < o.weight) {
                 return -1;
             }
-            if (distance > o.distance) {
+            if (weight > o.weight) {
                 return 1;
             }
             return 0;
@@ -53,7 +53,7 @@ public class KruskalMST<T> {
     }
     
     /**
-     * Create the Minimum Spanning Tree of the graph using Kruskal's algorithm:
+     * Create the Minimum Spanning Tree of the graph using Kruskals algorithm:
      * 
      * MST = {}
      * Put each vertex in its own connected component
@@ -62,8 +62,6 @@ public class KruskalMST<T> {
      *     If u and v are not in the same connected component:
      *          MST += (u, v) 
      *          Put u and v in the same connected component
-     * A UnionFind data structure is used to enable O(1) connected component 
-     * operations.
      *
      * @return the MST
      */
@@ -74,15 +72,15 @@ public class KruskalMST<T> {
         sorter.sort(arr);
         UnionFind<T> uf = new QuickFind<>();
         for (Edge<T> edge : edges) {
-            uf.addCluster(edge.p1); // potentially adding a vertex more than
-            uf.addCluster(edge.p2); // once in this loop
+            uf.addCluster(edge.u); 
+            uf.addCluster(edge.v); 
         }
         WeightedGraph<T> MST = new WeightedGraphUndirected<>();
         for (Comparable el : arr) {
-            Edge<T> e = (Edge<T>) el; // yucky java cast to get around array + generics retardedness 
-            if (!uf.find(e.p1, e.p2)) {
-                MST.link(e.p1, e.p2, e.distance);
-                uf.union(e.p1, e.p2);
+            Edge<T> e = (Edge<T>) el;  
+            if (!uf.find(e.u, e.v)) {
+                MST.link(e.u, e.v, e.weight);
+                uf.union(e.u, e.v);
             }
         }
         return MST;

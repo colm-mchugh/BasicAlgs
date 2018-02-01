@@ -1,122 +1,83 @@
 package clustering;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-
+/**
+ * QuickFind.
+ * 
+ * Implementation of UnionFind with O(1) find and O(N) union.
+ * 
+ * @param <T> 
+ */
 public class QuickFind<T> implements UnionFind<T> {
 
-    // groupings maps an object to its group number
-    private final Map<T, Integer> groupings = new HashMap<>();
+    // groupings maps an object to its cluster number
+    private final Map<T, Integer> clusters = new HashMap<>();
     
-    // groupingSets maps a group number to its set of objects
-    private final Map<Integer, Set<T>> groupingSets = new HashMap<>();
+    // keeps track of number of clusters (1 based). 
+    int clusterNumber = 0;
     
-    // keeps track of number of groups (1 based). 
-    int groupCounter = 0;
-
-    public QuickFind() {
-    }
-    
-    public QuickFind(Iterable<T> elements) {
-        for (T element : elements) {
-            addCluster(element);
-        }
-    }
-
-    public QuickFind(T elements[]) {
-        for (T element : elements) {
-            addCluster(element);
-        }
-    }
-
     @Override
     public void addCluster(T p) {
-        groupCounter++;
-        groupings.put(p, groupCounter);
-        Set<T> elementSet = new HashSet<>();
-        elementSet.add(p);
-        groupingSets.put(groupCounter, elementSet);
-    }
-    
-    
-    
-    @Override
-    public void union(T p, T q) {
-        // Change all objects in p's set to q's set
-        int pSetID = groupings.get(p);
-        int qSetID = groupings.get(q);
-        
-        // Check if p and q are in the same set
-        if (pSetID == qSetID) {
+        if (clusters.containsKey(p)) {
             return;
         }
+        clusterNumber++;
+        clusters.put(p, clusterNumber);
+        //groupSizes[groupCounter++] = 1;
+    }
+    
+    /**
+     * Combine p and q in the same cluster.
+     * 
+     * Runs in O(N) of the number of items in all clusters. 
+     * 
+     * @param p
+     * @param q 
+     */
+    @Override
+    public void union(T p, T q) {
+        int pCluster = clusters.get(p);
+        int qCluster = clusters.get(q);
         
-        // Merge the smaller set into the larger
-        Set<T> pSet = groupingSets.get(pSetID);
-        Set<T> qSet = groupingSets.get(qSetID);
-        
-        if (qSet.size() > pSet.size()) {
-            pSet = qSet;
-            qSet = groupingSets.get(pSetID);
-            int t = pSetID;
-            pSetID = qSetID;
-            qSetID = t;
+        // Noop if p and q are in the same cluster
+        if (pCluster == qCluster) {
+            return;
+        }
+        // Put the elements of q's cluster into p's cluster
+        for (T el : clusters.keySet()) {
+            if (clusters.get(el) == qCluster) {
+                clusters.put(el, pCluster);
+            }
         }
         
-        for (T el : qSet) {
-            groupings.put(el, pSetID);
-        }
-        pSet.addAll(qSet);
-        groupingSets.put(pSetID, pSet);
-        groupingSets.remove(qSetID);
+        clusterNumber--; // one less cluster
     }
 
+    /**
+     * true if p and q are in the same cluster, false otherwise.
+     * 
+     * Runs in constant time, using hash lookup on clusters.
+     * 
+     * @param p
+     * @param q
+     * @return 
+     */
     @Override
     public boolean find(T p, T q) {
-        return Objects.equals(groupings.get(p), groupings.get(q));
+        return Objects.equals(clusters.get(p), clusters.get(q));
     }
     
     @Override
     public Iterator<T> iterator() {
-        return groupings.keySet().iterator();
+        return clusters.keySet().iterator();
     }
     
-    @Override
-    public Set<T> Cluster(T p) {
-        Set<T> rv = null;
-        if (this.groupings.containsKey(p)) {
-            int groupNumber = this.groupings.get(p);
-            rv = this.groupingSets.get(groupNumber);
-        }
-        return rv;
-    }
-
     @Override
     public int numClusters() {
-        return this.groupingSets.keySet().size();
+        return clusterNumber;
     }
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        UnionFind<Integer> uf;
-        Integer[] pairs = { 5,8, 2,5, 9,7, 6,5, 3,8, 2,0 };
-        uf = new QuickFind(pairs);
-        for (int i = 0; i < pairs.length; i += 2) {
-            uf.union(pairs[i], pairs[i+1]);
-        }
-        
-        for (Iterator it = uf.iterator(); it.hasNext();) {
-            System.out.print(it.next());
-            System.out.print(' ');
-        }
-        System.out.println();
-    }
-
     
 }
