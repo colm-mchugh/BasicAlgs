@@ -7,26 +7,25 @@ import java.util.Objects;
 /**
  * QuickFind.
  * 
- * Implementation of UnionFind with O(1) find and O(N) union.
+ * Implementation of UnionFind with constant time find and O(N) union operations.
  * 
  * @param <T> 
  */
 public class QuickFind<T> implements UnionFind<T> {
 
-    // groupings maps an object to its cluster number
-    private final Map<T, Integer> clusters = new HashMap<>();
+    // follower to leader mappings
+    private final Map<T, T> followerLeader = new HashMap<>();
     
-    // keeps track of number of clusters (1 based). 
-    int clusterNumber = 0;
+    // keeps track of number of leaders (clusters or groups). 
+    int leaderNumber = 0;
     
     @Override
     public void addCluster(T p) {
-        if (clusters.containsKey(p)) {
+        if (followerLeader.containsKey(p)) {
             return;
         }
-        clusterNumber++;
-        clusters.put(p, clusterNumber);
-        //groupSizes[groupCounter++] = 1;
+        leaderNumber++;
+        followerLeader.put(p, p);
     }
     
     /**
@@ -39,21 +38,21 @@ public class QuickFind<T> implements UnionFind<T> {
      */
     @Override
     public void union(T p, T q) {
-        int pCluster = clusters.get(p);
-        int qCluster = clusters.get(q);
+        T pCluster = followerLeader.get(p);
+        T qCluster = followerLeader.get(q);
         
         // Noop if p and q are in the same cluster
-        if (pCluster == qCluster) {
+        if (Objects.equals(pCluster, qCluster)) {
             return;
         }
         // Put the elements of q's cluster into p's cluster
-        for (T el : clusters.keySet()) {
-            if (clusters.get(el) == qCluster) {
-                clusters.put(el, pCluster);
+        for (T el : followerLeader.keySet()) {
+            if (followerLeader.get(el) == qCluster) {
+                followerLeader.put(el, pCluster);
             }
         }
         
-        clusterNumber--; // one less cluster
+        leaderNumber--; // one less cluster
     }
 
     /**
@@ -67,17 +66,17 @@ public class QuickFind<T> implements UnionFind<T> {
      */
     @Override
     public boolean find(T p, T q) {
-        return Objects.equals(clusters.get(p), clusters.get(q));
+        return Objects.equals(followerLeader.get(p), followerLeader.get(q));
     }
     
     @Override
     public Iterator<T> iterator() {
-        return clusters.keySet().iterator();
+        return followerLeader.keySet().iterator();
     }
     
     @Override
     public int numClusters() {
-        return clusterNumber;
+        return leaderNumber;
     }
     
 }

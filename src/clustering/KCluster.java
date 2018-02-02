@@ -32,7 +32,7 @@ public class KCluster {
 
     }
 
-    private final UnionFind<Integer> uf = new QuickFind<>();
+    private final UnionFind<Integer> uf = new LazyUnion<>();
     private final MinHeap<Edge<Integer>> minHeap = new MinHeap<>();
     private Edge<Integer> min;
     

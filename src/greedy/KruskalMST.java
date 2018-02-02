@@ -1,5 +1,6 @@
 package greedy;
 
+import clustering.LazyUnion;
 import clustering.QuickFind;
 import clustering.UnionFind;
 import graph.WeightedGraph;
@@ -70,7 +71,7 @@ public class KruskalMST<T> {
         arr = edges.toArray(arr);
         QuickSorter sorter = new QuickSorter();
         sorter.sort(arr);
-        UnionFind<T> uf = new QuickFind<>();
+        UnionFind<T> uf = new LazyUnion<>();
         for (Edge<T> edge : edges) {
             uf.addCluster(edge.u); 
             uf.addCluster(edge.v); 

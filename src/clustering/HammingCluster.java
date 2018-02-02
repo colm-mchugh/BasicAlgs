@@ -21,7 +21,7 @@ public class HammingCluster {
             String[] firstLine = line.trim().split("(\\s)+");
             int numNodes = Integer.parseInt(firstLine[0]);
             int numBits = Integer.parseInt(firstLine[1]);
-            clusters = new QuickFind<>();
+            clusters = new LazyUnion<>();
             vertexMap = new HashMap<>(numNodes);
             while ((line = br.readLine()) != null) {
                 String[] bits = line.trim().split("(\\s)+");
