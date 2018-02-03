@@ -5,6 +5,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * LazyUnion or Union By Rank.
+ * 
+ * Implementation of UnionFind that .
+ * 
+ * @param <T> 
+ */
 public class LazyUnion<T> implements UnionFind<T> {
 
     // parent map. Maps items (keys) to their parents (values).
@@ -15,6 +22,12 @@ public class LazyUnion<T> implements UnionFind<T> {
     
     // keeps track of each item's rank
     private final Map<T, Integer> rank = new HashMap<>();
+    
+    private final boolean doPathCompression;
+
+    public LazyUnion(boolean doPathCompression) {
+        this.doPathCompression = doPathCompression;
+    }
     
     @Override
     public void union(T p, T q) {
@@ -59,10 +72,14 @@ public class LazyUnion<T> implements UnionFind<T> {
     }
     
     private T getLeader(T x) {
+        T child = x;
         T leader = this.parent.get(x);
-        while (!Objects.equals(x, leader)) {
-            x = leader;
-            leader = this.parent.get(x);
+        while (!Objects.equals(child, leader)) {
+            child= leader;
+            leader = this.parent.get(child);
+        }
+        if (doPathCompression && !Objects.equals(leader, this.parent.get(x))) {
+            this.parent.put(x, leader);
         }
         return leader;
     }

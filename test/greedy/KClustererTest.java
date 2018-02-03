@@ -1,5 +1,9 @@
 package greedy;
 
+import clustering.KCluster;
+import clustering.LazyUnion;
+import clustering.QuickFind;
+import clustering.UnionFind;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,9 +13,23 @@ public class KClustererTest {
     
     @Test
     public void testGetKDistance() {
-        KClusterer<Integer> instance = new KClusterer();
-        this.init("resources/clustering.txt", instance);
-        assert instance.getKDistance(4) == 106;
+        String file = "resources/clustering.txt";
+        int spacing = 4;
+        int result = 106;
+        boolean doPathCompression = true;
+        
+        verify(new LazyUnion<>(doPathCompression), file, spacing, result);
+        verify(new LazyUnion<>(!doPathCompression), file, spacing, result);
+        verify(new QuickFind<>(), file, spacing, result);
+    }
+    
+    private void verify(UnionFind<Integer> uf, String file, int spacing, int expected) {
+        KClusterer<Integer> instance = new KClusterer(uf);
+        this.init(file, instance);
+        assert instance.getKDistance(spacing) == expected;
+        
+        KCluster kc = new KCluster(file, uf);
+        assert kc.doKCluster(spacing) == expected;
     }
     
     public void init(String file, KClusterer<Integer> instance) {

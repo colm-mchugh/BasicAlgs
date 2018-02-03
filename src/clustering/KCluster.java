@@ -32,11 +32,30 @@ public class KCluster {
 
     }
 
-    private final UnionFind<Integer> uf = new LazyUnion<>();
+    private final UnionFind<Integer> uf;
     private final MinHeap<Edge<Integer>> minHeap = new MinHeap<>();
     private Edge<Integer> min;
+    private final String file;
     
-    public void init(String file) {
+    public KCluster(String file, UnionFind<Integer> uf) {
+        this.file = file;
+        this.uf = uf;
+    }
+
+    // Set the invariant that the current spacing is the minimum 
+    // distance between points in separate clusters
+    private void adjustCurrentSpacing() {
+        min = minHeap.Peek();
+        while (uf.find(min.p1, min.p2)) {
+            minHeap.Delete();
+            min = minHeap.Peek();
+        }
+        for (min = minHeap.Peek(); uf.find(min.p1, min.p2); min = minHeap.Peek()) {
+            minHeap.Delete();
+        }
+    }
+    
+    public int doKCluster(int K) {
         FileReader fr;
         try {
             fr = new FileReader(file);
@@ -56,25 +75,7 @@ public class KCluster {
             }
         } catch (IOException | NumberFormatException e) {
         }
-    }
-
-    public KCluster() {
-    }
-
-    // Set the invariant that the current spacing is the minimum 
-    // distance between points in separate clusters
-    private void adjustCurrentSpacing() {
-        min = minHeap.Peek();
-        while (uf.find(min.p1, min.p2)) {
-            minHeap.Delete();
-            min = minHeap.Peek();
-        }
-        for (min = minHeap.Peek(); uf.find(min.p1, min.p2); min = minHeap.Peek()) {
-            minHeap.Delete();
-        }
-    }
-    
-    public int doKCluster(int K) {
+        
         while (uf.numClusters() > K) {
             adjustCurrentSpacing();
             uf.union(min.p1, min.p2);
@@ -84,17 +85,6 @@ public class KCluster {
             throw new RuntimeException("doKCluster Postcondition error: K=" + K + ", NumberClusters=" + uf.numClusters());
         }
         return min.distance;
-    }
-
-    private static void calcKCluster(String file, int k) {
-        KCluster kc = new KCluster();
-        kc.init(file);
-        System.out.println(k + " Cluster spacing = " + kc.doKCluster(k));      
-    }
-    
-    public static void main(String[] args) {
-        String file = "resources/clustering.txt";
-        calcKCluster(file, 4);
     }
 
 }

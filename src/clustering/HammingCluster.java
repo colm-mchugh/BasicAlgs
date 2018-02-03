@@ -9,9 +9,14 @@ import java.util.Iterator;
 
 public class HammingCluster {
 
-    UnionFind<BitSet> clusters;
-    HashMap<BitSet, Integer> vertexMap;
+    private final UnionFind<BitSet> clusters;
+    private final HashMap<BitSet, Integer> vertexMap;
 
+    public HammingCluster(UnionFind<BitSet> clusters) {
+        this.clusters = clusters;
+        this.vertexMap = new HashMap<>(); // provide size?
+    }
+   
     private void initDataStructs(String file) {
         FileReader fr;
         try {
@@ -21,8 +26,6 @@ public class HammingCluster {
             String[] firstLine = line.trim().split("(\\s)+");
             int numNodes = Integer.parseInt(firstLine[0]);
             int numBits = Integer.parseInt(firstLine[1]);
-            clusters = new LazyUnion<>();
-            vertexMap = new HashMap<>(numNodes);
             while ((line = br.readLine()) != null) {
                 String[] bits = line.trim().split("(\\s)+");
                 BitSet vertex = new BitSet(numBits);

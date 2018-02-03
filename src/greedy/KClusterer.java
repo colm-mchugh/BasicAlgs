@@ -1,6 +1,5 @@
 package greedy;
 
-import clustering.QuickFind;
 import clustering.UnionFind;
 import heap.MinHeap;
 
@@ -35,10 +34,14 @@ public class KClusterer<T> {
 
     }
 
-    private final UnionFind<T> uf = new QuickFind<>();
+    private final UnionFind<T> uf;
     private final MinHeap<Edge<T>> minHeap = new MinHeap<>();
     private Edge<T> min;
-    
+
+    public KClusterer(UnionFind<T> uf) {
+        this.uf = uf;
+    }
+   
     public void addCluster(T c) {
         uf.addCluster(c);
     }

@@ -1,6 +1,8 @@
 package greedy;
 
-import graph.WeightedGraph;
+import clustering.LazyUnion;
+import clustering.QuickFind;
+import clustering.UnionFind;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,13 +14,24 @@ public class KruskalMSTTest {
     @Test
     public void testMst() {
         System.out.println("mst");
-        KruskalMST<Integer> instance = this.readGraph("resources/edges.txt");
-        WeightedGraph<Integer> result = instance.mst();
-        assertEquals(-3612829, result.cost());
+        String file = "resources/edges.txt";
+        boolean withPathCompression = true;
+        
+        this.verify(new LazyUnion<>(withPathCompression), file, -3612829);
+        this.verify(new LazyUnion<>(!withPathCompression), file, -3612829);
+        this.verify(new QuickFind<>(), file, -3612829);
+        
     }
 
-    private KruskalMST<Integer> readGraph(String path) {
-        KruskalMST<Integer> instance = new KruskalMST<>();
+    private void verify(UnionFind<Integer> uf, String file, long expected) {
+        KruskalMST<Integer> instance = new KruskalMST<>(uf);
+        readGraph(instance, file);
+        long result = instance.mst().cost();
+        System.out.println("Result is " + result);
+        assertEquals(expected, result);
+    }
+    
+    private void readGraph(KruskalMST<Integer> instance, String path) {      
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             while (br.ready()) {
@@ -31,7 +44,6 @@ public class KruskalMSTTest {
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
-        return instance;
     }
 
     
