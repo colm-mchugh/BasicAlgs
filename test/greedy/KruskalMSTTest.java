@@ -16,19 +16,22 @@ public class KruskalMSTTest {
         System.out.println("mst");
         String file = "resources/edges.txt";
         boolean withPathCompression = true;
+        boolean trackLeaderSets = true;
         
+        this.verify(new QuickFind<>(trackLeaderSets), file, -3612829);
+        this.verify(new QuickFind<>(!trackLeaderSets), file, -3612829);           
         this.verify(new LazyUnion<>(withPathCompression), file, -3612829);
         this.verify(new LazyUnion<>(!withPathCompression), file, -3612829);
-        this.verify(new QuickFind<>(), file, -3612829);
-        
     }
 
     private void verify(UnionFind<Integer> uf, String file, long expected) {
+        long now = System.currentTimeMillis();
         KruskalMST<Integer> instance = new KruskalMST<>(uf);
         readGraph(instance, file);
         long result = instance.mst().cost();
-        System.out.println("Result is " + result);
         assertEquals(expected, result);
+        long timeTaken = System.currentTimeMillis() - now;
+        System.out.println("Time taken: " + timeTaken);
     }
     
     private void readGraph(KruskalMST<Integer> instance, String path) {      

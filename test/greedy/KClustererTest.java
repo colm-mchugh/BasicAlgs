@@ -10,26 +10,44 @@ import java.io.IOException;
 import org.junit.Test;
 
 public class KClustererTest {
-    
+
     @Test
     public void testGetKDistance() {
         String file = "resources/clustering.txt";
         int spacing = 4;
         int result = 106;
         boolean doPathCompression = true;
-        
-        verify(new LazyUnion<>(doPathCompression), file, spacing, result);
+        boolean trackLeaderSets = true;
+
         verify(new LazyUnion<>(!doPathCompression), file, spacing, result);
-        verify(new QuickFind<>(), file, spacing, result);
+        
+        verify(new QuickFind<>(trackLeaderSets), file, spacing, result);
+        verify(new QuickFind<>(!trackLeaderSets), file, spacing, result);
+        verify(new LazyUnion<>(!doPathCompression), file, spacing, result);
+        verify(new LazyUnion<>(doPathCompression), file, spacing, result);
+        
+        verifyKcluster(new QuickFind<>(trackLeaderSets), file, spacing, result);
+        verifyKcluster(new QuickFind<>(!trackLeaderSets), file, spacing, result);
+        verifyKcluster(new LazyUnion<>(!doPathCompression), file, spacing, result);
+        verifyKcluster(new LazyUnion<>(doPathCompression), file, spacing, result);
+
     }
-    
+
     private void verify(UnionFind<Integer> uf, String file, int spacing, int expected) {
+        long now = System.currentTimeMillis();
         KClusterer<Integer> instance = new KClusterer(uf);
         this.init(file, instance);
         assert instance.getKDistance(spacing) == expected;
-        
+        long timeTaken = System.currentTimeMillis() - now;
+        System.out.println("Time taken: " + timeTaken);
+    }
+
+    private void verifyKcluster(UnionFind<Integer> uf, String file, int spacing, int expected) {
+        long now = System.currentTimeMillis();
         KCluster kc = new KCluster(file, uf);
         assert kc.doKCluster(spacing) == expected;
+        long timeTaken = System.currentTimeMillis() - now;
+        System.out.println("Time taken: " + timeTaken);
     }
     
     public void init(String file, KClusterer<Integer> instance) {

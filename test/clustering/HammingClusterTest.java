@@ -12,20 +12,23 @@ public class HammingClusterTest {
         String file = "resources/clustering_big.txt";
         int expected = 6118;
         boolean doPathCompression = true;
-        
+        boolean trackLeaderSets = true;
         // test for different union find implementations
+        this.verify(new QuickFind<>(!trackLeaderSets), file, expected);
+        this.verify(new QuickFind<>(trackLeaderSets), file, expected);
         this.verify(new LazyUnion<>(!doPathCompression), file, expected);
         this.verify(new LazyUnion<>(doPathCompression), file, expected);
-        this.verify(new QuickFind<>(), file, expected);
     }
 
     /**
      * Test HammingCluster with specific union find instance
      */
     private void verify(UnionFind<BitSet> uf, String file, int expected) {
+        long now = System.currentTimeMillis();        
         HammingCluster instance = new HammingCluster(uf);
         int result = instance.doit(file);
-        System.out.println("Result is " + result);
         assertEquals(expected, result);
+        long timeTaken = System.currentTimeMillis() - now;
+        System.out.println("Time taken: " + timeTaken);
     }
 }
