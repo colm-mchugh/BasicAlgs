@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import utils.Stack;
 
 /**
  * LazyUnion or Union By Rank.
@@ -24,23 +25,35 @@ public class LazyUnion<T> implements UnionFind<T> {
     private final Map<T, Integer> rank = new HashMap<>();
     
     private final boolean doPathCompression;
+    private final Stack<T> compressed;
 
     public LazyUnion(boolean doPathCompression) {
         this.doPathCompression = doPathCompression;
+        if (doPathCompression) {
+            compressed = new Stack<>();
+        } else {
+            compressed = null;
+        }
     }
     
     @Override
     public void union(T p, T q) {
-        T s1 = getLeader(p);
-        T s2 = getLeader(q);
-        int r1 = this.rank.get(s1);
-        int r2 = this.rank.get(s2);
-        if (r1 > r2) {
-            parent.put(s2, s1);
+        T pLeader = getLeader(p);
+        T qLeader = getLeader(q);
+        
+        // Same leader => already in same group/cluster
+        if (Objects.equals(pLeader, qLeader)) {
+            return;
+        }
+        
+        int pRank = this.rank.get(pLeader);
+        int qRank = this.rank.get(qLeader);
+        if (pRank > qRank) {
+            parent.put(qLeader, pLeader);
         } else {
-            parent.put(s1, s2);
-            if (Objects.equals(s1, s2)) {
-                rank.put(s2, rank.get(s2) + 1);
+            parent.put(pLeader, qLeader);
+            if (Objects.equals(pRank, qRank)) {
+                rank.put(qLeader, rank.get(qLeader) + 1);
             }
         }
         leaderNumber--;
@@ -72,15 +85,17 @@ public class LazyUnion<T> implements UnionFind<T> {
     }
     
     private T getLeader(T x) {
-        T child = x;
-        T leader = this.parent.get(x);
-        while (!Objects.equals(child, leader)) {
-            child= leader;
-            leader = this.parent.get(child);
+        while (!Objects.equals(parent.get(x), parent.get(parent.get(x)))) {
+            if (doPathCompression) {
+                compressed.Push(x);
+            }
+            x = parent.get(x);
         }
-        if (doPathCompression && !Objects.equals(leader, this.parent.get(x))) {
-            this.parent.put(x, leader);
+        if (doPathCompression) {
+            while (!compressed.isEmpty()) {
+                parent.put(compressed.Pop(), parent.get(x));
+            }
         }
-        return leader;
+        return parent.get(x);
     }
 }

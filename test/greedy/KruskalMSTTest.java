@@ -10,31 +10,42 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class KruskalMSTTest {
-    
+
+    private final boolean trackLeaderSets = true;
+    private final boolean withPathCompression = true;
+    private String file = "resources/edges.txt";
+
     @Test
-    public void testMst() {
-        System.out.println("mst");
-        String file = "resources/edges.txt";
-        boolean withPathCompression = true;
-        boolean trackLeaderSets = true;
-        
-        this.verify(new QuickFind<>(trackLeaderSets), file, -3612829);
-        this.verify(new QuickFind<>(!trackLeaderSets), file, -3612829);           
-        this.verify(new LazyUnion<>(withPathCompression), file, -3612829);
-        this.verify(new LazyUnion<>(!withPathCompression), file, -3612829);
+    public void testMstQuickFind1() {
+        this.verify("Quick find", new QuickFind<>(!trackLeaderSets), file, -3612829);
     }
 
-    private void verify(UnionFind<Integer> uf, String file, long expected) {
+    @Test
+    public void testMstQuickFind2() {
+        this.verify("Quickfind- leader sets", new QuickFind<>(trackLeaderSets), file, -3612829);
+    }
+
+    @Test
+    public void testMstLazyUnion1() {
+        this.verify("Lazy Union", new LazyUnion<>(withPathCompression), file, -3612829);
+    }
+
+    @Test
+    public void testMstLazyUnion2() {
+        this.verify("LazyUnion-cp", new LazyUnion<>(!withPathCompression), file, -3612829);
+    }
+    
+    private void verify(String test, UnionFind<Integer> uf, String file, long expected) {
         long now = System.currentTimeMillis();
         KruskalMST<Integer> instance = new KruskalMST<>(uf);
         readGraph(instance, file);
         long result = instance.mst().cost();
         assertEquals(expected, result);
         long timeTaken = System.currentTimeMillis() - now;
-        System.out.println("Time taken: " + timeTaken);
+        System.out.println(test + ": Time taken: " + timeTaken);
     }
-    
-    private void readGraph(KruskalMST<Integer> instance, String path) {      
+
+    private void readGraph(KruskalMST<Integer> instance, String path) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             while (br.ready()) {
@@ -49,6 +60,4 @@ public class KruskalMSTTest {
         }
     }
 
-    
-    
 }

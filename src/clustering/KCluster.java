@@ -4,6 +4,7 @@ import heap.MinHeap;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 public class KCluster {
 
@@ -35,11 +36,15 @@ public class KCluster {
     private final UnionFind<Integer> uf;
     private final MinHeap<Edge<Integer>> minHeap = new MinHeap<>();
     private Edge<Integer> min;
-    private final String file;
-    
-    public KCluster(String file, UnionFind<Integer> uf) {
-        this.file = file;
+
+    public KCluster(UnionFind<Integer> uf, int numNodes, List<Integer> edgeData) {
         this.uf = uf;
+        for (Integer i = 1; i <= numNodes; i++) {
+            uf.addCluster(i);
+        }
+        for (int i = 0; i < edgeData.size(); i += 3) {
+            minHeap.Insert(new Edge<>(edgeData.get(i), edgeData.get(i+1), edgeData.get(i+2)));
+        }
     }
 
     // Set the invariant that the current spacing is the minimum 
@@ -54,28 +59,8 @@ public class KCluster {
             minHeap.Delete();
         }
     }
-    
+
     public int doKCluster(int K) {
-        FileReader fr;
-        try {
-            fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line = br.readLine();
-            String[] firstLine = line.trim().split("(\\s)+");
-            int numNodes = Integer.parseInt(firstLine[0]);
-            for (Integer i = 1; i <= numNodes; i++) {
-                uf.addCluster(i);
-            }
-            while ((line = br.readLine()) != null) {
-                String[] split = line.trim().split("(\\s)+");
-                int u = Integer.parseInt(split[0]);
-                int v = Integer.parseInt(split[1]);
-                int d = Integer.parseInt(split[2]);
-                minHeap.Insert(new Edge<>(u, v, d));
-            }
-        } catch (IOException | NumberFormatException e) {
-        }
-        
         while (uf.numClusters() > K) {
             adjustCurrentSpacing();
             uf.union(min.p1, min.p2);
