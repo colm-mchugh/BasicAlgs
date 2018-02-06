@@ -90,7 +90,7 @@ public class math {
         int i = 3;
         for (;i <= sqrt && (n % i != 0); i +=2) {
         }
-        return n % i == 0;
+        return n % i != 0;
     }
 
     /**

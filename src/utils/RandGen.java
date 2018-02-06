@@ -1,7 +1,9 @@
 package utils;
 
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 
 public class RandGen {
@@ -68,7 +70,7 @@ public class RandGen {
      */
     public static int uniform(int lo, int hi) {
         if ((lo <= 0) || (hi <= 0)) throw new IllegalArgumentException("Parameter must be positive");
-        if (hi <= lo) throw new IllegalArgumentException("Range must be >= 1");
+        if (hi < lo) throw new IllegalArgumentException("Range must be >= 1");
         return random.nextInt((hi - lo) + 1) + lo;
     }
     
@@ -81,6 +83,31 @@ public class RandGen {
         int v = random.nextInt(2);
         // v is either 0 or 1
         return v != 0;
+    }
+    
+    /**
+     * Return a random sample of M numbers with no duplicates 
+     * chosen from 1..N.
+     * 
+     * Robert Floyd's algorithm, runs in O(M).
+     * https://dl.acm.org/citation.cfm?id=315746&dl=ACM&coll=DL
+     * 
+     * @param N
+     * @param M
+     * @return 
+     */
+    public static Set<Integer> uniformSample(int N, int M) {
+        Set<Integer> sample = new HashSet<>(M);
+        assert N >= M;
+        for (int j = N - M + 1; j <= N; j++) {
+            int s = uniform(1, j);
+            if (!sample.contains(s)) {
+                sample.add(s);
+            } else {
+                sample.add(j);
+            }
+        }
+        return sample;
     }
     
     // don't instantiate

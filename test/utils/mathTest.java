@@ -396,11 +396,27 @@ public class mathTest {
     
     @Test
     public void makeMeAPrime() {
-        int n = 4763;
+        int n = 96576587;
         while (!math.isPrime(n)) {
             n++;
         }
         System.out.println("Your prime is: " + n);
         System.out.println("Happy now?");
+    }
+    
+    @Test
+    public void testSampling() {
+        int[] nmPairs = { 100,7, 5000,250, 10000,10000, 350000,68000 };
+        for (int i = 0; i < nmPairs.length; i += 2) {
+            int N = nmPairs[i];
+            int M = nmPairs[i+1];
+            
+            Set<Integer> sample = RandGen.uniformSample(N, M);
+            
+            assert sample.size() == M;
+            for (int s : sample) {
+                assert s >= 1 && s <= N;
+            }
+        }
     }
 }
