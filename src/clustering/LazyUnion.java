@@ -24,6 +24,7 @@ import utils.Stack;
  * parent(X) == X => isLeader(X)
  * Leaf(X) => no item has X as parent
  * Rank(X): longest path from X to a leaf
+ * Leaf(X) => Rank(X) = 0
  * Root(X): Parent(X) == X
  * Rank(Parent(X)) = Rank(X) + 1 (with path compression, Rank(Parent(X)) > Rank(X))
  * Tree(X): the ancestors of X
@@ -73,10 +74,15 @@ public class LazyUnion<T> implements UnionFind<T> {
         
         int pRank = this.rank.get(pLeader);
         int qRank = this.rank.get(qLeader);
+        // higher rank means item belongs to a bigger cluster, so the other item's
+        // parent is set to the higher rank item.
         if (pRank > qRank) {
             parent.put(qLeader, pLeader);
         } else {
             parent.put(pLeader, qLeader);
+            // p and q's leaders had equal rank, but now p has been placed in q's group,
+            // by setting p's leader's parent to be q's leader. So q's leader's rank must
+            // be incremented by 1.
             if (Objects.equals(pRank, qRank)) {
                 rank.put(qLeader, rank.get(qLeader) + 1);
             }
@@ -110,17 +116,26 @@ public class LazyUnion<T> implements UnionFind<T> {
     }
     
     private T getLeader(T x) {
-        while (!Objects.equals(parent.get(x), parent.get(parent.get(x)))) {
+        // Follow parent of x until we arrive at an item that has a root as
+        // parent
+        while (!root(parent.get(x))) {
             if (doPathCompression) {
                 compressed.Push(x);
             }
             x = parent.get(x);
         }
+        assert root(parent.get(x));
+        // If path compression is in effect, set the parent of each item
+        // on the path to the root to be the root itself
         if (doPathCompression) {
             while (!compressed.isEmpty()) {
                 parent.put(compressed.Pop(), parent.get(x));
             }
         }
         return parent.get(x);
+    }
+    
+    private boolean root(T x) {
+        return Objects.equals(x, parent.get(x));
     }
 }
