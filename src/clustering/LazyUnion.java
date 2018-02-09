@@ -9,7 +9,32 @@ import utils.Stack;
 /**
  * LazyUnion or Union By Rank.
  * 
- * Implementation of UnionFind that .
+ * Implementation of UnionFind that implements union(X, Y) by setting X to be
+ * Y's leader, if Tree(X) > Tree(Y), otherwise Y is set to be X's leader.
+ * 
+ * This means a path must be traversed in order to get the leader for the group 
+ * or cluster of an item X. The length of this path is O(log(N)) where N is the
+ * overall number of items, when union is implemented as above. If path compression
+ * is applied when getting a cluster leader, then the path length is O(log*(N)), 
+ * where log*(N) is the number of times log() must be applied to N before it is 
+ * 1. E.g. log*(2^65536) = 5.
+ * 
+ * Properties:
+ * 
+ * parent(X) == X => isLeader(X)
+ * Leaf(X) => no item has X as parent
+ * Rank(X): longest path from X to a leaf
+ * Root(X): Parent(X) == X
+ * Rank(Parent(X)) = Rank(X) + 1 (with path compression, Rank(Parent(X)) > Rank(X))
+ * Tree(X): the ancestors of X
+ *
+ * Once an item gets a new parent, it never changes again.
+ * If Rank(X) == Rank(Y) then tree(X) and Tree(Y) are disjoint. 
+ * (An item Z cannot be on the same path as X and Y because ranks on a path are increasing)
+ * 
+ * If Rank(X) == r then Tree(X) has size >= 2^r
+ * Max(Rank(X)) <= log(N), where N is the number of items.
+ * Path compression: change parent, leave rank unchanged.
  * 
  * @param <T> 
  */
