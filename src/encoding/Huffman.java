@@ -1,5 +1,6 @@
 package encoding;
 
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import heap.MinHeap;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -19,7 +20,7 @@ import java.util.Stack;
  * 
  * @author colm_mchugh
  */
-public class Huffman {
+public class Huffman<T> {
     
     static final boolean ZERO = Boolean.FALSE;
     static final boolean ONE = Boolean.TRUE;
@@ -27,7 +28,7 @@ public class Huffman {
     
     // A Node is an element in a Huffman tree. 
     // All nodes have a frequency and a code, which is 1 or 0.
-    public static abstract class Node implements Comparable<Node> {
+    public abstract class Node implements Comparable<Node> {
         double frequency;
         Boolean code;
 
@@ -53,10 +54,10 @@ public class Huffman {
     // A Leaf is a node that represents a single character in the 
     // alphabet being encoded.
     // All terminal nodes in a Huffman tree are Leafs.
-    static class Leaf extends Node {
-        Character letter;
+    public class Leaf<T> extends Node {
+        T letter;
 
-        public Leaf(Character letter, double frequency) {
+        public Leaf(T letter, double frequency) {
             super(frequency);
             this.letter = letter;
         }
@@ -77,7 +78,7 @@ public class Huffman {
     
     // A Branch is a node in a Huffman tree that has two nodes, left and right.
     // All inner nodes in a Huffman tree are Branches.
-    static class Branch extends Node {
+    public class Branch extends Node {
         Node left;
         Node right;
 
@@ -101,27 +102,39 @@ public class Huffman {
     }
     
     // base class for visiting Huffman Tree
-    static abstract class NodeVisitor {
+    public abstract class NodeVisitor {
         public abstract Node visitBranch(Branch node);
         
         public abstract Node visitLeaf(Leaf leaf);
     }
     
-    public static List<Node> readAlphabet(String file) throws FileNotFoundException, IOException {
-        ArrayList<Node> alphabet = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        for (String line = br.readLine(); line != null; line = br.readLine()) {
-            String[] split = line.trim().split("(\\s)+");
-            Character c = split[0].charAt(0);
-            Double frequency = Double.parseDouble(split[1]);
-            Leaf l = new Leaf(c, frequency);
-            alphabet.add(l);
-        }
-        return alphabet;
+    private final List<Huffman.Node> alphabet;
+    private final Map<T, BitSet> bitsetEncoding = new HashMap<>();
+    private final Map<T, String> stringEncoding = new HashMap<>();
+        
+    public Huffman() {
+        alphabet = new ArrayList<>();
     }
     
+    public void addSymbol(T symbol, double freq) {
+        alphabet.add(new Leaf<>(symbol, freq));
+    }
     
-    public static Map<Character, BitSet> makeEncoding(List<Node> alphabet) {
+    public Map<T, BitSet> getBitSetEncoding() {
+        if (bitsetEncoding.isEmpty()) {
+            this.makeEncoding();
+        }
+        return bitsetEncoding;
+    }
+    
+    public Map<T, String> getStringEncoding() {
+        if (stringEncoding.isEmpty()) {
+            this.makeEncoding();
+        }
+        return stringEncoding;
+    }
+    
+    private void makeEncoding() {
         MinHeap<Node> encodingQueue = new MinHeap<>();
         for (Node letter : alphabet) {
             encodingQueue.Insert(letter);
@@ -136,8 +149,6 @@ public class Huffman {
         assert encodingQueue.size() == 1;
         
         Node root = encodingQueue.Delete();
-        Map<Character, BitSet> rv = new HashMap<>();
-        Map<Character, String> rvDbg = new HashMap<>(); // for debugging
         Stack<Boolean> codeSuffix = new Stack<>();
         root.accept(new NodeVisitor() {
             @Override
@@ -166,15 +177,11 @@ public class Huffman {
                 }
                 encoding.set(bitIndex++, leaf.code);
                 sb.append(leaf.code? '1' : '0');
-                rv.put(leaf.letter, encoding);
-                rvDbg.put(leaf.letter, sb.toString());
+                bitsetEncoding.put((T) leaf.letter, encoding);
+                stringEncoding.put((T) leaf.letter, sb.toString());
                 return leaf;
             }
         });
-        for (Character c : rvDbg.keySet()) {
-            System.out.println(c + ": " + rvDbg.get(c));
-        }
-        return rv;
     }
     
 }
