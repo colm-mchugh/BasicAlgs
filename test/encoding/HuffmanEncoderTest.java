@@ -1,12 +1,9 @@
 package encoding;
 
-import encoding.Huffman;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 
@@ -69,9 +66,6 @@ public class HuffmanEncoderTest {
             }
         }
 
-        System.out.println("min=" + min.toString());
-        System.out.println("max=" + max.toString());
-        
         assert min.getValue().length() == 9;
         assert max.getValue().length() == 19;
         
