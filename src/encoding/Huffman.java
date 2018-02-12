@@ -1,11 +1,6 @@
 package encoding;
 
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import heap.MinHeap;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
