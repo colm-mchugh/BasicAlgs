@@ -1,13 +1,11 @@
 package dp;
 
-import java.util.Arrays;
-
 /**
  * Sequence Alignment of two given strings.
  * 
  * Uses simple penalty scoring per http://avatar.se/lectures/molbioinfo2001/dynprog/dynamic.html.
  * 
- * Extend with scoring that produces fewest gaps, as in
+ * TODO: Extend with scoring that produces fewest gaps, as in
  * https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm
  * https://web.stanford.edu/class/cs262/presentations/lecture2.pdf
  * 
@@ -92,8 +90,8 @@ public class SequenceAlignment {
         
         // Second part: build the alignment of X with Y.
         //
-        // Working backwards from entry [M][N] of the memo, determine which option 
-        // 1), 2) or 3) was used to compute each entry.
+        // Working backwards from entry memo[M][N], determine which option 
+        // 1), 2) or 3) was used to compute that entry.
         Alignment align = new Alignment(X, Y, p_memo[M][N]);
         while (align.i > 0 && align.j > 0) {
             int i = align.i;

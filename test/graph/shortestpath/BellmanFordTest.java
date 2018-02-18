@@ -1,5 +1,6 @@
 package graph.shortestpath;
 
+import graph.GraphIO;
 import graph.WeightedGraph;
 import graph.WeightedGraphDirected;
 import org.junit.Test;
@@ -11,7 +12,25 @@ public class BellmanFordTest {
     public BellmanFordTest() {
         this.bfer = new BellmanFord<>();
     }
-    
+
+    @Test
+    public void bellmanFord0() {
+        WeightedGraph<Character> g = new WeightedGraphDirected();
+        g.link('s', 'v', 2);
+        g.link('s', 'x', 4);
+        g.link('v', 'x', 1);
+        g.link('v', 'w', 2);
+        g.link('x', 't', 4);
+        g.link('w', 't', 2);
+
+        BellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths(g, 's');
+        assert !sp.hasNegativeCycles;
+        assert sp.weights.get('v') == 2;
+        assert sp.weights.get('x') == 3;
+        assert sp.weights.get('w') == 4;
+        assert sp.weights.get('t') == 6;
+    }
+
     @Test
     public void bellmanFord1() {
         WeightedGraph<Character> g = new WeightedGraphDirected();
@@ -25,7 +44,7 @@ public class BellmanFordTest {
         g.link('t', 'z', -4);
         g.link('y', 'x', -3);
         g.link('z', 'x', 7);
-        
+
         BellmanFord.ShortestPath<Character> sp = bfer.singleSourceShortestPaths(g, 's');
         assert !sp.hasNegativeCycles;
         assert sp.weights.get('z') == -2;
@@ -50,6 +69,7 @@ public class BellmanFordTest {
         assert !sp.hasNegativeCycles;
         assert sp.weights.get('z') == 11;
         assert sp.weights.get('x') == 9;
+        assert sp.weights.get('t') == 3;
     }
 
     @Test
@@ -82,4 +102,13 @@ public class BellmanFordTest {
         assert sp.hasNegativeCycles;
     }
     
+    @Test
+    public void bigTest() {
+        String file = "resources/g4.txt";
+        WeightedGraph<Integer> g = GraphIO.readWeightedGraphDirected(file);
+        BellmanFord<Integer> bf = new BellmanFord<>();
+        BellmanFord.ShortestPath<Integer> sp = bf.singleSourceShortestPaths(g, 1);
+        assert !sp.hasNegativeCycles;
+    }
+
 }
