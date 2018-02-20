@@ -34,7 +34,7 @@ import utils.Stack;
  * (An item Z cannot be on the same path as X and Y because ranks on a path are increasing)
  * 
  * If Rank(X) == r then Tree(X) has size >= 2^r
- * Max(Rank(X)) <= log(N), where N is the number of items.
+ * Max(Rank(X)) is upper bounded by log(N), where N is the number of items.
  * Path compression: change parent, leave rank unchanged.
  * 
  * @param <T> 
@@ -50,6 +50,7 @@ public class LazyUnion<T> implements UnionFind<T> {
     // keeps track of each item's rank
     private final Map<T, Integer> rank = new HashMap<>();
     
+    // for managing path compression
     private final boolean doPathCompression;
     private final Stack<T> compressed;
 
@@ -135,6 +136,7 @@ public class LazyUnion<T> implements UnionFind<T> {
         return parent.get(x);
     }
     
+    // root(X) => parent of X is X. Otherwise, root(X) is false.
     private boolean root(T x) {
         return Objects.equals(x, parent.get(x));
     }

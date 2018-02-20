@@ -23,6 +23,9 @@ public class QuickFind<T> implements UnionFind<T> {
     // keeps track of number of leaders (clusters or groups). 
     int leaderNumber = 0;
 
+    // For managing follower sets. This is an optimization that reduces the 
+    // time spent in union operations from N (all elements) to the size of
+    // the smaller follower set.
     private Map<T, Set<T>> followers;
 
     private final boolean trackFollowers;
@@ -69,6 +72,8 @@ public class QuickFind<T> implements UnionFind<T> {
         leaderNumber--; // one less cluster
 
         if (this.trackFollowers) {
+            // Determine the bigger follower set and union the 
+            // smaller follower set to the bigger.
             Set<T> pSet = this.followers.get(pCluster);
             Set<T> qSet = this.followers.get(qCluster);
             if (pSet.size() > qSet.size()) {
@@ -77,8 +82,9 @@ public class QuickFind<T> implements UnionFind<T> {
                 this.combine(pCluster, qCluster);
             }
         } else {
-
             // Put the elements of q's cluster into p's cluster
+            // Slow - iterate through all N elements and change 
+            // q elements to have p as leader
             for (T el : leader.keySet()) {
                 if (leader.get(el) == qCluster) {
                     leader.put(el, pCluster);
@@ -87,6 +93,13 @@ public class QuickFind<T> implements UnionFind<T> {
         }
     }
 
+    /**
+     * Given two leaders from and to, make to be the leader of
+     * from and all of from's followers.
+     * 
+     * @param from
+     * @param to 
+     */
     private void combine(T from, T to) {
         Set<T> fromSet = this.followers.get(from);
         Set<T> toSet = this.followers.get(to);
