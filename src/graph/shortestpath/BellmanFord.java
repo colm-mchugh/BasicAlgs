@@ -2,7 +2,6 @@ package graph.shortestpath;
 
 import graph.WeightedGraph;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,8 +13,8 @@ import java.util.Set;
  *      - Shortest path from s to all other vertices (each path has at most n-1 edges (no cycles)) 
  *      - Assert that G has a -ve cost cycle
  *
- * The algorithm uses a dynamic programming paradigm with the key idea to
- * restrict the number of edges in a path in order to build up sub-problems.
+ * The algorithm uses a dynamic programming paradigm with the key idea of
+ * restricting the number of edges in a path in order to build up sub-problems.
  *
  * For i in 1..(N-1), v E V, let P = shortest s-v path with at most i edges.
  * Either: 
@@ -35,8 +34,11 @@ import java.util.Set;
  * Running time: O(MN). In a dense graph, tends to O(N^3), because M ~ N^2
  *
  * Early out: If A[ j - 1, V ] = A[ j, V ] for some j in 1..(N-1) and all V,
- * then can stop. Cycle detection: If A [ N, V] = A [ N - 1, V] for all V, then
- * there are no cycles. Because No path decreased on this iteration.
+ * then can stop. 
+ * 
+ * Cycle detection: After completion, apply one more iteration. 
+ * If A [ N + 1, V] = A [ N, V] for all V, then there are no cycles. 
+ * Because no path decreased on this iteration.
  *
  * @param <T>
  */

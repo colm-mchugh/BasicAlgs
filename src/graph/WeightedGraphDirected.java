@@ -60,7 +60,7 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
     public void remove(T u) {
         this.rep.remove(u);
     }
- 
+
     public static class SingleSourceResult<T> {
 
         T source;
@@ -90,7 +90,7 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
 
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append('(');
             sb.append(u);
             sb.append(", ");
