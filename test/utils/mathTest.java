@@ -406,7 +406,7 @@ public class mathTest {
     
     @Test
     public void testSampling() {
-        int[] nmPairs = { 100,7, 5000,250, 10000,10000, 350000,68000 };
+        int[] nmPairs = { 100,7, 5000,250, 10000,10000, 350000,68000, 1000,1000 };
         for (int i = 0; i < nmPairs.length; i += 2) {
             int N = nmPairs[i];
             int M = nmPairs[i+1];
@@ -418,5 +418,8 @@ public class mathTest {
                 assert s >= 1 && s <= N;
             }
         }
+        Set<Integer> pish = RandGen.uniformSample(1000, 1000);
+        assert pish.size() == 1000;
+        
     }
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import utils.RandGen;
 
 /**
  * Compute the shortest paths between all points of a weighted graph.
@@ -49,7 +50,7 @@ public class Johnson<T> {
         Set<Path<T>> rv = new HashSet<>();
         // Add edges from vertex s to all other vertexes of G with weight 0
         T s = null;
-        Collection<T> vertices = new HashSet<>(G.numVertices());
+        List<T> vertices = new ArrayList<>(G.numVertices());
         vertices.addAll((Collection<? extends T>) G.V()); // necessary to prevent concurrent modification 
         assert vertices.size() == G.numVertices();
         for (T v : vertices) {
@@ -78,8 +79,9 @@ public class Johnson<T> {
         G.remove(s);
         Dijkstra<T> sper = new Dijkstra<>(G);
         Path<T> tmp = new Path<>(null, null, Integer.MAX_VALUE);
-        for (T u : G.V()) {
-            for (T v : G.V()) {
+        for (T u : vertices) {
+            for (int i = vertices.size() - 1; i >= 0; i--) {
+                T v = vertices.get(i);
                 if (u.equals(v)) {
                     continue;
                 }
