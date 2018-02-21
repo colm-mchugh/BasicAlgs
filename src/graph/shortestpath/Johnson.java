@@ -45,8 +45,8 @@ import java.util.Set;
  */
 public class Johnson<T> {
 
-    public List<Path<T>> apsp(WeightedGraph<T> G) {
-        List<Path<T>> rv = new ArrayList<>();
+    public Set<Path<T>> apsp(WeightedGraph<T> G) {
+        Set<Path<T>> rv = new HashSet<>();
         // Add edges from vertex s to all other vertexes of G with weight 0
         T s = null;
         Collection<T> vertices = new HashSet<>(G.numVertices());
@@ -77,18 +77,24 @@ public class Johnson<T> {
         // Run Dijkstra shortest path on each u,v pair
         G.remove(s);
         Dijkstra<T> sper = new Dijkstra<>(G);
+        Path<T> tmp = new Path<>(null, null, Integer.MAX_VALUE);
         for (T u : G.V()) {
             for (T v : G.V()) {
                 if (u.equals(v)) {
                     continue;
                 }
-                int duv = sper.sp(u, v).d;
-                Path<T> p = new Path<>(u, v, duv);
-                // Readjust to get the real distance
-                if (p.d != Integer.MAX_VALUE) {
-                    p.d = p.d - reweightings.get(u) + reweightings.get(v);
+                if (rv.contains(tmp.set(u, v))) {
+                    continue;
                 }
-                rv.add(p);
+                Map<T, Integer> shortestPaths = sper.sp(u, v);
+                for (T w : shortestPaths.keySet()) {
+                    Path<T> p = new Path<>(u, w, shortestPaths.get(w));
+                    // Readjust to get the real distance
+                    if (p.d != Integer.MAX_VALUE) {
+                        p.d = p.d - reweightings.get(u) + reweightings.get(w);
+                    }
+                    rv.add(p);
+                }
             }
         }
         return rv;

@@ -28,7 +28,8 @@ public class DijkstraTest {
         for (Integer t : g.V()) {
             if (distances.keySet().contains(t)) {
                 Dijkstra<Integer> dijkster = new Dijkstra<>(g);
-                int d = dijkster.sp(1, t).d; 
+                Map<Integer, Integer> pathLengths = dijkster.sp(1, t);
+                int d = pathLengths.get(t); 
                 distances.replace(t, d);
             }
         }
@@ -90,7 +91,7 @@ public class DijkstraTest {
 
         Dijkstra<String> sper = new Dijkstra<>(g);
         
-        assert sper.sp("a", "d").d == 5;
+        assert sper.sp("a", "d").get("d") == 5;
 
         String s = "a";
         for (String t : g.V()) {
@@ -107,7 +108,7 @@ public class DijkstraTest {
         GraphIO.populateWeightedGraph(g, links);
         Dijkstra<Integer> sper = new Dijkstra<>(g);
         
-        assert sper.sp(1, 6).d == 5;
+        assert sper.sp(1, 6).get(6) == 5;
     }
 
     @Test
@@ -133,7 +134,7 @@ public class DijkstraTest {
                 if (u.equals(v)) {
                     System.out.println("(" + u + " -> " + v + ") = 0");
                 } else {
-                    int duv = sper.sp(u, v).d;
+                    int duv = sper.sp(u, v).get(v);
                     if (duv == Integer.MAX_VALUE) {
                         System.out.println("No path: " + u + " -> " + v);
                     } else {

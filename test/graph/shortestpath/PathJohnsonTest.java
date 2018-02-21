@@ -4,6 +4,7 @@ import graph.GraphIO;
 import graph.WeightedGraph;
 import graph.WeightedGraphDirected;
 import java.util.List;
+import java.util.Set;
 import org.junit.Test;
 
 public class PathJohnsonTest {
@@ -20,7 +21,7 @@ public class PathJohnsonTest {
         g.link('z', 'y', -4);
 
         Johnson<Character> sper = new Johnson<>();
-        List<Path<Character>> pish = sper.apsp(g);
+        Set<Path<Character>> pish = sper.apsp(g);
         int min = Integer.MAX_VALUE;
         for (Path<Character> p : pish) {
             min = Integer.min(min, p.d);
@@ -63,7 +64,7 @@ public class PathJohnsonTest {
     
     private void testFile(String file, int expected) {
         Johnson<Integer> sper = new Johnson<>();
-        List<Path<Integer>> pish = sper.apsp(GraphIO.readWeightedGraphDirected(file));
+        Set<Path<Integer>> pish = sper.apsp(GraphIO.readWeightedGraphDirected(file));
         int min = Integer.MAX_VALUE;
         for (Path<Integer> p : pish) {
             min = Integer.min(min, p.d);
@@ -75,7 +76,7 @@ public class PathJohnsonTest {
         Johnson<Integer> sper = new Johnson<>();
         WeightedGraph<Integer> g = new WeightedGraphDirected();
         GraphIO.populateWeightedGraph(g, links);
-        List<Path<Integer>> pish = sper.apsp(g);
+        Set<Path<Integer>> pish = sper.apsp(g);
         int min = Integer.MAX_VALUE;
         for (Path<Integer> p : pish) {
             min = Integer.min(min, p.d);

@@ -47,9 +47,11 @@ public class Dijkstra<T> {
      * 
      * @param s start vertex
      * @param t end vertex
-     * @return 
+     * @return The length of the shortest path from s to each vertex reachable from
+     * s to t, including t.
+     * 
      */
-    public Path<T> sp(T s, T t) {
+    public Map<T, Integer> sp(T s, T t) {
         // 'X' is the set of vertices that have been processed; initialy empty
         Set<T> X = new HashSet<>();
         // shortest[v] gives the shortest distance from s to a vertex v. 
@@ -69,7 +71,8 @@ public class Dijkstra<T> {
             // Get the vertex s with the lowest value between X and gMinusX
             WeightedGraph.Edge<T> w = gMinusX.Delete();
             if (w.d == Integer.MAX_VALUE) { // No path from u to v ?
-                return path; // path length is Integer.MAX_VALUE, meaning +Infinity
+                shortest.put(t, Integer.MAX_VALUE);
+                return shortest; // path length is Integer.MAX_VALUE, meaning +Infinity
             }
             // The weight value gives the distance from source to the vertex
             shortest.put(w.v, w.d);    
@@ -85,7 +88,7 @@ public class Dijkstra<T> {
         // shortest path value
         path.path.add(t);
         path.d = shortest.get(s);
-        return path;
+        return shortest;
     }
     
     /**
