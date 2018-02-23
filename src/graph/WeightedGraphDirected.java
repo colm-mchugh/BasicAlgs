@@ -57,10 +57,16 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
     }
 
     @Override
-    public void remove(T u) {
-        this.rep.remove(u);
+    public Set<Edge<T>> remove(T u) {
+        return this.rep.remove(u);
     }
 
+    @Override
+    public WeightedGraph<T> restore(T u, Set<Edge<T>> v) {
+        this.rep.put(u, v);
+        return this;
+    }
+    
     public static class SingleSourceResult<T> {
 
         T source;

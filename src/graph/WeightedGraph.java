@@ -66,7 +66,9 @@ public interface WeightedGraph<T> {
      * 
      * @param u 
      */
-    void remove(T u);
+    Set<Edge<T>> remove(T u);
+    
+    WeightedGraph<T> restore(T u, Set<Edge<T>> v);
     
     /**
      * An edge consists of a weight d and target vertex v.
