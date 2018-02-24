@@ -22,6 +22,7 @@ public class GraphIO {
     public static Graph<Integer> readGraphUndirected(String file) {
         return readGraph(file, new UGraphMapImpl<>());
     }
+    
     public static void populateWeightedGraph(WeightedGraph<Integer> graph, int[] links) {
         for (int i = 0; i < links.length; i += 3) {
             graph.link(links[i], links[i+1], links[i+2]);

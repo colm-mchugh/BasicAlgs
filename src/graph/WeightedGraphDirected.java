@@ -9,7 +9,8 @@ import java.util.Set;
 public class WeightedGraphDirected<T> implements WeightedGraph<T> {
 
     protected final Map<T, Set<Edge<T>>> rep = new HashMap<>();
-
+    protected int nEdges = 0;
+    
     @Override
     public void link(T u, T v, int w) {
         Set<Edge<T>> e = this.edgesOf(u);
@@ -17,7 +18,8 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
         // Add v to the vertices if its not already
         if (this.rep.get(v) == null) {
             this.rep.put(v, new HashSet<>());
-        } 
+        }
+        nEdges++;
     }
 
     @Override
@@ -33,6 +35,11 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
     @Override
     public int numVertices() {
         return this.rep.keySet().size();
+    }
+    
+    @Override
+    public int numEdges() {
+        return nEdges;
     }
     
     @Override
@@ -58,12 +65,15 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
 
     @Override
     public Set<Edge<T>> remove(T u) {
-        return this.rep.remove(u);
+        Set<Edge<T>> edges = this.rep.remove(u);
+        nEdges -= edges.size();
+        return edges;
     }
 
     @Override
     public WeightedGraph<T> restore(T u, Set<Edge<T>> v) {
         this.rep.put(u, v);
+        nEdges += v.size();
         return this;
     }
     

@@ -31,6 +31,12 @@ public interface WeightedGraph<T> {
     public int numVertices();
 
     /**
+     * The number of vertices in the graph
+     */
+    public int numEdges();
+
+    
+    /**
      * The edges connected to vertex u.
      * 
      * @param u
@@ -65,6 +71,7 @@ public interface WeightedGraph<T> {
      * Johnson shortest paths calculator, which should clone the graph instead.
      * 
      * @param u 
+     * @return  
      */
     Set<Edge<T>> remove(T u);
     

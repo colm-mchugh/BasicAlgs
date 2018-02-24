@@ -38,7 +38,7 @@ public class VertexCoverTest {
     
     @Test
     public void testVertexCoverSimpleStar() {
-        int[] links = {0,3, 1,3, 2,3, 4,3, 5,3, 6,3 };
+        int[] links = {0,3, 1,3, 2,3, 4,3, 5,3, 6,3, 7,3, 8,3, 9,3 };
         int[] expcted = { 3 };
         testGraph(links, 1, expcted);
     }
