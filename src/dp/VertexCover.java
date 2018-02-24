@@ -2,6 +2,7 @@ package dp;
 
 import graph.WeightedGraph;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -12,11 +13,11 @@ import java.util.Set;
  * 
  * Given G(V, E) and k, return either:
  *  - V', a subset of V of size less than or equal to k
- *  - NULL if there is no vertex cover of at most size k 
+ *  - The empty set, if there is no vertex cover of at most size k 
  * 
  * Exhaustively trying all possibilities (N choose k) is O(N^k).
- * This algorithm uses a search strategy based on the following
- * logical bicondition:
+ * This algorithm uses a search strategy based on the logical
+ * bicondition:
  *      E vertex-cover(G, k) <=> E vertex-cover(G - u, k - 1) || E vertex-cover(G - v, k - 1)
  * where (u,v) is any edge of G.
  * 
@@ -26,7 +27,7 @@ import java.util.Set;
  */
 public class VertexCover<T> {
     
-    public final Set<T> NULL_SET = new HashSet<>(); // immutable
+    public final Set<T> EMPTY_SET = new HashSet<>(); // immutable
     
     public Set<T> cover(WeightedGraph<T> G, int k) {
         // Base cases:
@@ -34,21 +35,23 @@ public class VertexCover<T> {
             return new HashSet<>();
         }
         if (k == 0 && G.numVertices() > 0) {
-            return NULL_SET;
+            return EMPTY_SET;
         }
         // Pick an edge (u,v) of G
         T u = null; 
         T v = null;
+        Iterator<T> gV = G.V().iterator();
         do {
-            u = G.V().iterator().next();
-            WeightedGraph.Edge<T> ev = (G.edgesOf(u).isEmpty() ? null : G.edgesOf(u).iterator().next());
+            u = gV.next();
+            Set<WeightedGraph.Edge<T>> uE = G.edgesOf(u);
+            WeightedGraph.Edge<T> ev = (uE.isEmpty() ? null : uE.iterator().next());
             v = (ev != null ? ev.v : null);
         } while (v == null) ;
         
         // Remove u and its edges from G, recurse with cover size (k - 1)
         Set<WeightedGraph.Edge<T>> uEdges = G.remove(u);
         Set<T> Su = cover(G, k - 1);
-        if (Su != NULL_SET && Su.size() == k - 1) {
+        if (Su != EMPTY_SET && Su.size() == k - 1) {
             Su.add(u);
             return Su;
         }
@@ -56,11 +59,11 @@ public class VertexCover<T> {
         // Remove v and its edges from G, recurse with cover size (k - 1)
         Set<WeightedGraph.Edge<T>> vEdges = G.restore(u, uEdges).remove(v);
         Set<T> Sv = cover(G, k - 1);
-        if (Sv != NULL_SET && Sv.size() == k - 1) {
+        if (Sv != EMPTY_SET && Sv.size() == k - 1) {
             Sv.add(v);
             return Sv;
         }
         G.restore(v, vEdges);
-        return NULL_SET;
+        return EMPTY_SET;
     }
 }

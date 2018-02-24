@@ -17,7 +17,18 @@ public class VertexCoverTest extends TestCase {
         VertexCover<Integer> vcer = new VertexCover<>();
         Set<Integer> vc = vcer.cover(G, 1);
         assert vc.size() == 1;
-        assert vc.iterator().next() == 3;
+        assert vc.contains(3);
+    }
+    
+    @Test
+    public void testSimpleCLRS() {
+        int[] links = {0,1,1, 1,2,1, 2,3,1, 3,4,1, 4,5,1, 6,3,1, 2,4,1, 3,5,1 };
+        WeightedGraph<Integer> G = new WeightedGraphUndirected<>();
+        GraphIO.populateWeightedGraph(G, links);
+        VertexCover<Integer> vcer = new VertexCover<>();
+        Set<Integer> vc = vcer.cover(G, 3);
+        assert vc.contains(1);
+        assert vc.contains(3);
     }
     
 }
