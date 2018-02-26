@@ -7,8 +7,7 @@ public class InversionCounter {
      * 
      * An inversion in an array a of length N exists if 
      * i > j and a[i] < a[j] for any 0 <= i < N and 0 <= j < N
-     * This function counts all such inversions in the array.
-     * Additionally, the array is sorted.
+     * The array is sorted as a side-effect.
      * 
      * @param a
      * @return 

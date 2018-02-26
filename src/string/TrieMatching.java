@@ -2,37 +2,7 @@ package string;
 
 import java.util.*;
 
-class Node {
-
-    public static final int Letters = 4;
-    public static final int NA = -1;
-    public int next[];
-
-    Node() {
-        next = new int[Letters];
-        Arrays.fill(next, NA);
-    }
-}
-
 public class TrieMatching {
-
-    int letterToIndex(char letter) {
-        switch (letter) {
-            case 'A':
-                return 0;
-            case 'C':
-                return 1;
-            case 'G':
-                return 2;
-            case 'T':
-                return 3;
-            default:
-                assert (false);
-                return Node.NA;
-        }
-    }
-
-    
 
     boolean prefixTrieMatching(String text, int offset, List<Map<Character, Integer>> trie) {
         char symbol = text.charAt(offset);
@@ -55,7 +25,7 @@ public class TrieMatching {
     }
     
     List<Integer> solve(String text, int n, String[] patterns) {
-        List<Integer> result = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<>();
         Trie trie = new Trie();
         trie.buildTrie(patterns);
         for (int i = 0; i < text.length(); i++) {

@@ -1,7 +1,7 @@
 package greedy;
 
 /**
- * A JobScorer - record a score for a job.
+ * A JobScorer - score a job.
  * 
  */
 public abstract class JobScorer {
@@ -13,8 +13,7 @@ public abstract class JobScorer {
     }
 
     /**
-     * Specialization of JobScorer that computes the score of the given job 
-     * as the difference between its weight and length.
+     * Job score is difference between its weight and length.
      */
     public static class WeightLengthDiff extends JobScorer {
         public WeightLengthDiff(Job j) {
@@ -23,8 +22,7 @@ public abstract class JobScorer {
     }
 
     /**
-     * Specialization of JobScorer that computes the score of the given job 
-     * as the ratio of its weight over its length.
+     * Job score is the ratio of its weight over its length.
      */
     public static class WeightLengthRatio extends JobScorer {
         public WeightLengthRatio(Job j) {

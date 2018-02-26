@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import utils.RandGen;
 
 /**
  * Compute the shortest paths between all points of a weighted graph.

@@ -33,7 +33,6 @@ public class Job implements Comparable<Job> {
     }
 
     /**
-     * Jobs are comparable as follows:
      * This job precedes a given job o if it has a higher score, and 
      * succeeds job o if it has a lower score. If this job and job o
      * have the same score, the job with the higher weight precedes
@@ -88,8 +87,7 @@ public class Job implements Comparable<Job> {
     }
     
     /**
-     * Given a sequence of jobs, return true if they are ordered by decreasing 
-     * score, otherwise false.
+     * return true/false if jobs are/are not ordered by decreasing score.
      * 
      * If a sequence is ordered by score, then score(Job i) >= score(Job i+1).
      * Job 0 has the highest score, job 1 next highest, etc.
