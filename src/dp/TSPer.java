@@ -12,6 +12,31 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Dynamic programming algorithm for Traveling Salesperson.
+ * 
+ * Problem definition: given a set of points P with an origin point, compute the shortest
+ * path that starts and ends at the origin and visits each point in P exactly once.
+ * 
+ * Optimal substructure: Let P = 1,2,...,N with 1 as origin; 
+ * for each j in { 1,2,...N } and each subset S of P that contains 1 and j,
+ * L[S, j] = Min path from 1 to j that visits each point in S exactly once.
+ * 
+ * Recurrence: L[S, j] = MIN( L[S - j, k] + Ckj ) for all k in S, k != j
+ * In other words, a shortest path of S with final point j consists of a 
+ * shortest path of S - k with final point k plus the distance from k to j.
+ * 
+ * Algorithm:
+ * L[S, 1] = 0 if S = { 1 }, +Inf otherwise     // Base case
+ * For |S| in 2,3,..,N      // Solve in order of increasing subproblem size
+ *  For each S in { 1,2,..,N } of size |S|  // S must contain 1
+ *    For each j in S, j != 1
+ *      L[S,j] = MIN ( L[ S - j, k] + Ckj ) for all k in S, k != j
+ * Return MIN( L[P, j] + Cj1 ) for all j in 2..N  // Determine the minimum final hop back to 1
+ * 
+ * Running time: O(N^2 x 2^N) 2^N possible S, N choices of j, N choices of k
+ * 
+ */
 public class TSPer {
 
     private int N;

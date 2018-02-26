@@ -38,6 +38,7 @@ public class VertexCover<T> {
             return EMPTY_SET;
         }
         // Pick an edge (u,v) of G
+        // TODO: pick (u, v) with vertex u having the most edges in G
         T u = null; 
         T v = null;
         Iterator<T> gV = G.V().iterator();
