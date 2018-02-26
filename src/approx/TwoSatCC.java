@@ -1,5 +1,6 @@
-package dp;
+package approx;
 
+import approx.TwoSatLS;
 import graph.DGraphImpl;
 import graph.CCTarjan;
 import graph.CCer;

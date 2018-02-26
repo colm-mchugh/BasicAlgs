@@ -1,5 +1,6 @@
 package dp;
 
+import approx.KnapsackBnB;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

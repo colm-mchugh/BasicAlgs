@@ -1,5 +1,6 @@
-package dp;
+package approx;
 
+import approx.TwoSatLS;
 import java.util.List;
 import java.util.Map;
 import utils.RandGen;

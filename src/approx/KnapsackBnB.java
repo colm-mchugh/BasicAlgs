@@ -1,5 +1,7 @@
-package dp;
+package approx;
 
+import dp.Knapsack;
+import dp.KnapsackGrdy;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;

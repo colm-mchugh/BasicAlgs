@@ -8,8 +8,8 @@ import java.util.Set;
 /**
  * Compute the vertex cover of a weighted graph G(V, E).
  * 
- * Vertex Cover: the minimum sized set of vertices that includes at least 
- * one endpoint of each edge. 
+ * Vertex Cover of G: the minimum sized set of vertices that includes at least 
+ * one endpoint of each edge in E. 
  * 
  * Given G(V, E) and k, return either:
  *  - V', a subset of V of size less than or equal to k
