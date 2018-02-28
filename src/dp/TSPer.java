@@ -112,6 +112,15 @@ public class TSPer {
             return "(" + xCoord + ", " + yCoord + ')';
         }
 
+        public float getxCoord() {
+            return xCoord;
+        }
+
+        public float getyCoord() {
+            return yCoord;
+        }
+
+        
     }
 
     public void printDistances() {
