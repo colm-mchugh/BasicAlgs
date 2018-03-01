@@ -19,6 +19,12 @@ import java.util.Arrays;
  * Return the largest x such that A[n,x] ≤ W ← O(nvmax) 
  * Running time: O(n2vmax) 
  * 
+ * Heuristic:
+ * m x Vi in [ Vi - m, Vi ] => Vi >= m x Vi && m X Vi >= Vi - m
+ * m x N = e x Vmax => m = e x Vmax / N
+ * N = #items
+ * Vmax = max value
+ * e = parameter supplied by client; 0 <= e <= 1
  */
 public class KnapsackHeuristic extends Knapsack {
 
