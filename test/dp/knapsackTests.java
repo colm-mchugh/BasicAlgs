@@ -117,8 +117,7 @@ public class knapsackTests {
     public void debugDecisionVectors() {
         String[] ksSpecs = {"ks_45_0",};
         KnapsackBnB.Strategy[] strategies = {
-            KnapsackBnB.Strategy.DEPTH_FIRST, 
-        };
+            KnapsackBnB.Strategy.DEPTH_FIRST,};
         for (KnapsackBnB.Strategy strategy : strategies) {
             System.out.println((strategy == KnapsackBnB.Strategy.DEPTH_FIRST ? "DepthSearch" : "BreadthSearch"));
             for (String spec : ksSpecs) {
@@ -158,8 +157,8 @@ public class knapsackTests {
 
     @Test
     public void timeBBSerach() {
-        String[] ksSpecs = { "ks_40_0", "ks_45_0", "ks_100_0", 
-            "ks_100_1", "ks_100_2", "ks_200_0", "ks_200_1", 
+        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_100_0",
+            "ks_100_1", "ks_100_2", "ks_200_0", "ks_200_1",
             "ks_300_0", "ks_400_0", "ks_1000_0", "ks_10000_0"
         };
         KnapsackBnB.Strategy[] strategies = {
@@ -183,8 +182,7 @@ public class knapsackTests {
     @Test
     public void timeRecursive() {
         String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_100_0",
-            "ks_100_1", "ks_100_2", "ks_200_0", "ks_200_1",  
-        };
+            "ks_100_1", "ks_100_2", "ks_200_0", "ks_200_1",};
         System.out.println("timeRecursive");
         for (String spec : ksSpecs) {
             KnapsackData k = this.readData("resources/knapsack/" + spec);
@@ -192,6 +190,25 @@ public class knapsackTests {
             long now = System.currentTimeMillis();
             int ksW = ks.knapsack();
             System.out.println(spec + " value:" + ksW + ", time:" + (System.currentTimeMillis() - now));
+        }
+    }
+
+    @Test
+    public void timeHeuristic() {
+        String[] ksSpecs = {"ks_40_0", "ks_45_0", "ks_100_0",
+            "ks_100_1", "ks_100_2", "ks_200_0", "ks_200_1",};
+        float[] epsilons = {0.001f};
+
+        System.out.println("timeHeuristic");
+        for (float epsilon : epsilons) {
+            System.out.println("Epsilon=" + epsilon);
+            for (String spec : ksSpecs) {
+                KnapsackData k = this.readData("resources/knapsack/" + spec);
+                Knapsack ks = new KnapsackHeuristic(k.weight, k.data, epsilon);
+                long now = System.currentTimeMillis();
+                int ksW = ks.knapsack();
+                System.out.println(spec + " value:" + ksW + ", time:" + (System.currentTimeMillis() - now));
+            }
         }
     }
 
