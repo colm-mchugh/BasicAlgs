@@ -21,33 +21,25 @@ import utils.RandGen;
  */
 public class MaxCut<T> {
     
-    public GraphCut<T> maxCut(Graph<T> graph) {
-        Set<T> A = new HashSet<>(graph.numVertices() / 2);
-        Set<T> B = new HashSet<>(graph.numVertices() / 2);
-        for (T v : graph.V()) {
-            if (RandGen.uniformBool()) {
-                A.add(v);
-            } else {
-                B.add(v);
-            }
-        }
-        boolean done = false;  
-        while (!done) {
-            done = true;
-            for (T u : graph.V()) {
-                Set<T> s = (A.contains(u) ? A : B);
-                int nedges = graph.connections(u).size();
-                int nedgesIn = edgesIn(u, graph, s);
-                int nedgesCrossing = nedges - nedgesIn;
-                if (nedgesIn > nedgesCrossing) {
-                    Set<T> other = (A.contains(u) ? B : A);
-                    s.remove(u);
-                    other.add(u);
-                    done = false;
+    public GraphCut<T> maxCut(Graph<T> G) {
+        Set<T> A = new HashSet<>(G.numVertices() / 2);
+        Set<T> B = new HashSet<>(G.numVertices() / 2);
+        for (T v : G.V()) {
+            (RandGen.uniformBool() ? A : B).add(v);
+        }         
+        for (boolean not_done = true; not_done;) {
+            not_done = false;
+            for (T u : G.V()) {
+                Set<T> S = (A.contains(u) ? A : B);
+                int nedgesIn = edgesIn(u, G, S);
+                if (nedgesIn > G.connections(u).size() - nedgesIn) {
+                    (A.contains(u) ? B : A).add(u);
+                    S.remove(u);
+                    not_done = true;
                 }
             }
         }
-        return new GraphCut<>(A, B, graph);
+        return new GraphCut<>(A, B, G);
     }
     
     int edgesIn(T u, Graph<T> G, Set<T> s) {
