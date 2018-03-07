@@ -63,7 +63,7 @@ public class PathJohnsonTest {
     
     @Test 
     public void testBigGraph4() {
-        testFile("resources/g_44_2048.txt", -19);
+        testFile("resources/g_44_2048.txt", -3127);
     }
     
     private void testFile(String file, int expected) {
