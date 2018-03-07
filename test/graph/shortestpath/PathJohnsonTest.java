@@ -61,6 +61,11 @@ public class PathJohnsonTest {
         testFile("resources/g3.txt", -19);
     }
     
+    @Test 
+    public void testBigGraph4() {
+        testFile("resources/g_44_2048.txt", -19);
+    }
+    
     private void testFile(String file, int expected) {
         Johnson<Integer> sper = new Johnson<>();
         Set<Path<Integer>> pish = sper.apsp(GraphIO.readWeightedGraphDirected(file));

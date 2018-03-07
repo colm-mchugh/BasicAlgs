@@ -81,4 +81,17 @@ public class FloydWarshallTest {
         FloydWarshall<Integer> sper = new FloydWarshall<>(g);
         assert sper.hasNegativeCostCycle;
     }
+    
+    @Test
+    public void bigTest3() {
+        String file = "resources/g_44_2048.txt";
+        WeightedGraph<Integer> g = GraphIO.readWeightedGraphDirected(file);
+        FloydWarshall<Integer> sper = new FloydWarshall<>(g);
+        List<Path<Integer>> paths = sper.apsp();
+        int minPath = Integer.MAX_VALUE;
+        for (Path<Integer> p : paths) {
+            minPath = Integer.min(minPath, p.d);
+        }
+        assert minPath == -3127;
+    }
 }

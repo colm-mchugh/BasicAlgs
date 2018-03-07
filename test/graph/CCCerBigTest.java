@@ -160,22 +160,25 @@ public class CCCerBigTest {
         }
     }
 
-    private final static String FILE = "resources/SCC.txt";
-
+    private final static String[] files = { "resources/SCC.txt" };
+    private final static int[][] expected = { {434821, 968, 459, 313, 211} };
+    
     @Test
     public void testBigGraphTarjan() {
-        testBigGraph(new CCTarjan<>());
+        for (String file : files) 
+            testBigGraph(new CCTarjan<>(), file);
     }
 
     @Test
     public void testBigGraphKosaraju() {
-        testBigGraph(new CCKosaraju<>());
+        for (String file : files)
+            testBigGraph(new CCKosaraju<>(), file);
     }
 
     // This test may require setting JVM -Xss parameter.
-    private void testBigGraph(CCer<Integer> ccer) {
+    private void testBigGraph(CCer<Integer> ccer, String file) {
         long pish = System.currentTimeMillis();
-        Graph<Integer> g = readGraph(FILE);
+        Graph<Integer> g = readGraph(file);
         Map<Integer, List<Integer>> components = ccer.getComponents(g);
         int[] expectedCCSizes = {434821, 968, 459, 313, 211};
         Iterator<Integer> ccSizes = ccer.ccSizes().iterator();
@@ -227,7 +230,7 @@ public class CCCerBigTest {
     public void testIterativeKosaraju() {
         long pish = System.currentTimeMillis();
 
-        List<Integer> data = readList(FILE);
+        List<Integer> data = readList(files[0]);
         CCKosarajuIterative<Integer> gt = new CCKosarajuIterative<>();
 
         Map<Integer, Set<Integer>> components = gt.getComponents(data);
