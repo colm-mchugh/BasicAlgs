@@ -133,4 +133,31 @@ public class QuickSortTest {
         }
     }
 
+    @Test
+    public void bigTest() {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("resources/input_dgrcode_20_1000000.txt"));
+            Integer a[] = new Integer[1000000];
+            String line;
+
+            for (int i = 0; (line = br.readLine()) != null; i++) {
+                a[i] = Integer.parseInt(line);
+            }
+
+            QuickSorter qs = new QuickSorter(QuickSorter.PartitionStrategy.LAST, !QuickSorter.RANDOM, !QuickSorter.LOGGING);
+            qs.sort(a);
+            validateSortOrder(a);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(QuickSortTest.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                Logger.getLogger(QuickSortTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
 }

@@ -26,7 +26,7 @@ public class KargerMinCut<T> {
                 smallestCut = trial;
                 trialNo = i;
             }
-            if (i > 0 && i % 100 == 0) {
+            if (i > 0 && i % 1000 == 0) {
                 System.out.println("Finished trial " + i + " of " + trials);
             }
         }

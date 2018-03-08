@@ -11,8 +11,6 @@ import static utils.math.isSorted;
 
 public class InversionCounterTest {
 
-    private final static long EXPECTED = 2407905288l;
-    
     @Test
     public void testCountInversions1() {
         Integer[] a = {67, 23, 45, 89, 17, 1, 99};
@@ -44,18 +42,22 @@ public class InversionCounterTest {
 
     @Test
     public void testCountInversionsBig() {
+        String[] files = { "inversion_count_test.txt", "input_dgrcode_64_100000.txt" };
+        long[] expecteds = { 2407905288l, 2504602956l };
+        
+        for (int i = 0; i < files.length; i++) {
         BufferedReader br = null;
         try {
             Integer[] a = new Integer[100000];
-            br = new BufferedReader(new FileReader("resources/inversion_count_test.txt"));
+            br = new BufferedReader(new FileReader("resources/" + files[i]));
             String line;
-            for (int i = 0; (line = br.readLine()) != null; i++) {
-                a[i] = (Integer.parseInt(line));
+            for (int j = 0; (line = br.readLine()) != null; j++) {
+                a[j] = (Integer.parseInt(line));
             }
             long c = InversionCounter.countInversions(a);
             System.out.println("Number of inversions: " + c);
             assert math.inOrder(a);
-            assert c == EXPECTED; 
+            assert c == expecteds[i]; 
         } catch (FileNotFoundException ex) {
             Assert.fail("FileNotFoundException: " + ex.getLocalizedMessage());
         } catch (IOException ex) {
@@ -66,6 +68,7 @@ public class InversionCounterTest {
             } catch (IOException ex) {
                 Assert.fail("IOException: " + ex.getLocalizedMessage());
             }
+        }
         }
     }
 
