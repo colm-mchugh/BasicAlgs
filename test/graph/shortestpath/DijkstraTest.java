@@ -70,7 +70,8 @@ public class DijkstraTest {
             for (int j = 0; j < verticesOfInterest.length; j++) {
                 System.out.println("Vertex=" + verticesOfInterest[j] 
                     + ": " + distances.get(verticesOfInterest[j])
-                    + " (" + expecteds[i][j] + ")");
+                    + " (" + expecteds[i][j] + ")" 
+                    + (!Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]) ? " fail!" : ""));
                 passes = passes && Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]);
             }
         }
