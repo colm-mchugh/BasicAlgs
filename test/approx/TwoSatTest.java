@@ -1,8 +1,5 @@
 package approx;
 
-import approx.TwoSatCC;
-import approx.TwoSat;
-import approx.TwoSatLS;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

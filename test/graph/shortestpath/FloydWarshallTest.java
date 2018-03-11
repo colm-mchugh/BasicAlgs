@@ -8,11 +8,11 @@ import java.util.List;
 import org.junit.Test;
 
 public class FloydWarshallTest {
-    
+
     @Test
     public void floydWarshall() {
         WeightedGraph<Integer> g = new WeightedGraphDirected<>();
-        int[] links = {1,2,3, 1,3,8, 1,5,-4, 2,5,7, 2,4,1, 3,2,4, 4,1,2, 4,3,-5, 5,4,6};
+        int[] links = {1, 2, 3, 1, 3, 8, 1, 5, -4, 2, 5, 7, 2, 4, 1, 3, 2, 4, 4, 1, 2, 4, 3, -5, 5, 4, 6};
         GraphIO.populateWeightedGraph(g, links);
         FloydWarshall<Integer> sper = new FloydWarshall<>(g);
         List<Path<Integer>> resList = sper.apsp();
@@ -30,7 +30,7 @@ public class FloydWarshallTest {
     @Test
     public void floydWarshallExt1() {
         WeightedGraph<Integer> g = new WGraphExps<>();
-        int[] links = {1,2,1, 1,3,1, 1,5,1, 2,5,1, 2,4,1, 3,2,1, 4,1,1, 4,3,1, 5,4,1};
+        int[] links = {1, 2, 1, 1, 3, 1, 1, 5, 1, 2, 5, 1, 2, 4, 1, 3, 2, 1, 4, 1, 1, 4, 3, 1, 5, 4, 1};
         GraphIO.populateWeightedGraph(g, links);
         FloydWarshall<Integer> sper = new FloydWarshall<>(g);
         List<Path<Integer>> resList = sper.apsp();
@@ -73,7 +73,7 @@ public class FloydWarshallTest {
         }
         assert minPath == -19;
     }
-    
+
     @Test
     public void bigTest2() {
         String file = "resources/g1.txt";
@@ -81,7 +81,7 @@ public class FloydWarshallTest {
         FloydWarshall<Integer> sper = new FloydWarshall<>(g);
         assert sper.hasNegativeCostCycle;
     }
-    
+
     @Test
     public void bigTest3() {
         String file = "resources/g_44_2048.txt";
@@ -93,5 +93,29 @@ public class FloydWarshallTest {
             minPath = Integer.min(minPath, p.d);
         }
         assert minPath == -3127;
+    }
+
+    @Test
+    public void multiTest() {
+        String[] files = {"input_random_11_8.txt", "input_random_18_32.txt",
+            "input_random_25_128.txt", "input_random_30_256.txt",
+            "input_random_35_512.txt", "input_random_39_1024.txt"
+        };
+        int[] expected = {-89, -355, Integer.MAX_VALUE, -961, -1722, -2123};
+        for (int i = 0; i < files.length; i++) {
+            WeightedGraph<Integer> g = GraphIO.readWeightedGraphDirected("resources/" + files[i]);
+            FloydWarshall<Integer> sper = new FloydWarshall<>(g);
+            List<Path<Integer>> paths = sper.apsp();
+            if (expected[i] == Integer.MAX_VALUE) {
+                assert sper.hasNegativeCostCycle;
+                continue;
+            }
+            int min = Integer.MAX_VALUE;
+            for (Path<Integer> p : paths) {
+                min = Integer.min(min, p.d);
+            }
+            System.out.println("min=" + min + ", expected=" + expected[i]);
+            assert min == expected[i];
+        }
     }
 }

@@ -63,7 +63,19 @@ public class PathJohnsonTest {
     
     @Test 
     public void testBigGraph4() {
-        testFile("resources/g_44_2048.txt", -3127);
+        testFile("resources/g_44_2048.txt", -3127); // -3081
+    }
+    
+    @Test
+    public void multiTest() {
+        String[] files = { "input_random_11_8.txt", "input_random_18_32.txt",
+                        "input_random_25_128.txt", "input_random_30_256.txt",
+                        "input_random_35_512.txt", "input_random_39_1024.txt"
+        };
+        int[] expected = { -89, -355, Integer.MAX_VALUE, -961, -1722, -2123 };
+        for (int i = 0; i < files.length; i++) {
+            testFile("resources/" + files[i], expected[i]);
+        }
     }
     
     private void testFile(String file, int expected) {
@@ -73,6 +85,7 @@ public class PathJohnsonTest {
         for (Path<Integer> p : pish) {
             min = Integer.min(min, p.d);
         }
+        System.out.println("min=" + min + ", expected=" + expected);
         assert min == expected;
     }
     
