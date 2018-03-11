@@ -48,22 +48,22 @@ public class PathJohnsonTest {
 
     @Test 
     public void testBigGraph1() {
-        testFile("resources/g1.txt", Integer.MAX_VALUE);
+        assert testFile("resources/g1.txt", Integer.MAX_VALUE);
     }
     
     @Test 
     public void testBigGraph2() {
-        testFile("resources/g2.txt", Integer.MAX_VALUE);
+        assert testFile("resources/g2.txt", Integer.MAX_VALUE);
     }
     
     @Test 
     public void testBigGraph3() {
-        testFile("resources/g3.txt", -19);
+        assert testFile("resources/g3.txt", -19);
     }
     
     @Test 
     public void testBigGraph4() {
-        testFile("resources/g_44_2048.txt", -3127); // -3081
+        assert testFile("resources/g_44_2048.txt", -3127); // -3081
     }
     
     @Test
@@ -73,12 +73,14 @@ public class PathJohnsonTest {
                         "input_random_35_512.txt", "input_random_39_1024.txt"
         };
         int[] expected = { -89, -355, Integer.MAX_VALUE, -961, -1722, -2123 };
+        boolean passes = true;
         for (int i = 0; i < files.length; i++) {
-            testFile("resources/" + files[i], expected[i]);
+            passes = passes && testFile("resources/" + files[i], expected[i]);
         }
+        assert passes;
     }
     
-    private void testFile(String file, int expected) {
+    private boolean testFile(String file, int expected) {
         Johnson<Integer> sper = new Johnson<>();
         Set<Path<Integer>> pish = sper.apsp(GraphIO.readWeightedGraphDirected(file));
         int min = Integer.MAX_VALUE;
@@ -86,7 +88,7 @@ public class PathJohnsonTest {
             min = Integer.min(min, p.d);
         }
         System.out.println("min=" + min + ", expected=" + expected);
-        assert min == expected;
+        return min == expected;
     }
     
     private void testArray(int[] links, int expected) {
