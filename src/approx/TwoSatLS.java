@@ -11,13 +11,13 @@ import utils.RandGen;
  */
 public class TwoSatLS extends TwoSat {
 
-    Set<Integer> appearOnce;
+    Map<Integer, clause> appearOnce;
 
-    private void addToVariables(Integer Xi) {
+    private void addToVariables(int Xi, clause cl) {
         int key = Math.abs(Xi);
         if (!variables.containsKey(key)) {
             variables.put(key, RandGen.uniformBool());
-            appearOnce.add(key);
+            appearOnce.put(key, cl);
         } else {
             appearOnce.remove(key);
         }
@@ -65,25 +65,22 @@ public class TwoSatLS extends TwoSat {
         this.N = data.length / 2;
         this.variables = new HashMap<>();
         this.equation = new ArrayList<>();
-        this.appearOnce = new HashSet<>();
+        this.appearOnce = new HashMap<>();
         for (int i = 0; i < data.length; i += 2) {
-            addToVariables(data[i]);
-            addToVariables(data[i + 1]);
-            this.equation.add(new clause(data[i], data[i + 1]));
+            clause cl = new clause(data[i], data[i + 1]);
+            this.equation.add(cl);
+            addToVariables(data[i], cl);
+            addToVariables(data[i + 1], cl);
         }
         if (this.appearOnce.size() > 0) {
-            for (Integer once : this.appearOnce) {
+            for (Integer once : this.appearOnce.keySet()) {
                 this.variables.remove(once);
             }
-            System.out.println("Removed " + this.appearOnce.size());
-            for (Integer once : this.appearOnce) {
-                for (int i = 0; i < this.equation.size(); i++) {
-                    if (this.equation.get(i).lVar.equals(once) || this.equation.get(i).rVar.equals(once)) {
-                        this.equation.remove(i);
-                        break;
-                    }
-                }
+            for (Integer once : this.appearOnce.keySet()) {
+                clause cl = this.appearOnce.get(once);
+                this.equation.remove(cl);
             }
+            System.out.println("Removed " + this.appearOnce.size());
             this.N = this.N - this.appearOnce.size();
         }
     }

@@ -1,6 +1,6 @@
 package approx;
 
-import approx.TwoSatLS;
+import graph.CCKosaraju;
 import graph.DGraphImpl;
 import graph.CCTarjan;
 import graph.CCer;
@@ -39,7 +39,8 @@ public class TwoSatCC extends TwoSat {
             g.add(-data[i + 1], data[i]);
             this.equation.add(new TwoSatLS.clause(data[i], data[i + 1]));
         }
-        scc = new CCTarjan<>();
+        //scc = new CCTarjan<>();
+        scc = new CCKosaraju<>();
         Map<Integer, List<Integer>> sccs = scc.getComponents(g);
         Boolean isSat = true;
         for (Integer v : this.variables.keySet()) {
