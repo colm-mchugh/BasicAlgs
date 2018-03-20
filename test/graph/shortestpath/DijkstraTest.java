@@ -37,6 +37,17 @@ public class DijkstraTest {
         for (int i = 0; i < verticesOfInterest.length; i++) {
             assert Objects.equals(distances.get(verticesOfInterest[i]), expectedDistances[i]);
         }
+        for (Integer t : g.V()) {
+            if (distances.keySet().contains(t)) {
+                DijkstraCLRS<Integer> dijkster = new DijkstraCLRS<>(g);
+                Map<Integer, Integer> pathLengths = dijkster.sp(1);
+                int d = pathLengths.get(t);
+                distances.replace(t, d);
+            }
+        }
+        for (int i = 0; i < verticesOfInterest.length; i++) {
+            assert Objects.equals(distances.get(verticesOfInterest[i]), expectedDistances[i]);
+        }
     }
 
     @Test
@@ -55,18 +66,11 @@ public class DijkstraTest {
             WeightedGraph<Integer> g = this.readGraph("resources/" + files[i]);
             System.out.println("file:" + files[i]);
             Map<Integer, Integer> distances = new HashMap<>();
-            for (Integer v : verticesOfInterest) {
-                distances.put(v, 1000000);
+            DijkstraCLRS<Integer> dijkster = new DijkstraCLRS<>(g);
+            Map<Integer, Integer> pathLengths = dijkster.sp(1);
+            for (Integer t : verticesOfInterest) {
+                distances.put(t, pathLengths.get(t));
             }
-            for (Integer t : g.V()) {
-                if (distances.keySet().contains(t)) {
-                    Dijkstra<Integer> dijkster = new Dijkstra<>(g);
-                    Map<Integer, Integer> pathLengths = dijkster.sp(1, t);
-                    int d = pathLengths.get(t);
-                    distances.replace(t, d);
-                }
-            }
-            
             for (int j = 0; j < verticesOfInterest.length; j++) {
                 System.out.println("Vertex=" + verticesOfInterest[j] 
                     + ": " + distances.get(verticesOfInterest[j])

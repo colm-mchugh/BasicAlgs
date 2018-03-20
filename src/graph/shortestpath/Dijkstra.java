@@ -1,6 +1,7 @@
 package graph.shortestpath;
 
 import graph.WeightedGraph;
+import heap.Heap;
 import heap.MinHeap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class Dijkstra<T> {
         Path<T> path = new Path<>(s, t, Integer.MAX_VALUE);
         path.path = new ArrayList<>();
         // 'gMinusX' contains an entry for all vertices in G but not in X.
-        MinHeap<WeightedGraph.Edge<T>> gMinusX = new MinHeap<>();
+        Heap<WeightedGraph.Edge<T>> gMinusX = new MinHeap<>();
         for (T v : G.V()) {
             int weight = (!v.equals(s) ? Integer.MAX_VALUE : 0);
             gMinusX.Insert(new WeightedGraph.Edge<>(v, weight));
@@ -101,7 +102,7 @@ public class Dijkstra<T> {
      * @param w
      * @param d 
      */
-    private void moveFromHeapToX(MinHeap<WeightedGraph.Edge<T>> heap, Set<T> X, T w, Map<T, Integer> d) {
+    private void moveFromHeapToX(Heap<WeightedGraph.Edge<T>> heap, Set<T> X, T w, Map<T, Integer> d) {
         // X gets a new element, the vetex w
         X.add(w);
         // The frontier between X and G - X has changed. Because w is in X, all
