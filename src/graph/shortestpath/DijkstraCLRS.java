@@ -25,9 +25,6 @@ public class DijkstraCLRS<T> {
 
     public Map<T, Integer> sp(T s) {
         Map<T, Integer> distances = new HashMap<>(G.numVertices());
-        for (T v : G.V()) {
-            distances.put(v, (v != s ? Integer.MAX_VALUE : 0));
-        }
         PriorityQueue<T> Q = new PriorityQueue<>(new Comparator<T>() {
             @Override
             public int compare(T o1, T o2) {
@@ -35,6 +32,7 @@ public class DijkstraCLRS<T> {
             }
         });
         for (T v : G.V()) {
+            distances.put(v, (v != s ? Integer.MAX_VALUE : 0));
             Q.add(v);
         }   
         while (!Q.isEmpty()) {

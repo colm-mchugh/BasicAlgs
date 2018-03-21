@@ -108,4 +108,27 @@ public class BinaryTree<T> {
         return order;
     }
 
+    public BinaryTree<T> commonAncestor(T x, T y) {
+        return commonAncestor(this, x, y);
+    }
+    
+    public BinaryTree<T> commonAncestor(BinaryTree<T> t, T x, T y) {
+        
+        if (t == null) {
+            return null;
+        }
+        
+        if (t.val.equals(y) || t.val.equals(x)) {
+            return t;
+        }
+        
+        BinaryTree<T> lhs = commonAncestor(t.left, x, y);
+        BinaryTree<T> rhs = commonAncestor(t.right, x, y);
+      
+        if (lhs != null && rhs != null) {
+            return t;
+        }     
+        
+        return (lhs == null ? rhs : lhs);
+    }
 }
