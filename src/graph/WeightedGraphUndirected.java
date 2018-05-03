@@ -29,6 +29,11 @@ public class WeightedGraphUndirected<T> extends WeightedGraphDirected<T> {
         for (Edge<T> e : edges) {
             this.edgesOf(e.v).remove(uEdge);
         }
+        for (Set<Edge<T>> others : this.rep.values()) {
+            if (others != edges) {
+                others.remove(uEdge);
+            }
+        }
         nEdges -= edges.size();
         return edges;
     }

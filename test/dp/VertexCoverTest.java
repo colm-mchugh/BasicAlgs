@@ -31,4 +31,22 @@ public class VertexCoverTest extends TestCase {
         assert vc.contains(3);
     }
     
+    @Test
+    public void testNWCover() {
+        int[] links = {1,3,1, 2,3,1, 4,3,1, 5,3,1, 6,3,1, 4,7,1, 4,8,1, 7,8,1, 9,7,1, 9,8,1};
+        WeightedGraph<Integer> G = new WeightedGraphUndirected<>();
+        GraphIO.populateWeightedGraph(G, links);
+        VertexCover<Integer> vcer = new VertexCover<>();
+        Set<Integer> vc = vcer.cover(G, 3);
+        assert vc.contains(3);
+        //assert vc.contains(6);
+        //assert vc.contains(9);
+        
+        G = new WeightedGraphUndirected<>();
+        GraphIO.populateWeightedGraph(G, links);
+        vc = vcer.cover(G);
+        assert vc.contains(3);
+        assert vc.contains(6);
+        assert vc.contains(9);
+    }
 }

@@ -3,6 +3,8 @@ package sort;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
@@ -160,4 +162,61 @@ public class QuickSortTest {
         }
     }
     
+    /* testUnsortFrequency is for observing the randomness of unsort.
+    */
+    @Test
+    public void testUnsortFrequency() {
+        String[] seq = { "a", "b", "c", "d",  };
+        int iterations = 10000000;
+        double tolerance = 0.1;
+        Map<String, Integer> freqs = unsortFrequency(seq, iterations);
+        printFreqs(freqs, iterations, tolerance);
+    }
+            
+
+    /**
+     * Run unsort on the given list of strings the given number of times, and
+     * return a map of how many times each distinct sequence was produced by 
+     * an unsort.
+     * This can be used to assess the randomness of the unsort function. 
+     * Ideally, frequencies should be uniform.
+     * 
+     * @param list
+     * @param times
+     * @return 
+     */
+    Map<String, Integer> unsortFrequency(String[] list, int times) {
+        Map<String, Integer> freqs = new HashMap<>();
+        QuickSorter qs = new QuickSorter();
+        for (int i = 0; i < times; i++) {
+            qs.unsort(list);
+            StringBuilder sb = new StringBuilder();
+            for (String s : list) {
+               sb.append(s);
+            }
+            String res = sb.toString();
+            if (freqs.containsKey(res)) {
+                freqs.put(res, freqs.get(res) + 1);
+            } else {
+                freqs.put(res, 1);
+            }
+        }
+        return freqs;
+    }
+    
+    void printFreqs(Map<String, Integer> f, int sample_size, double tolerance) {
+        int expected = sample_size / f.keySet().size();
+        int lower = (int) (expected - expected * tolerance / 100);
+        int upper = (int) (expected + expected * tolerance / 100);
+        System.out.println("expected #occurences:" + expected + " [" + lower + ", " + upper + "]");
+        
+        for (String k : f.keySet()) {
+            System.out.print(k + ": " + f.get(k));
+            if (f.get(k) < lower || f.get(k) > upper) {
+                System.out.println(" ** outside tolerance (" + Math.abs(expected - f.get(k))*100.0/expected + ")");
+            } else {
+                System.out.println();
+            }
+        }
+    }
 }

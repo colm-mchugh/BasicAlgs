@@ -65,9 +65,15 @@ public class WeightedGraphDirected<T> implements WeightedGraph<T> {
 
     @Override
     public Set<Edge<T>> remove(T u) {
-        Set<Edge<T>> edges = this.rep.remove(u);
-        nEdges -= edges.size();
-        return edges;
+        Set<Edge<T>> myEdges = this.rep.remove(u);
+        Edge<T> uEdge = new Edge<>(u, -1);
+        for (Set<Edge<T>> edges : this.rep.values()) {
+            if (edges != myEdges) {
+                edges.remove(uEdge);
+            }
+        }
+        nEdges -= myEdges.size();
+        return myEdges;
     }
 
     @Override
