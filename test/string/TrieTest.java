@@ -67,6 +67,21 @@ public class TrieTest {
 
     }
 
+    @Test
+    public void testTriePrefix() {
+        String[] patterns = {"are", "area", "base", "cat", "cater", "children", "basement"};
+        String text = "caterer";
+        List<Integer> result = new ArrayList<>();
+        Trie trie = new Trie();
+        trie.buildTrie(patterns);
+        for (int i = 0; i < text.length(); i++) {
+            if (trie.prefixTrieMatching(text, i)) {
+                result.add(i);
+            }
+        }
+        System.out.println(result);
+    }
+
     void runMatches(String text, String[] patterns, int[] expected) {
         List<Integer> result = new ArrayList<Integer>();
         Trie trie = new Trie();
@@ -230,45 +245,45 @@ public class TrieTest {
     @Test
     public void remDups1() {
         int[] a1 = {1, 2, 2, 3, 4, 4, 4, 5, 6, 6, 6, 6, 6, 7, 8, 8, 8, 8, 9, 10, 10, 10, 10, 10, 10};
-        int[] expected = {1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10};      
-        validate (a1, expected);
+        int[] expected = {1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10};
+        validate(a1, expected);
     }
 
     @Test
     public void remDups2() {
         int[] a1 = {};
-        int[] expected = {};      
-        validate (a1, expected);
+        int[] expected = {};
+        validate(a1, expected);
     }
 
     @Test
     public void remDups3() {
         int[] a1 = {1, 2, 2, 3, 4, 4, 4, 5};
-        int[] expected = {1, 2, 2, 3, 4, 4, 5};      
-        validate (a1, expected);
+        int[] expected = {1, 2, 2, 3, 4, 4, 5};
+        validate(a1, expected);
     }
-    
+
     @Test
     public void remDups4() {
         int[] a1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        int[] expected = a1;      
-        validate (a1, expected);
+        int[] expected = a1;
+        validate(a1, expected);
     }
-    
+
     @Test
     public void remDups5() {
         int[] a1 = {0, 0, 0, 0, 1, 2, 3, 3, 4, 10};
-        int[] expected = { 0, 0, 1, 2, 3, 3, 4, 10};      
-        validate (a1, expected);
+        int[] expected = {0, 0, 1, 2, 3, 3, 4, 10};
+        validate(a1, expected);
     }
-    
+
     @Test
     public void remDups6() {
         int[] a1 = {1000, 1000, 1000, 1000, 1001, 1002, 1003, 1003, 1004, 1010};
-        int[] expected = { 1000, 1000, 1001, 1002, 1003, 1003, 1004, 1010};      
-        validate (a1, expected);
+        int[] expected = {1000, 1000, 1001, 1002, 1003, 1003, 1004, 1010};
+        validate(a1, expected);
     }
-    
+
     List<Integer> fillList(int[] a) {
         List<Integer> l = new ArrayList<>(a.length);
         for (int i : a) {
@@ -300,7 +315,7 @@ public class TrieTest {
     private boolean notADup(int D, List<Integer> a) {
         return !(D > 1 && Objects.equals(a.get(D), a.get(D - 1)) && Objects.equals(a.get(D), a.get(D - 2)));
     }
-    
+
     @Test
     public void testIP() {
         System.out.println(findIPs("25525511135", 3));
@@ -324,6 +339,5 @@ public class TrieTest {
         }
         return ips;
     }
-
 
 }

@@ -39,14 +39,14 @@ public class VertexCoverTest extends TestCase {
         VertexCover<Integer> vcer = new VertexCover<>();
         Set<Integer> vc = vcer.cover(G, 3);
         assert vc.contains(3);
-        //assert vc.contains(6);
-        //assert vc.contains(9);
+        assert vc.contains(7);
+        assert vc.contains(8);
         
         G = new WeightedGraphUndirected<>();
         GraphIO.populateWeightedGraph(G, links);
         vc = vcer.cover(G);
         assert vc.contains(3);
-        assert vc.contains(6);
-        assert vc.contains(9);
+        assert vc.contains(7);
+        assert vc.contains(8);
     }
 }
