@@ -82,8 +82,22 @@ public class TrieTest {
         System.out.println(result);
     }
 
+    @Test
+    public void testContains() {
+        String[] text = {"she", "she", "sells", "sea", "shells", "by", "the", "sea", "shore"};
+        Trie t = new Trie();
+        t.buildTrie(text);
+
+        assert t.contains("shore");
+        assert !t.contains("shelter");
+        assert t.contains("sea");
+        assert !t.contains("seas");
+        assert !t.contains("sell");
+        assert t.contains("by");
+    }
+
     void runMatches(String text, String[] patterns, int[] expected) {
-        List<Integer> result = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<>();
         Trie trie = new Trie();
         trie.buildTrie(patterns);
         for (int i = 0; i < text.length(); i++) {

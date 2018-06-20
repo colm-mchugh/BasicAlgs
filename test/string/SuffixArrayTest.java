@@ -14,6 +14,8 @@ public class SuffixArrayTest {
         this.validateLongestRepeatingSubstring("ABABABA$", "ABABA");
         this.validateLongestRepeatingSubstring("ABCDEFG$", "");
         this.validateLongestRepeatingSubstring("ATCGATCGA$", "ATCGA");
+        String str = "aacaagtttacaagcatgatgctgtactaggagagttatactggtcgtcaaacctgaacctaatccttgtgtgtacacacactactactgtcgtcgtcatatatcgagatcatcgaaccggaaggccggacaaggcggggggtatagatagatagacccctagatacacatacatagatctagctagctagctcatcgatacacactctcacactcaagagttatactggtcaacacactactacgacagacgaccaaccagacagaaaaaaaactctatatctataaa$";
+        this.validateLongestRepeatingSubstring(str + "$", "agagttatactggtc");       
     }
 
     private void validateLongestRepeatingSubstring(String t, String expected) {

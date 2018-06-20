@@ -6,34 +6,25 @@ public class FordFulkersonTest {
 
     @Test
     public void testGetValue() {
-        /* Calculate the maximum flow for the following graph:
-             0 -> 1, cap=16
-             0 -> 2, cap=13
-             1 -> 2, cap=10
-             2 -> 1, cap=4
-             1 -> 3, cap=12
-             2 -> 4, cap=14
-             2 -> 3, cap=9
-             3 -> 4, cap=7
-             3 -> 5, cap=20
-             4 -> 5, cap=4
-        Source: 0
-        Sink: 5
+        /* Calculate the maximum flow for three graphs. First graph is:
+            0 -16-> 1, 0 -13-> 2, 1 -10-> 2, 2 -4-> 1, 1 -12-> 3, 2 -14-> 4,
+            2 -9-> 3, 3 -7-> 4, 3 -20-> 5, 4 -4-> 5
         */
-        Flow<Integer> G = new FlowImpl<>();
-        G.link(1, 0, 16);
-        G.link(2, 0, 13);
-        G.link(2, 1, 10);
-        G.link(1, 2, 4);
-        G.link(3, 1, 12);
-        G.link(4, 2, 14);
-        G.link(2, 3, 9);
-        G.link(3, 4, 7);
-        G.link(5, 3, 20);
-        G.link(5, 4, 4);
-        // G is the residual network for the graph.
-        Flow.Max<Integer> maxflow = G.getMax(0, 5);
-        assert maxflow.value == 23; 
+        int data[][] = {
+            {1,0,16, 2,0,13, 2,1,10, 1,2,4, 3,1,12, 4,2,14, 2,3,9, 3,4,7, 5,3,20, 5,4,4 },
+            {2,1,2, 3,1,13, 4,2,10, 4,3,5, 5,2,12, 7,3,6, 5,4,1, 6,4,1, 5,6,2, 7,6,3, 8,5,6, 8,7,2},
+            {4,1,12, 5,4,4, 2,1,8, 3,2,5, 6,5,3, 6,3,6, 7,5,7, 8,7,6, 9,8,10, 9,1,2, 9,6,5 }
+        };
+        int pts[] = { 0, 5, 1, 8, 1, 9 }; // source and sink vertices for each graph.
+        int maxF[] = { 23, 6, 11 };     // expected max flows
+        for (int i = 0; i < data.length; i++) {
+            Flow<Integer> G = new FlowImpl<>();
+            for (int j = 0; j < data[i].length; j += 3) {
+                G.link(data[i][j], data[i][j+1], data[i][j+2]);
+            }
+            Flow.Max<Integer> maxflow = G.getMax(pts[i*2], pts[i*2 + 1]);
+            assert maxflow.value == maxF[i];
+        }
     }
     
     @Test
