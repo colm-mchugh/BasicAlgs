@@ -7,8 +7,18 @@ package string;
  * The characters in a subsequence do not need to be contiguous 
  * (unlike substring)
  * 
+ * Example:
  * LCS ("CATCGA", "GTACCGTCA") == "CTCA".
- * 
+ *
+ * The implementation uses a dynamic programming approach; a table
+ * of the lengths of the LCS of all prefixes of X and Y is built. 
+ * It is then used to drive building the LCS of X and Y, using the
+ * recurrence:
+ *      if X(i) == Y(j):
+ *	    LCS(X(0..i), Y(0..j)) == LCS(X(0..i-1), Y(0..j-1)) + X(i) 
+ *      else:
+ *	    use lengths table to determine LCS to be the maximum of:
+ *		LCS(X(0..i-1), Y(0..j)) or LCS(X(0..i), Y(0..j-1))
  */
 public class LCS {
    
@@ -16,11 +26,10 @@ public class LCS {
      * 
      * Build the lengths table L given strings X and Y.
      * 
-     * L[i][j] gives length of LCS (X.substring(0,i), Y.substring(0,j))
-     * 
      * @param X
      * @param Y
-     * @return 
+     * @return the lengths table L such that
+     *         L[i][j] gives length of LCS (X.substring(0,i), Y.substring(0,j))
      */
     public static int[][] getLCSTable(String X, String Y) {
         int m = X.length();

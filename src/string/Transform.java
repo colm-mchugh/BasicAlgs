@@ -10,6 +10,13 @@ import java.util.Objects;
  * Transformation is driven by a cost model, where each operation (copy, replace,
  * insert, delete) has a cost. The transformation should be the cheapest possible.
  * 
+ * The implementation uses a dynamic programming approach, building a table of the
+ * operations required to transform X(i) to Y(j) for all i in 0..m, 0..n, where m
+ * is the length of X and n is the length of Y.
+ *
+ * The operations table is then used to assemble the sequence of steps required to
+ * transform X to Y.
+ *
  */
 public class Transform {
 
@@ -31,6 +38,19 @@ public class Transform {
                 case INS:
                 case DEL:
                     return 2;
+            }
+            throw new RuntimeException("Unsupported cost for " + this);
+        }
+
+	int edit_cost() {
+            switch (this) {
+                case NOP:
+                case COPY:
+                    return 0;
+                case REPL:
+                case INS:
+                case DEL:
+                    return 1;
             }
             throw new RuntimeException("Unsupported cost for " + this);
         }
@@ -85,9 +105,10 @@ public class Transform {
     private final String Y;
 
     /**
-     * Build the operation table ops for transforming X to Y.
+     * Build the operation table ops for transforming all prefixes of
+     * X to all prefixes of Y.
      * 
-     * ops[i][j] is the operation to apply on characters X(i), Y(j)  
+     * ops[i][j] is the operation to apply on characters X[i], Y[j]  
      * 
      * @param X
      * @param Y 
@@ -205,12 +226,10 @@ public class Transform {
      * @return 
      */
     public int distance() {
-        List<Step> a = this.Assemble(X.length(), Y.length());
+        List<Step> assembly = this.Assemble(X.length(), Y.length());
         int score = 0;
-        for (Step step : a) {
-            if (step.op != Op.COPY) {
-                score += 1;
-            }
+        for (Step step : assembly) {
+            score += step.op.edit_cost();
         }
         return score;
     }
