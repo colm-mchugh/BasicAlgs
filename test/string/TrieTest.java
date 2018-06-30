@@ -2,37 +2,10 @@ package string;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.junit.Test;
 
 public class TrieTest {
-
-    @Test
-    public void testBuildTrie() {
-        String[] patterns = {"AT", "AG", "AC"};
-        Trie trie = new Trie();
-        List<Map<Character, Integer>> trieData = trie.buildTrie(patterns);
-
-        assert trieData.get(0).size() == 1 && trieData.get(0).containsKey('A');
-        assert trieData.get(1).size() == 3 && trieData.get(1).containsKey('C');
-        assert trieData.get(1).size() == 3 && trieData.get(1).containsKey('G');
-        assert trieData.get(1).size() == 3 && trieData.get(1).containsKey('T');
-
-    }
-
-    @Test
-    public void testBuildTrie2() {
-        String[] patterns = {"ATAGA", "ATC", "GAT"};
-        Trie trie = new Trie();
-        List<Map<Character, Integer>> trieData = trie.buildTrie(patterns);
-
-        assert trieData.get(0).size() == 2 && trieData.get(0).containsKey('A') && trieData.get(0).containsKey('G');
-        assert trieData.get(2).size() == 2 && trieData.get(2).containsKey('A') && trieData.get(2).containsKey('C');
-        assert trieData.get(1).size() == 1 && trieData.get(1).containsKey('T');
-        assert trieData.get(7).size() == 1 && trieData.get(7).containsKey('A');
-
-    }
 
     @Test
     public void testTrieMatch1() {
@@ -60,7 +33,7 @@ public class TrieTest {
 
     @Test
     public void testTrieMatchPrefix() throws Exception {
-        String[] patterns = {"AT", "A", "AG"};
+        String[] patterns = {"A", "AT", "A", "AG"};
         int[] expected = {0, 2, 4};
         String text = "ACATA";
         runMatches(text, patterns, expected);
@@ -93,7 +66,20 @@ public class TrieTest {
         assert t.contains("sea");
         assert !t.contains("seas");
         assert !t.contains("sell");
+        assert t.contains("sells");
+        assert t.contains("shells");
         assert t.contains("by");
+
+        assert t.remove("sea");
+        assert !t.remove("shell");
+        assert !t.contains("sea");
+        assert t.contains("sells");
+        assert t.contains("shells");
+        assert t.contains("by");
+        assert t.remove("shells");
+        assert t.contains("sells");
+        assert !t.contains("shells");
+
     }
 
     void runMatches(String text, String[] patterns, int[] expected) {
