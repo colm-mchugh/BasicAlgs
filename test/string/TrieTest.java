@@ -1,8 +1,11 @@
 package string;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.junit.Test;
 
 public class TrieTest {
@@ -53,6 +56,18 @@ public class TrieTest {
             }
         }
         System.out.println(result);
+
+        Set<String> pish = new HashSet<>(patterns.length);
+        pish.addAll(Arrays.asList(patterns));
+        Iterable<String> words = trie.words();
+        int cnt = 0;
+        for (String word : words) {
+            assert pish.contains(word);
+            pish.remove(word);
+            cnt++;
+        }
+        assert cnt == patterns.length;
+        assert pish.isEmpty();
     }
 
     @Test
@@ -79,7 +94,64 @@ public class TrieTest {
         assert t.remove("shells");
         assert t.contains("sells");
         assert !t.contains("shells");
+    }
 
+    @Test
+    public void testBeginsWith() {
+        String[] text = {"she", "sells", "sea", "shells", "by", "the", "shore",
+            "sharing", "shelter", "with", "a", "lonely", "hippopotamus", "staring",
+            "vacantly", "at", "surf", "and", "shingle"
+        };
+        Trie t = new Trie();
+        t.buildTrie(text);
+
+        String[] prefixes = {"sh", "she", "shel", "shelf"};
+        String[][] expected = {{"she", "shells", "shore", "sharing", "shelter", "shingle"},
+        {"she", "shells", "shelter"}, {"shells", "shelter"}, {}};
+        for (int i = 0; i < prefixes.length; i++) {
+            this.runBeginsWith(prefixes[i], expected[i], t);
+        }
+        // words beginning with empty prefix is all words in the trie:
+        this.runBeginsWith("", text, t);
+    }
+
+    void runBeginsWith(String prefix, String[] expected, Trie t) {
+        Set<String> expectedWords = new HashSet<>(expected.length);
+        expectedWords.addAll(Arrays.asList(expected));
+        Iterable<String> words = t.wordsStartingWith(prefix);
+        int cnt = 0;
+        for (String word : words) {
+            assert expectedWords.contains(word);
+            expectedWords.remove(word);
+            cnt++;
+        }
+        assert cnt == expected.length;
+        assert expectedWords.isEmpty();
+    }
+
+    @Test
+    public void testLongestPrefixOf() {
+        String[] text = {"she", "sells", "sea", "shells", "by", "the", "shore",
+            "sharing", "shelter", "with", "a", "lonely", "hippopotamus", "staring",
+            "vacantly", "at", "surf", "and", "shingle"
+        };
+        Trie t = new Trie();
+        t.buildTrie(text);
+        
+        String m = t.longestPrefixOf("she");
+        assert m.equalsIgnoreCase("she");
+        
+        m = t.longestPrefixOf("shell");
+        assert m.equalsIgnoreCase("she");
+
+        m = t.longestPrefixOf("shellsort");
+        assert m.equalsIgnoreCase("shells");
+        
+        m = t.longestPrefixOf("shazam");
+        assert m.equalsIgnoreCase("");
+        
+        m = t.longestPrefixOf("staringly");
+        assert m.equalsIgnoreCase("staring");
     }
 
     void runMatches(String text, String[] patterns, int[] expected) {
@@ -148,8 +220,8 @@ public class TrieTest {
             }
         }
         StringBuilder result = new StringBuilder(b);
-        for (int i = 0; i < rows.length; i++) {
-            result.append(rows[i].toString());
+        for (StringBuilder row : rows) {
+            result.append(row.toString());
         }
         return result.toString();
     }
