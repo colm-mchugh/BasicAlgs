@@ -34,6 +34,9 @@ public class BWTTest {
     public void testBWT() {
         String bwt = BWT.transform("panamabananas$");
         assert bwt.equals("smnpbnnaaaaa$a");
+        
+        String bwt2 = BWT.transform("ABRACADABRA!" );
+        assert bwt2.equals("ARD!RCAAAABB");
     }
 
     @Test
