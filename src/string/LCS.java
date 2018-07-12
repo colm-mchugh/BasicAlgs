@@ -11,14 +11,14 @@ package string;
  * LCS ("CATCGA", "GTACCGTCA") == "CTCA".
  *
  * The implementation uses a dynamic programming approach; a table
- * of the lengths of the LCS of all prefixes of X and Y is built. 
- * It is then used to drive building the LCS of X and Y, using the
- * recurrence:
+ * of the lengths of the LCS of all prefixes of X and Y is built, 
+ * which is then used to drive building the LCS of X and Y, using 
+ * the recurrence:
  *      if X(i) == Y(j):
  *	    LCS(X(0..i), Y(0..j)) == LCS(X(0..i-1), Y(0..j-1)) + X(i) 
  *      else:
- *	    use lengths table to determine LCS to be the maximum of:
- *		LCS(X(0..i-1), Y(0..j)) or LCS(X(0..i), Y(0..j-1))
+ *	    use lengths table to determine LCS as the maximum of:
+ *		LCS(X(0..i-1), Y(0..j)),  LCS(X(0..i), Y(0..j-1))
  */
 public class LCS {
    

@@ -50,26 +50,27 @@ public class HuffmanEncoderTest {
 
     @Test
     public void bigTest() {
-        Huffman<String> foo = readVertices("resources/huffman.txt");
+        Huffman<String> encoder = readFrequencies("resources/huffman.txt");
 
-        Map<String, String> result = foo.getStringEncoding();
+        Map<String, String> encodings = encoder.getStringEncoding();
 
         Map.Entry<String, String> min = null;
         Map.Entry<String, String> max = null;
 
-        for (Map.Entry<String, String> pish : result.entrySet()) {
-            if (min == null || pish.getValue().length()< min.getValue().length()) {
-                min = pish;
+        for (Map.Entry<String, String> encoding : encodings.entrySet()) {
+            if (min == null || encoding.getValue().length()< min.getValue().length()) {
+                min = encoding;
             }
-            if (max == null || pish.getValue().length() > max.getValue().length()) {
-                max = pish;
+            if (max == null || encoding.getValue().length() > max.getValue().length()) {
+                max = encoding;
             }
         }
 
+        assert min != null && max != null;
         assert min.getValue().length() == 9;
         assert max.getValue().length() == 19;
         
-        Map<String, BitSet> resultbS = foo.getBitSetEncoding();
+        Map<String, BitSet> resultbS = encoder.getBitSetEncoding();
         for (BitSet b : resultbS.values()) {
             for (BitSet a : resultbS.values()) {
                 assert !isPrefix(b, a);
@@ -89,7 +90,7 @@ public class HuffmanEncoderTest {
         return false;
     }
 
-    private Huffman<String> readVertices(String file) {
+    private Huffman<String> readFrequencies(String file) {
         FileReader fr;
         Huffman<String> encoder = new Huffman<>();
         try {
