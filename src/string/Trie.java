@@ -24,13 +24,20 @@ import java.util.*;
  * 
  * @author Colm
  */
-public class Trie {
+public class Trie<T> {
 
-    private final Map<Character, Trie> root;
+    private final Map<Character, Trie<T>> root;
+    private final T data;
     private static final char FULL_STOP = '.';
 
     public Trie() {
         root = new HashMap<>();
+        data = null;
+    }
+    
+    public Trie(T data) {
+        this.data = data;
+        root = null;
     }
 
     /**
@@ -43,9 +50,10 @@ public class Trie {
      * t. Then a full stop is added: t -> .
      *
      * @param text
+     * @param data
      */
-    public void add(String text) {
-        Map<Character, Trie> node = root;
+    public boolean add(String text, T data) {
+        Map<Character, Trie<T>> node = root;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (node.containsKey(c)) {
@@ -57,10 +65,31 @@ public class Trie {
             }
         }
         if (!node.containsKey(FULL_STOP)) {
-            node.put(FULL_STOP, null);
+            node.put(FULL_STOP, new Trie<>(data));
+            return true;
         }
+        return false;
     }
 
+    /**
+     * Add the given character to the trie.
+     * 
+     * @param c
+     * @param data
+     * @return 
+     */
+    public boolean add(char c, T data) {
+        Map<Character, Trie<T>> node = root;
+        if (!node.containsKey(c)) {
+            node.put(c, new Trie<>());
+            Trie<T> tmp = node.get(c);
+            node = tmp.root;
+            node.put(FULL_STOP, new Trie<>(data));
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * Return true if the trie contains the given text.
      *
@@ -72,7 +101,7 @@ public class Trie {
      * @return
      */
     public boolean contains(String text) {
-        Map<Character, Trie> node = root;
+        Map<Character, Trie<T>> node = root;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (!node.containsKey(c)) {
@@ -83,6 +112,24 @@ public class Trie {
         return node.containsKey(FULL_STOP);
     }
 
+    /**
+     * Return the value associated with the given text
+     * 
+     * @param text
+     * @return 
+     */
+    public T lookup(String text) {
+        Map<Character, Trie<T>> node = root;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (!node.containsKey(c)) {
+                break;
+            }
+            node = node.get(c).root;
+        }
+        return (node.containsKey(FULL_STOP)  ? node.get(FULL_STOP).data : null);
+    }
+    
     /**
      * If the given text is in the trie, remove it and return true, otherwise
      * return false.
@@ -111,7 +158,7 @@ public class Trie {
      * @param trie
      * @return
      */
-    private boolean rec_remove(String text, int i, Trie trie) {
+    private boolean rec_remove(String text, int i, Trie<T> trie) {
         boolean rv = false;
         if (i < text.length()) {
             char c = text.charAt(i);
@@ -141,10 +188,10 @@ public class Trie {
     public boolean prefixTrieMatching(String text, int offset) {
         char c = text.charAt(offset);
         int i = offset;
-        Map<Character, Trie> node = this.root;
+        Map<Character, Trie<T>> node = this.root;
         while (true) {
             if (node.containsKey(c)) {
-                Map<Character, Trie> nextNode = node.get(c).root;
+                Map<Character, Trie<T>> nextNode = node.get(c).root;
                 if (nextNode.containsKey(FULL_STOP)) {
                     // found a match for text.substring(offset, i)
                     return true;
@@ -170,7 +217,7 @@ public class Trie {
      */
     public void buildTrie(String[] patterns) {
         for (String text : patterns) {
-            this.add(text);
+            this.add(text, null);
         }
     }
 
@@ -198,7 +245,7 @@ public class Trie {
      */
     public Iterable<String> wordsStartingWith(String prefix) {
         Queue<String> allWords = new ArrayDeque<>();
-        Trie t = this;
+        Trie<T> t = this;
         for (int i = 0; i < prefix.length(); i++) {
             if (!t.root.containsKey(prefix.charAt(i))) {
                 return allWords;
@@ -216,7 +263,7 @@ public class Trie {
      * @param prefix
      * @param t
      */
-    private void collect(Queue<String> allWords, String prefix, Trie t) {
+    private void collect(Queue<String> allWords, String prefix, Trie<T> t) {
         for (char c : t.root.keySet()) {
             if (c == FULL_STOP) {
                 // prefix has been matched as a full word
@@ -239,13 +286,14 @@ public class Trie {
      * checked for at the end of the matching.
      *  
      * @param t
+     * @param offset
      * @return 
      */
-    public String longestPrefixOf(String t) {
+    public String longestPrefixOf(String t, int offset) {
         int l = 0;
-        Map<Character, Trie> node = this.root;
+        Map<Character, Trie<T>> node = this.root;
         boolean matched = true;
-        for (int i = 0; i < t.length() && matched; i++) {
+        for (int i = offset; i < t.length() && matched; i++) {
             if (node.containsKey(FULL_STOP)) {
                 l = i;
             }
@@ -257,8 +305,12 @@ public class Trie {
         }
         if (matched && node.containsKey(FULL_STOP)) {
             // t is a word in the trie - return it
-            return t;
+            return t.substring(offset);
         }
-        return t.substring(0, l);
+        return t.substring(offset, l);
     }
+    
+    public String longestPrefixOf(String t) {
+        return longestPrefixOf(t, 0);
+    }    
 }

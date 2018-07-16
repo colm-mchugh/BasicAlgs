@@ -14,10 +14,11 @@ public class KMP {
     
     /**
      * The border of a string S is a prefix of S that is equal to a suffix of S,
-     * And is also not equal to S.
+     * And is also not equal to S. E.g. borders of "abacab" are { "", "ab" }
      * 
      * @param s
-     * @return 
+     * @return borders array s.t. borders[i] is the length of the longest border
+     * of s.substring(0, i)
      */
     public static int[] bordersOf(String s) {
         int border = 0;
