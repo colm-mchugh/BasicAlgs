@@ -31,7 +31,10 @@ public class LZWDecoder {
                 sb.append(s);
                 substrs.put(next_code++, substrs.get(prev) + s.charAt(0));
             } else {
-                // TODO: substrs does not have a mapping for curr
+                String s = substrs.get(prev);
+                s = s + s.charAt(0);
+                sb.append(s);
+                substrs.put(next_code++, s);
             }
         }
         return sb.toString();

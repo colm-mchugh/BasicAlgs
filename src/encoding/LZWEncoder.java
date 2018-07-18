@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import string.Trie;
 
-public class LZWencoder {
+public class LZWEncoder {
     
     private final Trie<Integer> codes = new Trie<>();
     private int next_code = 1;
     
-    public LZWencoder(char[] alphabet) {
+    public LZWEncoder(char[] alphabet) {
         for(char c : alphabet) {
             codes.add(c, next_code++);
         }
