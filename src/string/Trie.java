@@ -28,7 +28,7 @@ public class Trie<T> {
 
     private final Map<Character, Trie<T>> root;
     private final T data;
-    private static final char FULL_STOP = '.';
+    private static final char FULL_STOP = '#';
 
     public Trie() {
         root = new HashMap<>();
