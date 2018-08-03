@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
-import java.lang.instrument.Instrumentation;
 
 public class LZWTest {
 
@@ -94,6 +93,6 @@ public class LZWTest {
         String ulysses = decoder.decode(encoding);
 
         assert ulysses.equals(text);
-    }
+        }
 
 }

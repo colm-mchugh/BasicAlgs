@@ -418,8 +418,13 @@ public class mathTest {
                 assert s >= 1 && s <= N;
             }
         }
-        Set<Integer> pish = RandGen.uniformSample(1000, 1000);
-        assert pish.size() == 1000;
+        int M = 1000;
+        int N = 100000;
+        Set<Integer> pish = RandGen.uniformSample(N, M);
+        assert pish.size() == M;
+        for (int i : pish) {
+            assert i >= 1 && i <= N;
+        }
         
     }
 }
