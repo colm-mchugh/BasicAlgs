@@ -397,10 +397,12 @@ public class mathTest {
     @Test
     public void makeMeAPrime() {
         int n = 96576587;
+        int count = 0;
         while (!math.isPrime(n)) {
             n++;
+            count++;
         }
-        System.out.println("Your prime is: " + n);
+        System.out.println("Your prime is: " + n + " (found after " + count + " numbers)");
         System.out.println("Happy now?");
     }
     
