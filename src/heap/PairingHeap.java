@@ -1,14 +1,12 @@
 package heap;
 
 import java.util.ArrayDeque;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Set;
 
 public class PairingHeap<Key extends Comparable<Key>> {
 
-    private final Key item;
+    private Key item = null;
     private final LinkedList<PairingHeap<Key>> children;
 
     public static int nheaps = 0;
@@ -17,13 +15,13 @@ public class PairingHeap<Key extends Comparable<Key>> {
     public static int nchildren = 0;
     public static int max_children = 0;
 
-    public PairingHeap(Key item) {
-        this.item = item;
+    public PairingHeap() {
+        this.item = null;
         this.children = new LinkedList<>();
         nheaps++;
     }
 
-    public Key Peek() {
+    public Key Min() {
         return this.item;
     }
 
@@ -65,7 +63,12 @@ public class PairingHeap<Key extends Comparable<Key>> {
     }
 
     public PairingHeap<Key> Insert(Key k) {
-        return Merge(new PairingHeap<>(k), this);
+        if (this.item == null) {
+            this.item = k;
+            return this;
+        }
+        PairingHeap<Key> ph = new PairingHeap<>();    
+        return Merge(ph.Insert(k), this);
     }
 
     public void Print() {

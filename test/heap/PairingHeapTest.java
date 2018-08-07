@@ -9,13 +9,13 @@ public class PairingHeapTest {
     public void testPairingHeap() {
         int M = 10000;
         int N = 10000000;
-        PairingHeap<Integer> ph = new PairingHeap<>(M + 1);
+        PairingHeap<Integer> ph = new PairingHeap<>();
         for (int i : RandGen.uniformSample(N, M)) {
             ph = ph.Insert(i);
         }
         int prev = Integer.MIN_VALUE;
-        for (int i = 1; i <= M + 1; i++) {
-            int next = ph.Peek();
+        for (int i = 1; i <= M; i++) {
+            int next = ph.Min();
             ph = ph.Delete();
             assert prev < next;
             prev = next;
@@ -28,8 +28,9 @@ public class PairingHeapTest {
 
     @Test
     public void testPairingHeapSmall() {
-        int[] data = { 7, 11, 4, 2, 13, 8, 3, 5, 17, 15, 1, 6, 19, 12, 9, 14 };
-        PairingHeap<Integer> ph = new PairingHeap<>(10);
+        int[] data = { 10, 7, 11, 4, 2, 13, 8, 3, 5, 17, 15, 1, 6, 19, 12, 9, 14 };
+        
+        PairingHeap<Integer> ph = new PairingHeap<>();
         for (int i : data) {
             ph = ph.Insert(i);
         }
@@ -37,8 +38,8 @@ public class PairingHeapTest {
         ph.Print();
         
         int prev = -1;
-        for (int i = 1; i <= data.length + 1; i++) {
-            int next = ph.Peek();
+        for (int i = 1; i <= data.length; i++) {
+            int next = ph.Min();
             ph = ph.Delete();
             assert prev < next;
             prev = next;
