@@ -2,7 +2,7 @@ package heap;
 
 /**
  * Maintain the median of a stream of values using a MinHeap for the upper half
- * of the values and a MaxHeap for the lower half of the follows. 
+ * of the values and a MaxHeap for the lower half. 
  */
 public class MedianMaintainer {
 
