@@ -1320,18 +1320,6 @@ public class math {
         return Integer.parseInt(s) < 256;
     }
     
-    // Return true if the array is sorted
-    public static boolean isSorted(Comparable a[]) {
-        for (int i = 0; i < a.length; i++) {
-            for (int j = i + 1; j < a.length; j++) {
-                if (a[i].compareTo(a[j]) > 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     // Return true if each element is less than its sucessor
     public static boolean inOrder(Comparable a[]) {
         for (int i = 0; i < a.length - 1; i++) {

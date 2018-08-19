@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import utils.math;
-import static utils.math.isSorted;
+import static utils.math.inOrder;
 
 public class InversionCounterTest {
 
@@ -15,28 +15,28 @@ public class InversionCounterTest {
     public void testCountInversions1() {
         Integer[] a = {67, 23, 45, 89, 17, 1, 99};
         InversionCounter.countInversions(a);
-        assert isSorted(a);
+        assert inOrder(a);
     }
 
     @Test
     public void testCountInversions2() {
         Integer[] a = {6, 7, 8, 2, 3, 4, 1};
         InversionCounter.countInversions(a);
-        assert isSorted(a);
+        assert inOrder(a);
     }
 
     @Test
     public void testCountInversions3() {
         Integer[] a = {3, 4, 1};
         InversionCounter.countInversions(a);
-        assert isSorted(a);
+        assert inOrder(a);
     }
 
     @Test
     public void testCountInversions4() {
         Integer[] a = {4, 2, 3, 5, 1};
         long c = InversionCounter.countInversions(a);
-        assert isSorted(a);
+        assert inOrder(a);
         assert c == 6;
     }
 

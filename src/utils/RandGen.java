@@ -86,20 +86,20 @@ public class RandGen {
     }
     
     /**
-     * Return a random sample of M numbers with no duplicates 
-     * chosen from 1..N.
+     * Return a random sample of size numbers with no duplicates 
+     * chosen from 1..range (inclusive).
      * 
      * Robert Floyd's algorithm, runs in O(M).
      * https://dl.acm.org/citation.cfm?id=315746&dl=ACM&coll=DL
      * 
-     * @param N
-     * @param M
+     * @param range the upper bound on the value to choose from (lower bound is 1)
+     * @param size the size of the sample
      * @return 
      */
-    public static Set<Integer> uniformSample(int N, int M) {
-        Set<Integer> sample = new HashSet<>(M);
-        assert N >= M;
-        for (int j = N - M + 1; j <= N; j++) {
+    public static Set<Integer> uniformSample(int range, int size) {
+        Set<Integer> sample = new HashSet<>(size);
+        assert range >= size;
+        for (int j = range - size + 1; j <= range; j++) {
             int s = uniform(1, j);
             if (!sample.contains(s)) {
                 sample.add(s);

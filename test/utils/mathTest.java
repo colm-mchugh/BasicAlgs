@@ -411,22 +411,22 @@ public class mathTest {
     public void testSampling() {
         int[] nmPairs = {100, 7, 5000, 250, 10000, 10000, 350000, 68000, 1000, 1000};
         for (int i = 0; i < nmPairs.length; i += 2) {
-            int N = nmPairs[i];
-            int M = nmPairs[i + 1];
+            int range = nmPairs[i];
+            int sz = nmPairs[i + 1];
 
-            Set<Integer> sample = RandGen.uniformSample(N, M);
+            Set<Integer> sample = RandGen.uniformSample(range, sz);
 
-            assert sample.size() == M;
+            assert sample.size() == sz;
             for (int s : sample) {
-                assert s >= 1 && s <= N;
+                assert s >= 1 && s <= range;
             }
         }
-        int M = 1000;
-        int N = 100000;
-        Set<Integer> pish = RandGen.uniformSample(N, M);
-        assert pish.size() == M;
+        int sz = 1000;
+        int range = 100000;
+        Set<Integer> pish = RandGen.uniformSample(range, sz);
+        assert pish.size() == sz;
         for (int i : pish) {
-            assert i >= 1 && i <= N;
+            assert i >= 1 && i <= range;
         }
 
     }
