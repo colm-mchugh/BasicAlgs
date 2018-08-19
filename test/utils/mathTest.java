@@ -236,7 +236,7 @@ public class mathTest {
         assert math.trailingZerosInFactorialOf(101) == 24;
         assert math.trailingZerosInFactorialOf(4617) == 1151;
     }
-    
+
     @Test
     public void testExcel() {
         assert math.excel2(3).equals("C");
@@ -244,7 +244,7 @@ public class mathTest {
         assert math.excel2(27).equals("AA");
         assert math.excel2(28).equals("AB");
     }
-    
+
     @Test
     public void testRevint() {
         assert math.revint(1146467285) == 0;
@@ -252,18 +252,18 @@ public class mathTest {
         assert math.revint(123) == 321;
         assert math.revint(-123) == -321;
     }
-    
+
     @Test
     public void testPlus1() {
         ArrayList<Integer> a = new ArrayList<>();
         a.add(1);
         a.add(9);
-        List<Integer> aPlus1 = math.plus1(a);   
+        List<Integer> aPlus1 = math.plus1(a);
     }
-    
+
     @Test
     public void testRepeatedNumber() {
-        int[] a = {3,1,2,5,3};
+        int[] a = {3, 1, 2, 5, 3};
         int dup = -1;
         for (int i = 0; i < a.length; i++) {
             int j = Math.abs(a[i]) - 1;
@@ -273,23 +273,23 @@ public class mathTest {
                 dup = Math.abs(a[j]);
                 break;
             }
-            
+
         }
         System.out.println(math.pascalK(3));
-        
+
         math.pascalIt(3);
     }
-    
+
     @Test
     public void testPositive() {
         int[] a0 = {1,};
-        int[] a1 = {1,2,0};
-        int[] a2 = {3,4,-1,1};
-        int[] a3 = {-8,-7,-6};
+        int[] a1 = {1, 2, 0};
+        int[] a2 = {3, 4, -1, 1};
+        int[] a3 = {-8, -7, -6};
         int[] a4 = {2, 3, 7, 6, 8, -1, -10, 15};
-        int[] a5 = { 2, 3, -7, 6, 8, 1, -10, 15 };
+        int[] a5 = {2, 3, -7, 6, 8, 1, -10, 15};
         int[] a6 = {1, 1, 0, -1, -2};
-        
+
         assert math.positive(makeList(a1)) == 3;
         assert math.positive(makeList(a0)) == 2;
         assert math.positive(makeList(a2)) == 2;
@@ -298,68 +298,69 @@ public class mathTest {
         assert math.positive(makeList(a5)) == 4;
         assert math.positive(makeList(a6)) == 2;
     }
-    
+
     @Test
     public void testRemDups() {
-        int[] data1 = {1,2,3,3,4,4,5};
-        int[] xpctd1 = {1,2,5};
-        
-        int[] data2 = {1,1,1,1,3,4,5};
-        int[] xpctd2 = {3,4,5};
-        
+        int[] data1 = {1, 2, 3, 3, 4, 4, 5};
+        int[] xpctd1 = {1, 2, 5};
+
+        int[] data2 = {1, 1, 1, 1, 3, 4, 5};
+        int[] xpctd2 = {3, 4, 5};
+
         validateListContent(makeL(data1), xpctd1);
     }
+
     @Test
     public void testPartition() {
         // partition([1, 7, 4, 3, 2, 9, 11, 2], 3) => [1, 2, 2, 7, 4, 3, 9, 11]
         int[] data = {1, 7, 4, 3, 2, 9, 11, 2};
         int[] xpctd = {1, 2, 2, 7, 4, 3, 9, 11};
         validateListContent(math.partitionL(makeL(data), 3), xpctd);
-        
+
         // partition([1, 4, 3, 2, 5, 2], 3) => [1, 2, 2, 4, 3, 5]
         int[] data2 = {1, 4, 3, 2, 5, 2};
         int[] xpctd2 = {1, 2, 2, 4, 3, 5};
         validateListContent(math.partitionL(makeL(data2), 3), xpctd2);
-        
+
         // partition([10, 5, 8, 2], 3) => [2, 10, 5, 8]
         int[] data3 = {10, 5, 8, 2};
         int[] xpctd3 = {2, 10, 5, 8};
         validateListContent(math.partitionL(makeL(data3), 3), xpctd3);
-        
+
         // partition([2, 3, 4, 2, 1, 1, 2], 5) => [2, 3, 4, 2, 1, 1, 2]
         int[] data4 = {2, 3, 4, 2, 1, 1, 2};
         int[] xpctd4 = data4;
         validateListContent(math.partitionL(makeL(data4), 5), xpctd4);
-        
+
         // partition([], 10) => []
         assert math.partitionL(null, 3) == null;
-        
+
         // partition([10, 11, 9, 8, 14], 3) => [10, 11, 9, 8, 14]
         int[] data5 = {10, 11, 9, 8, 14};
         int[] xpctd5 = data5;
         validateListContent(math.partitionL(makeL(data5), 5), xpctd5);
-        
+
         // partition([10, 7, 9, 3], 3) => [10, 7, 9, 3]
         int[] data6 = {10, 7, 9, 3};
         int[] xpctd6 = data6;
         validateListContent(math.partitionL(makeL(data6), 3), xpctd6);
-        
+
     }
-    
-    private  math.ListNode makeL(int[] data) {
+
+    private math.ListNode makeL(int[] data) {
         math.ListNode l = null;
         for (int i = data.length - 1; i >= 0; i--) {
             l = new math.ListNode(data[i], l);
         }
         return l;
     }
-    
+
     private void validateListContent(math.ListNode l, int[] xpctd) {
         for (int i = 0; i < xpctd.length; i++, l = l.next) {
             assert l != null && l.val == xpctd[i];
         }
     }
-    
+
     @Test
     public void testNthEnd() {
         math.ListNode l = new math.ListNode(1, new math.ListNode(2, new math.ListNode(3, new math.ListNode(4, new math.ListNode(5, new math.ListNode(6, null))))));
@@ -367,25 +368,25 @@ public class mathTest {
         for (math.ListNode t = l; t != null; t = t.next) {
             System.out.println(t.val);
         }
-        
+
         int[] data4 = {1, 2, 3, 4, 5};
         int p = 1;
         int[] xpctd = {1, 2, 3, 4};
         l = math.nthEnd(makeL(data4), p);
         validateListContent(l, xpctd);
-        
-        int[] data5 = { 1 };
+
+        int[] data5 = {1};
         int[] xpctd5 = {};
         l = math.nthEnd(makeL(data5), p);
         assert l == null;
-        
+
         int[] data6 = {1, 2, 3, 4, 5};
         p = 5;
         int[] xpctd6 = {2, 3, 4, 5};
         l = math.nthEnd(makeL(data6), p);
         validateListContent(l, xpctd6);
     }
-    
+
     @Test
     public void testIPs() {
         List<String> ips = math.toIPStrings("127001");
@@ -393,7 +394,7 @@ public class mathTest {
             System.out.println(ip);
         }
     }
-    
+
     @Test
     public void makeMeAPrime() {
         int n = 96576587;
@@ -405,16 +406,16 @@ public class mathTest {
         System.out.println("Your prime is: " + n + " (found after " + count + " numbers)");
         System.out.println("Happy now?");
     }
-    
+
     @Test
     public void testSampling() {
-        int[] nmPairs = { 100,7, 5000,250, 10000,10000, 350000,68000, 1000,1000 };
+        int[] nmPairs = {100, 7, 5000, 250, 10000, 10000, 350000, 68000, 1000, 1000};
         for (int i = 0; i < nmPairs.length; i += 2) {
             int N = nmPairs[i];
-            int M = nmPairs[i+1];
-            
+            int M = nmPairs[i + 1];
+
             Set<Integer> sample = RandGen.uniformSample(N, M);
-            
+
             assert sample.size() == M;
             for (int s : sample) {
                 assert s >= 1 && s <= N;
@@ -427,6 +428,25 @@ public class mathTest {
         for (int i : pish) {
             assert i >= 1 && i <= N;
         }
-        
+
+    }
+
+    @Test
+    public void kTourTest() {
+        int[][] tour = math.KTour(8);
+        int[][] expected = {
+            {0, 59, 38, 33, 30, 17, 8, 63},
+            {37, 34, 31, 60, 9, 62, 29, 16},
+            {58, 1, 36, 39, 32, 27, 18, 7},
+            {35, 48, 41, 26, 61, 10, 15, 28},
+            {42, 57, 2, 49, 40, 23, 6, 19},
+            {47, 50, 45, 54, 25, 20, 11, 14},
+            {56, 43, 52, 3, 22, 13, 24, 5},
+            {51, 46, 55, 44, 53, 4, 21, 12},};
+        for (int i = 0; i < tour.length; i++) {
+            for (int j = 0; j < tour.length; j++) {
+                assert expected[i][j] == tour[i][j];
+            }
+        }
     }
 }

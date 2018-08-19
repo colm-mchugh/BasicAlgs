@@ -2,6 +2,7 @@ package utils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1350,4 +1351,47 @@ public class math {
         }
         return rv;
     }
+    
+    /**
+     * Knights tour on N x N board
+     * 
+     * @param N
+     * @return 
+     */
+    public static int[][] KTour(int N) {
+        int[][] board = new int[N][N];
+        int[][] moves = { {  2, 1, -1, -2, -2, -1,  1,  2 },
+            {  1, 2,  2,  1, -1, -2, -2, -1 }
+        };
+        for (int i = 0; i < N; i++) {
+            Arrays.fill(board[i], -1);
+        }
+        // First move - move 0 - starts at square 0,0
+        board[0][0] = 0;
+        // Fill board with possible moves starting from 0,0
+        doKTour(0, 0, 1, board, moves, N);
+        return board;
+    }
+    
+    private static boolean doKTour(int x, int y, int move, int[][] board, int[][] kMoves, int N) {
+        if (move == N * N) {
+            return true;
+        }
+        for (int k = 0; k < 8; k++) {
+            int xN = x + kMoves[0][k];
+            int yN = y + kMoves[1][k];
+            // if its possible to go to xN,yN from x,y then accept this move
+            if (xN >= 0 && xN < N && yN >= 0 && yN < N && board[xN][yN] == -1) {
+                board[xN][yN] = move;
+                if (doKTour(xN, yN, move + 1, board, kMoves, N)) {
+                    return true;
+                }
+                // undo move
+                board[xN][yN] = -1;
+            }
+        }
+        return false;
+    }
+
+    
 }
