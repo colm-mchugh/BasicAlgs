@@ -1,12 +1,8 @@
 package sort;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
+import java.util.Objects;
 import org.junit.Test;
 import utils.math;
 import static utils.math.inOrder;
@@ -53,12 +49,25 @@ public class TimSortTest {
     @Test
     public void testSorted() {
         long seed = 342943247;
-        float[] cardinalities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f };
-        
+        float[] cardinalities = {0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f};
+
         for (float card : cardinalities) {
-            Integer[] intArray = math.genRandomArray(seed, 10000, card);
+            Integer[] intArray = math.genUniformArray(seed, 10000, card);
             TimSort.Sort(intArray);
             assert inOrder(intArray);
+        }
+    }
+
+    @Test
+    public void testInsertionSort() {
+        long seed = 342943247;
+        float[] cardinalities = { 1, 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
+
+        for (float card : cardinalities) {
+            Integer[] intArray = math.genUniformArray(seed, 10000, card);
+            int num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
+            assert inOrder(intArray);
+            System.out.println("Number of swaps =" + num_swaps + ", cardinality=" + card + ", #distinct values =" + countDistinct(intArray));
         }
     }
 
@@ -99,5 +108,21 @@ public class TimSortTest {
             }
         }
         return true;
+    }
+
+    private int countDistinct(Integer[] array) {
+        if (!inOrder(array)) {
+            System.err.println("countDistinct: array must be sorted");
+        }
+        if (array.length == 0) {
+            return 0;
+        }
+        int count = 1;
+        for (int i = 0; i < array.length - 1; i++) {
+            if (!Objects.equals(array[i], array[i + 1])) {
+                count++;
+            }
+        }
+        return count;
     }
 }

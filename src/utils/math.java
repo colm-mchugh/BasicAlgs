@@ -1330,7 +1330,7 @@ public class math {
         return true;
     }
     
-    public static Integer[] genRandomArray(long seed, int N, float cardinality) {
+    public static Integer[] genUniformArray(long seed, int N, float cardinality) {
         int uniques = (int) (N * cardinality);
         Integer[] rv = new Integer[N];
         RandGen.setSeed(seed);
