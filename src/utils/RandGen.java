@@ -107,7 +107,7 @@ public class RandGen {
         if (n <= 0) throw new IllegalArgumentException("Parameter N must be positive");
         return random.nextInt(n);
     }
-    
+
     /**
      * Returns a random integer normally in [0, n).
      * 

@@ -1348,29 +1348,24 @@ public class math {
      */
     public static Integer[] genAdjustedUniformArray(int N, float selectivity) {
         Integer[] rv = genUniformArray(N, selectivity);
-        Map<Integer, Integer> freqs = new HashMap<>(N);
+        Set<Integer> distincts = new HashSet<>();       
         for (int x : rv) {
-            if (!freqs.containsKey(x)) {
-                freqs.put(x, 1);
-            } else {
-                freqs.put(x, freqs.get(x) + 1);
-            }
+            distincts.add(x);
         }
-        int sum = 0;
-        for (int x : freqs.keySet()) {
-            sum += freqs.get(x);
-        }
-        int avg = sum / freqs.keySet().size();
+        
+        int freq = N / distincts.size();    
         int i = 0;
-        for (int x : freqs.keySet()) {
-            for (int j = 0; j < avg && i + j < N; j++) {
+        for (int x : distincts) {
+            for (int j = 0; j < freq && i + j < N; j++) {
                 rv[i + j] = x;
             }
-            i += avg;
+            i += freq;
         }
+        
         if (i < N - 1) {
             rv[i + 1] = rv[i / 2];
         }
+        
         new QuickSorter().unsort(rv);
         return rv;
     }

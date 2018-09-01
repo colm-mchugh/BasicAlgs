@@ -1,5 +1,8 @@
 package sort;
 
+import heap.Heap;
+import heap.MaxHeap;
+import heap.MinHeap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -59,13 +62,13 @@ public class TimSortTest {
 
     @Test
     public void testInsertionSort() {
-        float[] cardinalities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
+        float[] selectivities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
 
-        for (float card : cardinalities) {
-            Integer[] intArray = math.genUniformArray(10000, card);
+        for (float sel : selectivities) {
+            Integer[] intArray = math.genUniformArray(10000, sel);
             int num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
             assert inOrder(intArray);
-            System.out.println("Number of swaps =" + num_swaps + ", cardinality=" + card + ", #distinct values =" + countDistinct(intArray));
+            System.out.println("Number of swaps =" + num_swaps + ", selectivity=" + sel + ", #distinct values =" + countDistinct(intArray));
         }
         
         // Get number of swaps made on an array with all elements distinct
@@ -77,17 +80,28 @@ public class TimSortTest {
         
         int num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
         assert inOrder(intArray);
-        System.out.println("Number of swaps =" + num_swaps + ", cardinality=1" + ", #distinct values =" + intArray.length);
+        System.out.println("Number of swaps =" + num_swaps + ", selectivity=1" + ", #distinct values =" + intArray.length);
     
         for (int i = 0; i < intArray.length; i++) {
             intArray[i] = intArray.length - i;
         }
         num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
         assert inOrder(intArray);
-        System.out.println("Number of swaps =" + num_swaps + ", cardinality=1" + ", #distinct values =" + intArray.length);
+        System.out.println("Number of swaps =" + num_swaps + ", selectivity=1" + ", #distinct values =" + intArray.length);
     
     }
 
+    @Test
+    public void testHeapSort() {
+        float[] selectivities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
+        Heap<Integer> sorter = new MinHeap();
+        for (float sel : selectivities) {
+            Integer[] intArray = math.genUniformArray(100, sel);
+            sorter.Sort(intArray);
+            assert inOrder(intArray);
+        }
+    }
+    
     private void testRun(Comparable[] a, int expectedSz) {
         List<TimSort.Run> runs = TimSort.identifyRuns(a);
         assert runs.size() == expectedSz;
