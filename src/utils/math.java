@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
+import sort.QuickSorter;
 
 public class math {
 
@@ -89,7 +90,7 @@ public class math {
         }
         double sqrt = Math.sqrt(n);
         int i = 3;
-        for (;i <= sqrt && (n % i != 0); i +=2) {
+        for (; i <= sqrt && (n % i != 0); i += 2) {
         }
         return n % i != 0;
     }
@@ -1218,7 +1219,7 @@ public class math {
         }
         return newList;
     }
-    
+
     public static ListNode partitionL(ListNode list, int x) {
         ListNode newL = null, endL = null;
         ListNode curr = list, prev = list;
@@ -1247,10 +1248,8 @@ public class math {
         }
         if (endL != null) {
             endL.next = list;
-        } else {
-            if (list != null) {
-                newL = list;
-            }
+        } else if (list != null) {
+            newL = list;
         }
         return newL;
     }
@@ -1319,7 +1318,7 @@ public class math {
         }
         return Integer.parseInt(s) < 256;
     }
-    
+
     // Return true if each element is less than its sucessor
     public static boolean inOrder(Comparable a[]) {
         for (int i = 0; i < a.length - 1; i++) {
@@ -1329,27 +1328,84 @@ public class math {
         }
         return true;
     }
-    
-    public static Integer[] genUniformArray(long seed, int N, float cardinality) {
-        int uniques = (int) (N * cardinality);
+
+    public static Integer[] genUniformArray(int N, float selectivity) {
+        int uniques = (int) (N * selectivity);
         Integer[] rv = new Integer[N];
-        RandGen.setSeed(seed);
         for (int i = 0; i < N; i++) {
             rv[i] = RandGen.uniform(1, uniques + 1);
         }
         return rv;
     }
-    
+
     /**
-     * Knights tour on N x N board
+     * genUniformArray() is not very uniform, so genAdjustedUniformArray() is
+     * an attempt to provide exact uniformity in the distribution.
      * 
      * @param N
+     * @param selectivity
      * @return 
+     */
+    public static Integer[] genAdjustedUniformArray(int N, float selectivity) {
+        Integer[] rv = genUniformArray(N, selectivity);
+        Map<Integer, Integer> freqs = new HashMap<>(N);
+        for (int x : rv) {
+            if (!freqs.containsKey(x)) {
+                freqs.put(x, 1);
+            } else {
+                freqs.put(x, freqs.get(x) + 1);
+            }
+        }
+        int sum = 0;
+        for (int x : freqs.keySet()) {
+            sum += freqs.get(x);
+        }
+        int avg = sum / freqs.keySet().size();
+        int i = 0;
+        for (int x : freqs.keySet()) {
+            for (int j = 0; j < avg && i + j < N; j++) {
+                rv[i + j] = x;
+            }
+            i += avg;
+        }
+        if (i < N - 1) {
+            rv[i + 1] = rv[i / 2];
+        }
+        new QuickSorter().unsort(rv);
+        return rv;
+    }
+
+    public static Integer[] genNormalArray(int N, float selectivity, float mean, float dev) {
+        int uniques = (int) (N * selectivity);
+        Integer[] rv = new Integer[N];
+        RandGen.setMean(mean);
+        RandGen.setStdDev(dev);
+        for (int i = 0; i < N; i++) {
+            rv[i] = RandGen.normal(1, uniques + 1);
+        }
+        return rv;
+    }
+
+    public static Integer[] genExponentialArray(int N, float selectivity, double rateLimit) {
+        int uniques = (int) (N * selectivity);
+        Integer[] rv = new Integer[N];
+        RandGen.setExpRateLimit(rateLimit);
+        for (int i = 0; i < N; i++) {
+            rv[i] = RandGen.exponential(1, uniques + 1);
+        }
+        return rv;
+    }
+
+    /**
+     * Knights tour on N x N board
+     *
+     * @param N
+     * @return
      */
     public static int[][] KTour(int N) {
         int[][] board = new int[N][N];
-        int[][] moves = { {  2, 1, -1, -2, -2, -1,  1,  2 },
-            {  1, 2,  2,  1, -1, -2, -2, -1 }
+        int[][] moves = {{2, 1, -1, -2, -2, -1, 1, 2},
+        {1, 2, 2, 1, -1, -2, -2, -1}
         };
         for (int i = 0; i < N; i++) {
             Arrays.fill(board[i], -1);
@@ -1360,7 +1416,7 @@ public class math {
         doKTour(0, 0, 1, board, moves, N);
         return board;
     }
-    
+
     private static boolean doKTour(int x, int y, int move, int[][] board, int[][] kMoves, int N) {
         if (move == N * N) {
             return true;
@@ -1381,5 +1437,4 @@ public class math {
         return false;
     }
 
-    
 }

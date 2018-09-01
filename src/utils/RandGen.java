@@ -9,12 +9,18 @@ import java.util.Set;
 public class RandGen {
     private static Random random;    // pseudo-random number generator
     private static long seed;        // pseudo-random number generator seed
-
+    private static double lambda;    // rate parameter of exponential distribution
+    private static double mean;      // mean for normal distribution
+    private static double stdDev;    // std. deviation for normal distribution
+    
     // static initializer
     static {
         // this is how the seed was set in Java 1.4
         seed = System.currentTimeMillis();
         random = new Random(seed);
+        lambda = random.nextDouble();
+        mean = 100;
+        stdDev = 20;
     }
 
     /**
@@ -30,6 +36,32 @@ public class RandGen {
         random = new Random(seed);
     }
 
+    /**
+     * Set the rate limit of exponential distribution.
+     * @param l 
+     */
+    public static void setExpRateLimit(double l) {
+        lambda = l;
+    }
+
+    /**
+     * Set the standard deviation. 
+     * 
+     * @param stdDev 
+     */
+    public static void setStdDev(double stdDev) {
+        RandGen.stdDev = stdDev;
+    }
+
+    /**
+     * Set the mean.
+     * 
+     * @param mean 
+     */
+    public static void setMean(double mean) {
+        RandGen.mean = mean;
+    }
+    
     /**
      * Returns the seed of the pseudorandom number generator.
      *
@@ -49,6 +81,22 @@ public class RandGen {
     }
 
     /**
+     * Returns a random real number normally distributed around mean and 
+     * standard deviation.
+     *
+     */
+    public static double normal() {
+        return random.nextGaussian() * mean + stdDev;
+    }
+    
+    /**
+     * Returns a random real number exponentially distributed in [0, 1).
+     */
+    public static double exponential() {
+        return  Math.log(1 - random.nextDouble())/(-lambda);
+    }
+    
+    /**
      * Returns a random integer uniformly in [0, n).
      * 
      * @param n number of possible integers
@@ -58,6 +106,30 @@ public class RandGen {
     public static int uniform(int n) {
         if (n <= 0) throw new IllegalArgumentException("Parameter N must be positive");
         return random.nextInt(n);
+    }
+    
+    /**
+     * Returns a random integer normally in [0, n).
+     * 
+     * @param n number of possible integers
+     * @return a random integer normally between 0 (inclusive) and <tt>N</tt> (exclusive)
+     * @throws IllegalArgumentException if <tt>n <= 0</tt>
+     */
+    public static int normal(int n) {
+        if (n <= 0) throw new IllegalArgumentException("Parameter N must be positive");
+        return (int) (n * random.nextGaussian());
+    }
+    
+    /**
+     * Returns a random integer exponentially in [0, n).
+     * 
+     * @param n number of possible integers
+     * @return a random integer exponentially between 0 (inclusive) and <tt>N</tt> (exclusive)
+     * @throws IllegalArgumentException if <tt>n <= 0</tt>
+     */
+    public static int exponential(int n) {
+        if (n <= 0) throw new IllegalArgumentException("Parameter N must be positive");
+        return (int) (n * RandGen.exponential());
     }
     
     /**
@@ -72,6 +144,34 @@ public class RandGen {
         if ((lo <= 0) || (hi <= 0)) throw new IllegalArgumentException("Parameter must be positive");
         if (hi < lo) throw new IllegalArgumentException("Range must be >= 1");
         return random.nextInt((hi - lo) + 1) + lo;
+    }
+    
+    /**
+     * Returns a random integer normally in [lo, hi].
+     * 
+     * @param lo the lower bound of the range
+     * @param hi the upper bound of the range
+     * @return a random integer normally between lo (inclusive) and hi (inclusive)
+     * @throws IllegalArgumentException if <tt>lo <= 0  or hi <= 0 or hi <= lo </tt>
+     */
+    public static int normal(int lo, int hi) {
+        if ((lo <= 0) || (hi <= 0)) throw new IllegalArgumentException("Parameter must be positive");
+        if (hi < lo) throw new IllegalArgumentException("Range must be >= 1");
+        return RandGen.normal((hi - lo) + 1) + lo;
+    }
+    
+    /**
+     * Returns a random integer exponentially in [lo, hi].
+     * 
+     * @param lo the lower bound of the range
+     * @param hi the upper bound of the range
+     * @return a random integer exponentially between lo (inclusive) and hi (inclusive)
+     * @throws IllegalArgumentException if <tt>lo <= 0  or hi <= 0 or hi <= lo </tt>
+     */
+    public static int exponential(int lo, int hi) {
+        if ((lo <= 0) || (hi <= 0)) throw new IllegalArgumentException("Parameter must be positive");
+        if (hi < lo) throw new IllegalArgumentException("Range must be >= 1");
+        return RandGen.exponential((hi - lo) + 1) + lo;
     }
     
     /**

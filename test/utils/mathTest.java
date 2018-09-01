@@ -1,7 +1,11 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 
@@ -448,5 +452,71 @@ public class mathTest {
                 assert expected[i][j] == tour[i][j];
             }
         }
+    }
+    
+    /*
+     * Not really a test, more for observing distribution functions.
+     */
+    @Test
+    public void testDistributions() {
+        Integer[] uniDist = math.genUniformArray(100, 0.1f);
+        Integer[] uniDistAdjusted = math.genAdjustedUniformArray(100, 0.1f);
+        Integer[] normDist = math.genNormalArray(100, 0.1f, 100, 20);
+        
+        Map<Integer, Integer> valueCount = new HashMap<>(100);
+        
+        getCounts(uniDist, valueCount);
+        List<Integer> distinctUniValues = new ArrayList<>(valueCount.keySet());
+        Comparator<Integer> comparer = new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return valueCount.get(o2) - valueCount.get(o1);
+            }
+        };
+        
+        Collections.sort(distinctUniValues, comparer);
+        System.out.println("Uniform Distribution:");
+        printCounts(distinctUniValues, valueCount);
+        
+        getCounts(uniDistAdjusted, valueCount);
+        List<Integer> distinctUniAdjustedValues = new ArrayList<>(valueCount.keySet());
+        Collections.sort(distinctUniAdjustedValues, comparer);
+        System.out.println("Adjusted Uniform Distribution:");
+        printCounts(distinctUniAdjustedValues, valueCount);
+        
+        getCounts(normDist, valueCount);
+        List<Integer> distinctNormValues = new ArrayList<>(valueCount.keySet());
+        Collections.sort(distinctNormValues, comparer);
+        System.out.println("Normal Distribution:");
+        printCounts(distinctNormValues, valueCount);
+        
+        double[] lambdas = { 0.1, 0.5, 1, 10 };
+        
+        for (double lambda : lambdas) {
+            Integer[] expDist = math.genExponentialArray(100, 0.1f, lambda);
+            getCounts(expDist, valueCount);
+            List<Integer> distinctExpValues = new ArrayList<>(valueCount.keySet());
+            Collections.sort(distinctExpValues, comparer);
+            System.out.println("Exponential Distribution (rate limit=" + lambda + "): ");
+            printCounts(distinctExpValues, valueCount);
+        }
+    }
+    
+    private void getCounts(Integer[] a, Map<Integer, Integer> freqs) {
+        freqs.clear();
+        for (int x : a) {
+            if (!freqs.containsKey(x)) {
+                freqs.put(x, 1);
+            } else {
+                freqs.put(x, freqs.get(x) + 1);
+            }
+        }
+    }
+
+    private void printCounts(List<Integer> values, Map<Integer, Integer> valueCount) {
+        for (int i : values) {
+            System.out.print("(" + i + ": " + valueCount.get(i) + "), ");
+        }
+        System.out.println();
     }
 }

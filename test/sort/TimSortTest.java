@@ -48,11 +48,10 @@ public class TimSortTest {
 
     @Test
     public void testSorted() {
-        long seed = 342943247;
         float[] cardinalities = {0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f};
 
         for (float card : cardinalities) {
-            Integer[] intArray = math.genUniformArray(seed, 10000, card);
+            Integer[] intArray = math.genUniformArray(10000, card);
             TimSort.Sort(intArray);
             assert inOrder(intArray);
         }
@@ -60,15 +59,33 @@ public class TimSortTest {
 
     @Test
     public void testInsertionSort() {
-        long seed = 342943247;
-        float[] cardinalities = { 1, 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
+        float[] cardinalities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
 
         for (float card : cardinalities) {
-            Integer[] intArray = math.genUniformArray(seed, 10000, card);
+            Integer[] intArray = math.genUniformArray(10000, card);
             int num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
             assert inOrder(intArray);
             System.out.println("Number of swaps =" + num_swaps + ", cardinality=" + card + ", #distinct values =" + countDistinct(intArray));
         }
+        
+        // Get number of swaps made on an array with all elements distinct
+        Integer[] intArray = new Integer[10000];
+        for (int i = 0; i < intArray.length; i++) {
+            intArray[i] = i;
+        }
+        new QuickSorter().unsort(intArray);
+        
+        int num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
+        assert inOrder(intArray);
+        System.out.println("Number of swaps =" + num_swaps + ", cardinality=1" + ", #distinct values =" + intArray.length);
+    
+        for (int i = 0; i < intArray.length; i++) {
+            intArray[i] = intArray.length - i;
+        }
+        num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
+        assert inOrder(intArray);
+        System.out.println("Number of swaps =" + num_swaps + ", cardinality=1" + ", #distinct values =" + intArray.length);
+    
     }
 
     private void testRun(Comparable[] a, int expectedSz) {
