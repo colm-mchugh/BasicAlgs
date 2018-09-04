@@ -14,13 +14,14 @@ import java.util.Map;
 public abstract class Heap<Key extends Comparable<Key>> {
 
     /**
-     * The items are maintained in an array, where N is the number of items.
-     * All heap operations must maintain the following invariants:
-     * 1) items[0] is the highest priority item in the heap
-     * 2) for all items i in the heap, priority of items[i/2 - 1] has higher priority than items[i]
-     * 3) a map of item to item index is maintained to enable O(1) access of any item.
-     *    Operations that mutate the heap (Insert, Delete, DeleteSpecificKey) check
-     *    that the following invariant holds on exit: #items in heap == #items in item index
+     * The items are maintained in an array, where N is the number of items. All
+     * heap operations must maintain the following invariants: 1) items[0] is
+     * the highest priority item in the heap 2) for all items i in the heap,
+     * priority of items[i/2 - 1] has higher priority than items[i] 3) a map of
+     * item to item index is maintained to enable O(1) access of any item.
+     * Operations that mutate the heap (Insert, Delete, DeleteSpecificKey) check
+     * that the following invariant holds on exit: #items in heap == #items in
+     * item index
      */
     protected Key[] items; // the heap
     protected int N;    // #items in the heap
@@ -36,12 +37,12 @@ public abstract class Heap<Key extends Comparable<Key>> {
     }
 
     /**
-     * Put the given item in the heap. 
-     * 
-     * The item is placed in the next available slot. It may violate the
-     * heap order, so swim() is used to bubble it up to a position where
-     * it satisfies the heap order. Running time: O(log n), because the
-     * height of the heap is log n.
+     * Put the given item in the heap.
+     *
+     * The item is placed in the next available slot. It may violate the heap
+     * order, so swim() is used to bubble it up to a position where it satisfies
+     * the heap order. Running time: O(log n), because the height of the heap is
+     * log n.
      *
      * @param k
      */
@@ -57,11 +58,11 @@ public abstract class Heap<Key extends Comparable<Key>> {
 
     /**
      * Remove the item with highest priority from the heap and return it.
-     * 
+     *
      * Retrieve the item at index 1 and swap the item at index N with the item
-     * at index 1. Use sink() to restore the heap order. 
-     * Running time: O(log n) because the height of the heap is log n, and this
-     * is the maximum number of iterations that sink() can perform.
+     * at index 1. Use sink() to restore the heap order. Running time: O(log n)
+     * because the height of the heap is log n, and this is the maximum number
+     * of iterations that sink() can perform.
      *
      * @return the item with highest priority in the heap.
      */
@@ -93,7 +94,7 @@ public abstract class Heap<Key extends Comparable<Key>> {
     public Boolean Contains(Key k) {
         return this.itemIndex.containsKey(k);
     }
-    
+
     /**
      * Gives the number of items in the heap
      *
@@ -104,9 +105,10 @@ public abstract class Heap<Key extends Comparable<Key>> {
     }
 
     /**
-     * Remove a specific item from the heap. Running time: O(log n)
-     * The itemIndex is used to enable constant time access to the item in the heap.
-     * itemIndex must be updated as items are inserted into and deleted from the heap.
+     * Remove a specific item from the heap. Running time: O(log n) The
+     * itemIndex is used to enable constant time access to the item in the heap.
+     * itemIndex must be updated as items are inserted into and deleted from the
+     * heap.
      *
      * @param k
      * @return
@@ -124,11 +126,11 @@ public abstract class Heap<Key extends Comparable<Key>> {
 
     /**
      * swim the item at i to its correct position in the items array.
-     * 
-     * While the item at index i has greater priority than its parent, swap
-     * the item with its parent. 
-     * 
-     * @param i 
+     *
+     * While the item at index i has greater priority than its parent, swap the
+     * item with its parent.
+     *
+     * @param i
      */
     private void swim(int i) {
         while (!heapOrder(i)) {
@@ -138,14 +140,14 @@ public abstract class Heap<Key extends Comparable<Key>> {
     }
 
     /**
-     * 
+     *
      * sink the item at i to it's correct position in the items array.
-     * 
+     *
      * While the item at index i does not have higher priority than both its
      * children, get j, the child with the highest priority, and swap the items
      * i and j. Rinse and repeat.
-     * 
-     * @param i 
+     *
+     * @param i
      */
     private void sink(int i) {
         while (2 * i <= N && (!heapOrder(2 * i) || !heapOrder(2 * i + 1))) {
@@ -156,9 +158,10 @@ public abstract class Heap<Key extends Comparable<Key>> {
     }
 
     /**
-     * True if the item at index i satisfies the heap invariant, false otherwise.
-     * 
-     * The heap invariant is: The item at index i has lower priority than its 
+     * True if the item at index i satisfies the heap invariant, false
+     * otherwise.
+     *
+     * The heap invariant is: The item at index i has lower priority than its
      * parent item.
      *
      * @param i
@@ -178,8 +181,9 @@ public abstract class Heap<Key extends Comparable<Key>> {
 
     /**
      * Swap the items at index i and index j.
+     *
      * @param i
-     * @param j 
+     * @param j
      */
     private void Exch(int i, int j) {
         Key tmp = items[i - 1];
@@ -191,9 +195,9 @@ public abstract class Heap<Key extends Comparable<Key>> {
 
     /**
      * Return the parent of item i.
-     * 
-     * items are arranged so that the children of i are at 2*i and 2*i + 1.
-     * The parent of i is therefore i/2.
+     *
+     * items are arranged so that the children of i are at 2*i and 2*i + 1. The
+     * parent of i is therefore i/2.
      *
      * @param i
      * @return
@@ -211,4 +215,51 @@ public abstract class Heap<Key extends Comparable<Key>> {
     public boolean isEmpty() {
         return this.N == 0;
     }
+
+    /**
+     * Sort the given array in-place using sink and swim
+     *
+     * @param items
+     */
+    public void Sort(Key[] items) {
+        this.items = items;
+        this.N = items.length;
+        // convert items to heap order by sifting up each element 
+        for (int i = 1; i < N; i++) {
+            int j = i;
+            int p = j / 2;
+            while (j >= 0 && j > p && items[j].compareTo(items[p]) > 0) {
+                Key t = items[p];
+                items[p] = items[j];
+                items[j] = t;
+                j = p;
+                p = j / 2;
+            }
+        }
+        // items is now in heap order:
+        for (int i = N - 1; i >= 0; i--) {
+            assert (items[i / 2].compareTo(items[i]) >= 0);
+        }
+        for (int i = N - 1; i >= 1; i--) {
+            // Swap the biggest element in the heap with the first element
+            // in the sorted array
+            Key t = items[0];
+            items[0] = items[i];
+            items[i] = t;
+            N--; // shrink the heap by 1 element
+            // Restore the heap invariant by sifting first item to its correct place:
+            this.sink(1);  
+            
+            // Check invariants:
+            // (1) items[0:N - i] is in heap order:
+            for (int h = N - i; h >= 0; h--) {
+                assert (items[h / 2].compareTo(items[h]) >= 0);
+            }
+            // (2) items[i:N-1] is sorted:
+            for (int s = i; s < N - 1; s++) {
+                assert (items[s].compareTo(items[s+1]) <= 0);
+            }
+        }
+    }
+
 }

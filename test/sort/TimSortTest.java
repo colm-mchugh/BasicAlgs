@@ -94,11 +94,14 @@ public class TimSortTest {
     @Test
     public void testHeapSort() {
         float[] selectivities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
-        Heap<Integer> sorter = new MinHeap();
+        Heap<Integer> sorter = new MaxHeap();
         for (float sel : selectivities) {
             Integer[] intArray = math.genUniformArray(100, sel);
             sorter.Sort(intArray);
-            assert inOrder(intArray);
+            if(!inOrder(intArray)) {
+                System.out.println("Failed for array: " + Arrays.toString(intArray));
+                assert(false);
+            }
         }
     }
     
