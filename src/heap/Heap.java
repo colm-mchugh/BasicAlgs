@@ -248,15 +248,26 @@ public abstract class Heap<Key extends Comparable<Key>> {
             items[i] = t;
             N--; // shrink the heap by 1 element
             // Restore the heap invariant by sifting first item to its correct place:
-            this.sink(1);  
-            
+            //this.sink(1);  
+            int k = 1;
+            while (2*k <= N) {
+                int j = 2 * k;
+                if (j < N && items[j].compareTo(items[j-1]) > 0) {
+                    j++;
+                }
+                if (items[k-1].compareTo(items[j-1]) > 0) {
+                    break;
+                }
+                Exch(k, j);
+                k = j;
+            }
             // Check invariants:
             // (1) items[0:N - i] is in heap order:
             for (int h = N - i; h >= 0; h--) {
                 assert (items[h / 2].compareTo(items[h]) >= 0);
             }
             // (2) items[i:N-1] is sorted:
-            for (int s = i; s < N - 1; s++) {
+            for (int s = i; s < items.length - 1; s++) {
                 assert (items[s].compareTo(items[s+1]) <= 0);
             }
         }
