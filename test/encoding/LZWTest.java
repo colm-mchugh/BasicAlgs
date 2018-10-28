@@ -82,17 +82,17 @@ public class LZWTest {
         String text = sb.toString();
 
         int text_sz = text.length();
-        
+
         LZWEncoder encoder = new LZWEncoder(alphabet);
         List<Integer> encoding = encoder.encode(text);
 
         int encoding_sz = encoding.size();
-        
-        System.out.println("Encoding ratio: " + (double)(encoding_sz * 2) / (text_sz));
+
+        System.out.println("Encoding ratio: " + (double) (encoding_sz * 2) / (text_sz));
         LZWDecoder decoder = new LZWDecoder(alphabet);
         String ulysses = decoder.decode(encoding);
 
         assert ulysses.equals(text);
-        }
+    }
 
 }

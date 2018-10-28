@@ -1,5 +1,6 @@
 package heap;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,8 +51,8 @@ public abstract class Heap<Key extends Comparable<Key>> {
         if (N >= this.items.length) {
             this.resize(this.items.length * 2);
         }
-        this.itemIndex.put(k, N);
         this.items[N++] = k;
+        this.itemIndex.put(k, N);
         this.swim(N);
         assert itemIndex.size() == N;
     }
@@ -67,7 +68,7 @@ public abstract class Heap<Key extends Comparable<Key>> {
      * @return the item with highest priority in the heap.
      */
     public Key Delete() {
-        Key rv = this.items[0];
+        Key rv = value(1);
         this.Exch(1, N--);
         this.sink(1);
         this.items[N] = null;
@@ -82,7 +83,7 @@ public abstract class Heap<Key extends Comparable<Key>> {
      * @return item with highest priority
      */
     public Key Peek() {
-        return this.items[0];
+        return value(1);
     }
 
     /**
@@ -114,31 +115,32 @@ public abstract class Heap<Key extends Comparable<Key>> {
      * @return
      */
     public Key DeleteSpecificKey(Key k) {
+        assert itemIndex.size() == N;
         int i = itemIndex.get(k);
-        Key rv = this.items[i];
-        this.Exch(i + 1, N--);
-        this.sink(i + 1);
+        Key rv = value(i);
+        if (i == N) {
+            N--;
+            this.itemIndex.remove(k);
+            this.items[N] = null;
+            assert itemIndex.size() == N;
+            return rv;
+        }
+        this.Exch(i, N--);
+        this.sink(i);
+        if (i > 1 && i <= N && outOfOrder(p(i), i)) {
+            this.swim(i);
+        }
         this.items[N] = null;
         this.itemIndex.remove(k);
         assert itemIndex.size() == N;
         return rv;
     }
 
-    /**
-     * swim the item at i to its correct position in the items array.
-     *
-     * While the item at index i has greater priority than its parent, swap the
-     * item with its parent.
-     *
-     * @param i
-     */
-    private void swim(int i) {
-        while (!heapOrder(i)) {
-            Exch(i, i / 2);
-            i = i / 2;
-        }
-    }
+    
+    protected abstract boolean heapOrder(int i, int j);
 
+    protected abstract boolean outOfOrder(int i, int j);
+    
     /**
      *
      * sink the item at i to it's correct position in the items array.
@@ -149,61 +151,33 @@ public abstract class Heap<Key extends Comparable<Key>> {
      *
      * @param i
      */
-    private void sink(int i) {
-        while (2 * i <= N && (!heapOrder(2 * i) || !heapOrder(2 * i + 1))) {
-            int j = compare(2 * i, 2 * i + 1);
-            Exch(i, j);
-            i = j;
-        }
-    }
-
+    protected abstract void sink(int i);
+    
     /**
-     * True if the item at index i satisfies the heap invariant, false
-     * otherwise.
+     * swim the item at i to its correct position in the items array.
      *
-     * The heap invariant is: The item at index i has lower priority than its
-     * parent item.
+     * While the item at index i has greater priority than its parent, swap the
+     * item with its parent.
      *
      * @param i
-     * @return
      */
-    protected abstract boolean heapOrder(int i);
-
-    /**
-     * Compare items at index i and j of the heap, return the index with highest
-     * priority
-     *
-     * @param i
-     * @param j
-     * @return
-     */
-    protected abstract int compare(int i, int j);
-
+    protected abstract void swim(int i);
+    
     /**
      * Swap the items at index i and index j.
      *
      * @param i
      * @param j
      */
-    private void Exch(int i, int j) {
-        Key tmp = items[i - 1];
+    protected void Exch(int i, int j) {
+        if (i == j) {
+            return;
+        }
+        Key tmp = value(i);
         items[i - 1] = items[j - 1];
-        itemIndex.put(items[j - 1], i - 1);
+        itemIndex.put(items[j - 1], i);
         items[j - 1] = tmp;
-        itemIndex.put(tmp, j - 1);
-    }
-
-    /**
-     * Return the parent of item i.
-     *
-     * items are arranged so that the children of i are at 2*i and 2*i + 1. The
-     * parent of i is therefore i/2.
-     *
-     * @param i
-     * @return
-     */
-    protected Key parent(int i) {
-        return this.items[i / 2 - 1];
+        itemIndex.put(tmp, j);
     }
 
     private void resize(int capacity) {
@@ -225,21 +199,13 @@ public abstract class Heap<Key extends Comparable<Key>> {
         this.items = items;
         this.N = items.length;
         // convert items to heap order by sifting up each element 
-        for (int i = 1; i < N; i++) {
-            int j = i;
-            int p = j / 2;
-            while (j >= 0 && j > p && items[j].compareTo(items[p]) > 0) {
-                Key t = items[p];
-                items[p] = items[j];
-                items[j] = t;
-                j = p;
-                p = j / 2;
-            }
+        for (int n = 2; n <= N; n++) {
+            swim(n);
         }
+
         // items is now in heap order:
-        for (int i = N - 1; i >= 0; i--) {
-            assert (items[i / 2].compareTo(items[i]) >= 0);
-        }
+        assert (inHeapOrder());
+
         for (int i = N - 1; i >= 1; i--) {
             // Swap the biggest element in the heap with the first element
             // in the sorted array
@@ -247,30 +213,92 @@ public abstract class Heap<Key extends Comparable<Key>> {
             items[0] = items[i];
             items[i] = t;
             N--; // shrink the heap by 1 element
+            
             // Restore the heap invariant by sifting first item to its correct place:
-            //this.sink(1);  
-            int k = 1;
-            while (2*k <= N) {
-                int j = 2 * k;
-                if (j < N && items[j].compareTo(items[j-1]) > 0) {
-                    j++;
-                }
-                if (items[k-1].compareTo(items[j-1]) > 0) {
-                    break;
-                }
-                Exch(k, j);
-                k = j;
-            }
+            this.sink(1);  
+            
             // Check invariants:
-            // (1) items[0:N - i] is in heap order:
-            for (int h = N - i; h >= 0; h--) {
-                assert (items[h / 2].compareTo(items[h]) >= 0);
+            // (1) items[0:N] is in heap order:
+            for (int h = N; h > 1; h--) {
+                if (value(p(h)).compareTo(value(h)) < 0) {
+                    System.out.println("Heap Order Check failed for array: " + Arrays.toString(items));
+                    System.out.println("items[" + h / 2 + "] (" + items[h / 2] + ") < items[" + h + "] (" + items[h] + ")");
+                }
+                assert (value(p(h)).compareTo(value(h)) >= 0);
             }
-            // (2) items[i:N-1] is sorted:
+            // (2) items[N+1:] is sorted:
             for (int s = i; s < items.length - 1; s++) {
-                assert (items[s].compareTo(items[s+1]) <= 0);
+                assert (items[s].compareTo(items[s + 1]) <= 0);
             }
         }
     }
 
+    protected Key value(int i) {
+        if (i <= N) {
+            return items[i - 1];
+        } else {
+            assert false; // should never occur, is a bug if it does.
+        }
+        return null; 
+    }
+
+    /**
+     * Return left child index of index i
+     * @param i
+     * @return 
+     */
+    protected int lchild(int i) {
+        return 2 * i;
+    }
+
+    /**
+     * Return right child index of index i
+     * @param i
+     * @return 
+     */
+    protected int rchild(int i) {
+        return 2 * i + 1;
+    }
+
+    /**
+     * Return parent index (p) of index i
+     * @param i
+     * @return 
+     */
+    protected int p(int i) {
+        return i / 2;
+    }
+
+    /**
+     * Check that the entire heap is maintaining all heap invariants.
+     * 
+     * @return true if all heap invariants hold. Otherwise, an assert fail happens.
+     */
+    public boolean inHeapOrder() {
+       
+       for (int i = 2; i <= N; i++) {
+            if ((lchild(i)) <= N && !(heapOrder(i, lchild(i)) || value(i).equals(value(lchild(i))))) {
+                System.out.println("Heap Order Violation: items[" + i + "] (" + value(i) + ") < items[" + lchild(i) + "] (" + value(lchild(i)) + ")");
+                System.out.println("Heap Order Check failed for array: " + Arrays.toString(items));
+            }
+            if (rchild(i) <= N && !(heapOrder(i, rchild(i)) || value(i).equals(value(rchild(i))))) {
+                System.out.println("Heap Order Violation: items[" + i + "] (" + value(i) + ") < items[" + rchild(i) + "] (" + value(rchild(i)) + ")");
+                System.out.println("Heap Order Check failed for array: " + Arrays.toString(items));
+            }
+            if ((lchild(i)) <= N) 
+                assert(heapOrder(i, lchild(i)) || value(i).equals(value(lchild(i))));
+            if ((rchild(i)) <= N)
+                assert(heapOrder(i, rchild(i)) || value(i).equals(value(rchild(i))));
+        }
+
+        for (int h = N; h > 1; h--) {
+            if (!heapOrder(p(h), h)) {
+                System.out.println("Heap Order Violation: items[" + p(h) + "] (" + value(p(h)) + ") < items[" + h + "] (" + value(h) + ")");
+                System.out.println("Heap Order Check failed for array: " + Arrays.toString(items));
+            }
+            assert (heapOrder(p(h), h));
+        }
+        
+        return true; 
+    }
 }

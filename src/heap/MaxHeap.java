@@ -1,51 +1,47 @@
 package heap;
 
-
 public class MaxHeap<Key extends Comparable<Key>> extends Heap<Key> {
 
     public MaxHeap() {
         super();
     }
-     
-    /**
-     * True if the parent of item i is greater than i, false otherwise.
-     * Also true if i has no parent.
-     * @param i
-     * @return 
-     */
+
     @Override
-    protected boolean heapOrder(int i) {
-        if ((i <= 1) || (i > N)) {
-            return true;
-        }
-        return parent(i).compareTo(this.items[i - 1]) > 0;
-    }
-    
-    /**
-     * Given two item i, j return i if items[i] >= items[j], 
-     * otherwise return j.
-     * 
-     * If items[i] is NULL return j, and vice versa.
-     * 
-     * @param i
-     * @param j
-     * @return 
-     */
-    @Override
-    protected int compare(int i, int j) {
-        if (j > N) {
-            return i;
-        }
-        if (this.items[j - 1] == null) {
-            return i;
-        }
-        if (this.items[i - 1] == null) {
-            return j;
-        }
-        if (this.items[i - 1].compareTo(this.items[j - 1]) >= 0) {
-            return i;
-        }
-        return j;
+    protected boolean heapOrder(int i, int j) {
+        return value(i).compareTo(value(j)) >= 0;
     }
 
+    @Override
+    protected boolean outOfOrder(int i, int j) {
+        return value(i).compareTo(value(j)) < 0;
+    }
+
+    @Override
+    protected void sink(int i) {
+        for (int k = i, j = lchild(k); lchild(k) <= N; j = lchild(k)) {
+            if (rchild(k) <= N && value(rchild(k)).compareTo(value(lchild(k))) > 0) {
+                j++;
+            }
+            if (value(k).compareTo(value(j)) > 0) {
+                break;
+            }
+            this.Exch(k, j);
+            k = j;
+        }
+    }
+
+    @Override
+    protected void swim(int i) {
+        while (true) {
+            if (i == 1) {
+                break;
+            }
+            if (value(p(i)).compareTo(value(i)) >= 0) {
+                break;
+            }
+            this.Exch(p(i), i);
+            i = p(i);
+        }
+    }
+    
 }

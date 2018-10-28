@@ -29,7 +29,7 @@ public class PrimMSTTest {
         WeightedGraphUndirected<Integer> pish = this.readWeightedUndirectedGraph("resources/edges.txt");
         PrimMST p = new PrimMST(pish);
         long minCost = p.heapMST();
-        assert minCost == -3612173;
+        assert minCost == -3612829;
     }
 
     @Test

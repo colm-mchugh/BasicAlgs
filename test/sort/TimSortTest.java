@@ -2,7 +2,6 @@ package sort;
 
 import heap.Heap;
 import heap.MaxHeap;
-import heap.MinHeap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -96,9 +95,7 @@ public class TimSortTest {
         float[] selectivities = { 0.99f, 0.75f, 0.5f, 0.33f, 0.1f, 0.01f, 0.001f, 0.0001f};
         Heap<Integer> sorter = new MaxHeap();
         for (float sel : selectivities) {
-            Integer[] intArrayz = math.genUniformArray(30, sel);
-            Integer[] intArray = {3, 16, 12, 16, 14, 16, 16, 13, 2, 13, 15, 8, 13, 14, 4, 11, 12, 1, 12, 10, 10, 5, 1, 10, 9, 7, 7, 4, 7, 10};
-            System.out.println("Input: "+ Arrays.toString(intArray));
+            Integer[] intArray = math.genUniformArray(10000, sel);
             sorter.Sort(intArray);
             if(!inOrder(intArray)) {
                 System.out.println("Failed for array: " + Arrays.toString(intArray));

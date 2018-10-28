@@ -128,7 +128,7 @@ public interface WeightedGraph<T> {
 
         @Override
         public String toString() {
-            return v + ", " + d;
+            return "(" + v + ", " + d + ")";
         }
 
     }

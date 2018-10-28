@@ -51,17 +51,21 @@ public class DijkstraTest {
     }
 
     @Test
-    public void multiTest() {
-        String[] files = {"input_random_10_16.txt", "input_random_16_32.txt", 
+    public void multiTestDijkstraCLRS() {
+        String[] files = {"input_random_10_16.txt", "input_random_16_32.txt",
             "input_random_24_128.txt", "input_random_20_64.txt", "input_random_28_256.txt"};
         Integer[][] expecteds = {{588, 405, 675, 521, 909, 328, 418, 957, 830, 839},
-            {10166,18051,15617,16074,16134,15292,17621,18248,15367,13089},
-            {28256,26397,28788,24491,48786,27993,29617,19807,40062,31045},
-            {699513,452243,60365,166860,289662,820910,593399,836776,621238,439299},
-            {561210,512598,559247,660768,485338,534807,364902,307456,511454,453935},
-        };
+        {10166, 18051, 15617, 16074, 16134, 15292, 17621, 18248, 15367, 13089},
+        {28256, 26397, 28788, 24491, 48786, 27993, 29617, 19807, 40062, 31045},
+        {699513, 452243, 60365, 166860, 289662, 820910, 593399, 836776, 621238, 439299},
+        {561210, 512598, 559247, 660768, 485338, 534807, 364902, 307456, 511454, 453935},};
         Integer[] verticesOfInterest = {7, 37, 59, 82, 99, 115, 133, 165, 188, 197};
-        boolean passes = true;
+        boolean[][] passes = {
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},};
         for (int i = 0; i < files.length; i++) {
             WeightedGraph<Integer> g = this.readGraph("resources/" + files[i]);
             System.out.println("file:" + files[i]);
@@ -72,14 +76,64 @@ public class DijkstraTest {
                 distances.put(t, pathLengths.get(t));
             }
             for (int j = 0; j < verticesOfInterest.length; j++) {
-                System.out.println("Vertex=" + verticesOfInterest[j] 
-                    + ": " + distances.get(verticesOfInterest[j])
-                    + " (" + expecteds[i][j] + ")" 
-                    + (!Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]) ? " fail!" : ""));
-                passes = passes && Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]);
+                System.out.println("Vertex=" + verticesOfInterest[j]
+                        + ": " + distances.get(verticesOfInterest[j])
+                        + " (" + expecteds[i][j] + ")"
+                        + (!Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]) ? " fail!" : ""));
+                passes[i][j] = Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]);
             }
         }
-        assert passes;
+        for (boolean[] res : passes) {
+            for (boolean r : res) {
+                assert (r);
+            }
+        }
+    }
+
+    @Test
+    public void multiTestDijkstra() {
+        String[] files = {"input_random_10_16.txt", "input_random_16_32.txt",
+            "input_random_24_128.txt", "input_random_20_64.txt", "input_random_28_256.txt"};
+        Integer[][] expecteds = {{588, 405, 675, 521, 909, 328, 418, 957, 830, 839},
+        {10166, 18051, 15617, 16074, 16134, 15292, 17621, 18248, 15367, 13089},
+        {28256, 26397, 28788, 24491, 48786, 27993, 29617, 19807, 40062, 31045},
+        {699513, 452243, 60365, 166860, 289662, 820910, 593399, 836776, 621238, 439299},
+        {561210, 512598, 559247, 660768, 485338, 534807, 364902, 307456, 511454, 453935},};
+        Integer[] verticesOfInterest = {7, 37, 59, 82, 99, 115, 133, 165, 188, 197};
+        boolean[][] passes = {
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},
+            {false, false, false, false, false, false, false, false, false, false,},};
+        for (int i = 0; i < files.length; i++) {
+            WeightedGraph<Integer> g = this.readGraph("resources/" + files[i]);
+            System.out.println("file:" + files[i]);
+            Map<Integer, Integer> distances = new HashMap<>();
+            for (Integer v : verticesOfInterest) {
+                distances.put(v, 1000000);
+            }
+            Dijkstra<Integer> dijkster = new Dijkstra<>(g);
+            for (Integer t : verticesOfInterest) {
+                if (distances.keySet().contains(t)) {
+                    Map<Integer, Integer> pathLengths = dijkster.sp(1, t);
+                    int d = pathLengths.get(t);
+                    distances.replace(t, d);
+                }
+            }
+            for (int j = 0; j < verticesOfInterest.length; j++) {
+                System.out.println("Vertex=" + verticesOfInterest[j]
+                        + ": " + distances.get(verticesOfInterest[j])
+                        + " (" + expecteds[i][j] + ")"
+                        + (!Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]) ? " fail!" : ""));
+                passes[i][j] = Objects.equals(distances.get(verticesOfInterest[j]), expecteds[i][j]);
+            }
+        }
+        for (boolean[] res : passes) {
+            for (boolean r : res) {
+                assert (r);
+            }
+        }
     }
 
     /**
