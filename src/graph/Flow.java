@@ -1,11 +1,23 @@
 package graph;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public interface Flow<T> {
+public abstract class Flow<T> {
 
+    protected final Map<T, Set<Edge<T>>> graph;
+
+    public Flow() {
+        graph = new HashMap<>();
+    }
+    
+    public void clear() {
+        graph.clear();
+    }
+    
     /**
      * Create an edge from u to v with capacity c.
      *
@@ -13,19 +25,30 @@ public interface Flow<T> {
      * @param v
      * @param c
      */
-    void link(T u, T v, int c);
-
+    public void link(T u, T v, int c) {
+        Edge<T> newEdge = new Edge<>(u, v, c);
+        if (linked(newEdge)) {
+            throw new IllegalArgumentException("Edge already present: " + newEdge);
+        }        
+        addToGraph(u, newEdge);
+        addToGraph(v, newEdge);
+    }
+    
     /**
      * The vertices in the graph
      *
      * @return
      */
-    Set<T> V();
+    public Set<T> V() {
+        return graph.keySet();
+    }
 
     /**
      * The number of vertices in the graph
      */
-    public int numVertices();
+    public int numVertices() {
+        return graph.keySet().size();
+    }
 
     /**
      * The edges incident on vertex u.
@@ -33,7 +56,9 @@ public interface Flow<T> {
      * @param u
      * @return 
      */
-    Set<Edge<T>> edgesOf(T u);
+    public Set<Edge<T>> edgesOf(T u) {
+        return this.graph.get(u);
+    }
     
     /**
      * The excess flow at a given vertex
@@ -41,9 +66,37 @@ public interface Flow<T> {
      * @param u
      * @return 
      */
-    int excess(T u);
+    public int excess(T w) {
+        assert this.graph.keySet().contains(w);       
+        int xs = 0;
+        for (Edge<T> e : this.graph.get(w)) {
+            if (w.equals(e.u)) {
+                xs -= e.flow;
+            } else {
+                xs += e.flow;
+            }
+        }
+        return xs;
+    }
     
-    static class Edge<T> {
+    private void addToGraph(T v, Edge<T> e) {
+        if (!graph.containsKey(v)) {
+            graph.put(v, new HashSet<>());
+        }
+        Set<Edge<T>> vEdges = graph.get(v);
+        vEdges.add(e);
+    }
+    
+    private boolean linked(Edge<T> e) {
+        Set<Edge<T>> uSet = this.graph.get(e.u);
+        Set<Edge<T>> vSet = this.graph.get(e.v);
+        if (uSet != null && vSet != null) {
+            return uSet.contains(e) && vSet.contains(e);
+        }
+        return false;
+    }
+
+    public static class Edge<T> {
 
         public T u;
         public T v;
@@ -98,7 +151,7 @@ public interface Flow<T> {
 
         @Override
         public String toString() {
-            return u + " -> " + v + ", " + flow + "/" + capacity;
+            return "(" + u + ", " + v + ") " + flow + "/" + capacity;
         }
 
         @Override
@@ -156,5 +209,5 @@ public interface Flow<T> {
      * @param t The sink vertex; must be in the graph
      * @return 
      */
-    Max<T> getMax(T s, T t);
+    abstract Max<T> getMax(T s, T t);
 }

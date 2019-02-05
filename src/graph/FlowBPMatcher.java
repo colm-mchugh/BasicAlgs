@@ -16,7 +16,7 @@ public class FlowBPMatcher<T> {
     private final Set<T> V = new HashSet<>();
     private final T source;
     private final T sink;
-    private final Flow<T> flow = new FlowImpl<>();
+    private final Flow<T> flow = new FlowEdmndKarp<>();
 
     /**
      * Provide the matcher with a map of preferences. This is application

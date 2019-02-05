@@ -1,6 +1,10 @@
 package graph;
 
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.junit.Test;
 
 public class DFSTest {
@@ -68,5 +72,23 @@ public class DFSTest {
         g.add(11, 12);
         g.print();
         g.reverse().print();
+    }
+    
+    @Test
+    public void testBFS()
+    {
+        Graph<Integer> g = new DGraphImpl<>();
+        g.add(0, 1);
+        g.add(0, 2);
+        g.add(1, 2);
+        g.add(1, 3);
+        g.add(2, 3);
+        
+        GraphTraversalBFS<Integer> doBFS = new GraphTraversalBFS<>(g, 0);
+        
+        Iterable<Integer> path = doBFS.pathTo(3);
+        for (int i : path) {
+            System.out.println(i);
+        }
     }
 }
