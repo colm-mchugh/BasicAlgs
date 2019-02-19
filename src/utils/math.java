@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import sort.QuickSorter;
+import sort.UnSort;
 
 public class math {
 
@@ -1366,8 +1367,7 @@ public class math {
             rv[i + 1] = rv[i / 2];
         }
         
-        new QuickSorter().unsort(rv);
-        return rv;
+        return (Integer[]) UnSort.Of(rv);
     }
 
     public static Integer[] genNormalArray(int N, float selectivity, float mean, float dev) {

@@ -132,7 +132,7 @@ public class FlowPushRelabel<T> extends Flow<T> {
                     break;
                 }
             }
-            
+            // No push, relabel vertex u
             if (!pushed) {
                 uV.relabel();
                 excess.add(u);

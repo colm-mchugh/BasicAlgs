@@ -76,7 +76,7 @@ public class QuickSorter {
         this.lastSortSwaps = 0;
 
         if (this.randomize) {
-            this.unsort(a);
+            UnSort.Of(a);
         }
         if (this.partitionStrategy == PartitionStrategy.THREE_WAY) {
             this.threeWaySort(a, 0, a.length - 1);
@@ -85,20 +85,6 @@ public class QuickSorter {
         }
     }
 
-    /**
-     * Randomize the order of elements in the given array.
-     * 
-     * Swap each element of the array with a randomly chosen element.
-     * Runs in O(n). 
-     * 
-     * @param a the array to be unsorted
-     */
-    public void unsort(Comparable a[]) {
-        for (int i = 0; i < a.length; i++) {
-            int j = RandGen.uniform(i + 1);
-            this.exch(a, i, j);
-        }
-    }
     
     /**
      * Return the Kth Order Statistic of the given array. The kth order statistic
@@ -126,7 +112,7 @@ public class QuickSorter {
             throw new java.lang.IndexOutOfBoundsException();
         }
         if (this.randomize) {
-            this.unsort(a);
+            a = UnSort.Of(a);
         }
         int lo = 0;
         int hi = a.length - 1;

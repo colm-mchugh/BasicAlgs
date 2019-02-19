@@ -189,7 +189,7 @@ public class QuickSortTest {
         Map<String, Integer> freqs = new HashMap<>();
         QuickSorter qs = new QuickSorter();
         for (int i = 0; i < times; i++) {
-            qs.unsort(list);
+            UnSort.Of(list);
             StringBuilder sb = new StringBuilder();
             for (String s : list) {
                sb.append(s);

@@ -75,7 +75,7 @@ public class TimSortTest {
         for (int i = 0; i < intArray.length; i++) {
             intArray[i] = i;
         }
-        new QuickSorter().unsort(intArray);
+        UnSort.Of(intArray);
         
         int num_swaps = InsertionSort.InstrumentedSort(intArray, 0, intArray.length - 1);
         assert inOrder(intArray);
