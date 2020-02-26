@@ -234,6 +234,18 @@ public class Transform {
         return score;
     }
     
+    /**
+     * Calculate how similar X and Y are; similarity is a number between 0 and 1;
+     * close to 1 implies very similar, close to 0 implies not very similar.
+     * 
+     * @return
+     */
+    public double similarity() {
+    	int max = Integer.max(X.length(), Y.length());
+    	int dist = this.distance();
+    	return (max - dist)/(double)max;
+    }
+    
     static public List<Step> Of(String X, String Y) {
         Transform t = new Transform(X, Y);
         return t.Assemble(X.length(), Y.length());

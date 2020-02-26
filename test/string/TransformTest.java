@@ -58,12 +58,15 @@ public class TransformTest {
             {"cat", "cut"},
             {"horse", "ros"},
             {"kitten", "sitting"},
+            {"abcdefghijklm", "nopqrstuvwxyz" }
         };
-        int[] results = {3, 5, 1, 1, 3, 3};
+        int[] results = {3, 5, 1, 1, 3, 3, 13};
 
         for (int i = 0; i < tests.length; i++) {
             Transform t = new Transform(tests[i][0], tests[i][1]);
+            double similarity = t.similarity();
             assert t.distance() == results[i];
+            System.out.println("Similarity: " + similarity);
         }
     }
     
