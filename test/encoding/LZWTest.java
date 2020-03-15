@@ -57,21 +57,35 @@ public class LZWTest {
         return l;
     }
 
-    @Test
-    public void encodeUlysses() {
+    @Test 
+    public void encodeJoyce() {
+        String[][] books = {
+            { "Finnegans Wake", "resources/finnegans_wake.txt" },
+            { "Ulysses", "resources/ulyss10.txt" }
+        };
+        
+        for (String[] book : books)
+        {
+            checkEncoding(book[0], book[1]);
+        }
+    }
+
+    public void checkEncoding(String name, String file) {
         StringBuilder sb = new StringBuilder();
         Set<Character> chars = new HashSet<>();
         try {
-            FileReader fr = new FileReader("resources/ulyss10.txt");
+            FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
             String line;
             for (int j = 0; (line = br.readLine()) != null; j++) {
-                sb.append(line);
+                sb.append(line).append(' ');
                 for (int i = 0; i < line.length(); i++) {
                     chars.add(line.charAt(i));
                 }
             }
         } catch (IOException | NumberFormatException e) {
+            System.err.println("Exception: " + e.getLocalizedMessage());
+            assert false;
         }
 
         char[] alphabet = new char[chars.size()];
@@ -83,16 +97,31 @@ public class LZWTest {
 
         int text_sz = text.length();
 
+        long startTime = System.currentTimeMillis();
+        
         LZWEncoder encoder = new LZWEncoder(alphabet);
         List<Integer> encoding = encoder.encode(text);
+        
+        long encodeTime = System.currentTimeMillis() - startTime;
 
         int encoding_sz = encoding.size();
 
-        System.out.println("Encoding ratio: " + (double) (encoding_sz * 2) / (text_sz));
+        startTime = System.currentTimeMillis();
+        
         LZWDecoder decoder = new LZWDecoder(alphabet);
-        String ulysses = decoder.decode(encoding);
+        String decdoded = decoder.decode(encoding);
 
-        assert ulysses.equals(text);
+        long decodeTime = System.currentTimeMillis() - startTime;
+        
+        assert decdoded.equals(text);
+        
+        System.out.println(name+":");
+        System.out.println("Encoding ratio: " + (double) (encoding_sz * 2) / (text_sz));
+        System.out.println("Alphabet length: " + alphabet.length);
+        System.out.println("Text length: " + text_sz);
+        System.out.println("Encoding length: " + encoding_sz);
+        System.out.println("Encoding time (millis): " + encodeTime);
+        System.out.println("Decoding time (millis): " + decodeTime);
     }
 
 }
