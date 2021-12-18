@@ -46,33 +46,30 @@ public class MisraGries<T> {
         if (table.containsKey(element))
         {
             table.put(element, table.get(element) + 1);
+            return;
         }
-        else
+        
+        if (table.size() < this.capacity)
         {
-            if (table.size() < this.capacity)
-            {
-                table.put(element, 1);
-            }
-            else
-            {
-                for (Map.Entry<T, Integer> set : table.entrySet())
-                {
-                    set.setValue(set.getValue() - 1);
-                    if (set.getValue() == 0)
-                        evictionSet.add(set.getKey());
-                }
-                
-                evictions += evictionSet.size();
-                
-                for (T key : evictionSet)
-                {
-                    table.remove(key);
-                }
-                
-                evictionSet.clear();
-                
-            }
+            table.put(element, 1);
+            return;
         }
+        
+        for (Map.Entry<T, Integer> set : table.entrySet())
+        {
+            set.setValue(set.getValue() - 1);
+            if (set.getValue() == 0)
+                evictionSet.add(set.getKey());
+        }
+
+        evictions += evictionSet.size();
+
+        for (T key : evictionSet)
+        {
+            table.remove(key);
+        }
+
+        evictionSet.clear();
     }
     
 }
